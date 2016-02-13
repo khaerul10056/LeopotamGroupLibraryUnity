@@ -1,0 +1,119 @@
+﻿//-------------------------------------------------------
+// LeopotamGroupLibrary for unity3d License
+// Copyright (c) 2012-2016 Leopotam <leopotam@gmail.com>
+//-------------------------------------------------------
+
+using System;
+using System.Collections.Generic;
+using LeopotamGroup.Common;
+using LeopotamGroup.Serialization;
+using UnityEngine;
+
+namespace LeopotamGroup.Localization {
+    public static class Localizer {
+        public static string Language {
+            get { return _language; }
+            set {
+                if (!string.IsNullOrEmpty (value) && _language != value) {
+                    SetLanguage (value);
+                    RelocalizeUI ();
+                }
+            }
+        }
+
+        const string HeaderToken = "KEY";
+
+        const string DefaultStaticSourcePath = "Localization";
+
+        const string DefaultLanguage = "English";
+
+        const string SettingsKey = "lg.locale";
+
+        const string OnLocalizeMethodName = "OnLocalize";
+
+        static readonly Dictionary<string, string[]> _statics = new Dictionary<string, string[]> (64);
+
+        static readonly Dictionary<string, string[]> _dynamics = new Dictionary<string, string[]> (64);
+
+        static string[] _header;
+
+        static string _language;
+
+        static int _langID;
+
+        static Localizer () {
+            _header = null;
+            _statics.Clear ();
+            UnloadDynamics ();
+            AddStaticSource (DefaultStaticSourcePath);
+            SetLanguage (PlayerPrefs.GetString (SettingsKey, DefaultLanguage));
+        }
+
+        static void SetLanguage (string lang) {
+            _language = lang;
+            _langID = _header != null ? Array.IndexOf (_header, _language) : -1;
+            PlayerPrefs.SetString (SettingsKey, _language);
+        }
+
+        static string LoadAsset (string assetPath) {
+            var asset = Resources.Load<TextAsset> (assetPath);
+            string data = null;
+            if (asset != null) {
+                data = asset.text;
+                Resources.UnloadAsset (asset);
+            }
+            return data;
+        }
+
+        static void LoadData (string data, Dictionary<string, string[]> storage) {
+            CsvSerialization.DeserializeStatic (data, storage);
+            if (!storage.ContainsKey (HeaderToken)) {
+                storage.Clear ();
+                return;
+            }
+            _header = storage[HeaderToken];
+            if (!string.IsNullOrEmpty (_language)) {
+                var langID = Array.IndexOf (_header, _language);
+                if (_langID != -1 && langID != _langID) {
+                    #if UNITY_EDITOR
+                    Debug.LogWarning ("Invalid languages order in source, skipping.");
+                    #endif
+                    return;
+                }
+                if (_langID == -1) {
+                    _langID = langID;
+                }
+            }
+        }
+
+        public static string Get (string token) {
+            if (_langID == -1) {
+                return token;
+            }
+            return _dynamics.ContainsKey (token) ?
+                _dynamics[token][_langID] : (_statics.ContainsKey (token) ? _statics[token][_langID] : token);
+        }
+
+        public static void AddStaticSource (string sourcePath) {
+            var data = LoadAsset (sourcePath);
+            if (!string.IsNullOrEmpty (data)) {
+                LoadData (data, _statics);
+            }
+        }
+
+        public static void AddDynamicSource (string sourcePath) {
+            var data = LoadAsset (sourcePath);
+            if (!string.IsNullOrEmpty (data)) {
+                LoadData (data, _dynamics);
+            }
+        }
+
+        public static void UnloadDynamics () {
+            _dynamics.Clear ();
+        }
+
+        public static void RelocalizeUI () {
+            Extensions.BroadcastToAll (OnLocalizeMethodName);
+        }
+    }
+}
