@@ -1,11 +1,10 @@
 ﻿//-------------------------------------------------------
-// LeopotamGroupLibrary for unity3d License
+// LeopotamGroupLibrary for unity3d
 // Copyright (c) 2012-2016 Leopotam <leopotam@gmail.com>
 //-------------------------------------------------------
 
 using System;
 using System.Globalization;
-using System.Text;
 using UnityEngine;
 
 namespace LeopotamGroup.Common {
@@ -93,51 +92,8 @@ namespace LeopotamGroup.Common {
             return sign * (retVal1 + retVal2);
         }
 
-        static StringBuilder _floatParserBuf = new StringBuilder (64);
-
         static public string ToNormalizedString (this float data) {
-            if (data == 0f) {
-                return "0";
-            }
-            lock (_floatParserBuf) {
-                _floatParserBuf.Length = 0;
-                if (data < 0) {
-                    _floatParserBuf.Append ('-');
-                    data = -data;
-                }
-                var v0 = ((int) data * 10) / 10;
-                var v1 = (int) System.Math.Round ((data - v0) * 100000f);
-                if (v0 > 0) {
-                    v0 = ReversePositiveInt (v0);
-                    while (v0 > 0) {
-                        _floatParserBuf.Append ((char) ((v0 % 10) + '0'));
-                        v0 /= 10;
-                    }
-                } else {
-                    _floatParserBuf.Append ('0');
-                }
-                if (v1 > 0) {
-                    _floatParserBuf.Append ('.');
-                    v1 = ReversePositiveInt (v1);
-                    while (v1 < 10000) {
-                        v1 *= 10;
-                    }
-                    while (v1 > 0) {
-                        _floatParserBuf.Append ((char) ((v1 % 10) + '0'));
-                        v1 /= 10;
-                    }
-                }
-                return _floatParserBuf.ToString ();
-            }
-        }
-
-        static int ReversePositiveInt (int num) {
-            var result = 0;
-            while (num > 0) {
-                result = result * 10 + num % 10;
-                num /= 10;
-            }
-            return result;
+            return data.ToString ("0.#####");
         }
 
         static public Color ToColor24 (this string text) {
