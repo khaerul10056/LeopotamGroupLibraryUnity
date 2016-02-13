@@ -17,4 +17,5 @@ THE SOFTWARE.
 * under the terms of the [Attribution-NonCommercial-ShareAlike 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)
 
 * under commercial license, email to author for details
+
 ----------------------------------------------------------------------------
