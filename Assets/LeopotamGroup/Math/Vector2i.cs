@@ -70,10 +70,16 @@ namespace LeopotamGroup.Math {
         public void LossyNormalize () {
             var num = Vector2i.LossyMagnitude (this);
             if (num > 0) {
-                this /= num;
+                x /= num;
+                x /= num;
             } else {
-                this = Vector2i.Zero;
+                x = 0;
+                y = 0;
             }
+        }
+
+        public int LossyMagnituded {
+            get { return LossyMagnitude (this); }
         }
 
         public static Vector2i LossyNormalize (Vector2i rhs) {
@@ -85,7 +91,7 @@ namespace LeopotamGroup.Math {
         }
 
         public static int LossyMagnitude (Vector2i rhs) {
-            return Mathf.RoundToInt (Mathf.Sqrt (rhs.x * rhs.x + rhs.y * rhs.y));
+            return Mathf.RoundToInt (Mathf.Sqrt (rhs.SqrMagnitude));
         }
 
         public override int GetHashCode () {
@@ -101,7 +107,7 @@ namespace LeopotamGroup.Math {
         }
 
         public override string ToString () {
-            return string.Format ("({0:D3}, {1:D3})", x, y);
+            return string.Format ("({0}, {1})", x, y);
         }
 
         public static bool operator == (Vector2i lhs, Vector2i rhs) {
