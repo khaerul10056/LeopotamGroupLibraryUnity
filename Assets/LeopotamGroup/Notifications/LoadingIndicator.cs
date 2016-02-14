@@ -27,7 +27,7 @@ namespace LeopotamGroup.Notifications {
 
         const float DefaultSpeed = 10f;
 
-        public bool IsActive { get; private set; }
+        public bool IsActive { get { return _isActive; } }
 
         public void Show (bool state) {
             _alpha = 0f;
