@@ -7,14 +7,14 @@ namespace LeopotamGroup.Examples.Common.Singleton {
         string _stringParameter = "String param value";
 
         protected override void OnConstruct () {
-            // Use this override method instead of Awake, it will guarantee correct initialization for one instance.
+            // Use this overrided method instead of Awake, it will guarantee correct initialization for one instance.
             base.OnConstruct ();
             Debug.Log ("MySingletonManager instance created");
             Debug.Log ("MySingletonManager.StringParameter on start: " + _stringParameter);
         }
 
         protected override void OnDestruct () {
-            // Use this override method instead of OnDestroy, it will guarantee correct dispose for one instance.
+            // Use this overrided method instead of OnDestroy, it will guarantee correct dispose for one instance.
 
             // Dont forget to check UnitySingleton<T>.IsInstanceCreated () at any OnDestroy method (it can be
             // already killed before), otherwise new instance will be created and unity throw exception.
