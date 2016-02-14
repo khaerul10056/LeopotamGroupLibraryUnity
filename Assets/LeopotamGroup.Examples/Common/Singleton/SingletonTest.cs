@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace LeopotamGroup.Examples.Common.Singleton {
+namespace LeopotamGroup.Examples.Common.SingletonTest {
     public class SingletonTest : MonoBehaviour {
         void Start () {
             MySingletonManager.Instance.Test ();

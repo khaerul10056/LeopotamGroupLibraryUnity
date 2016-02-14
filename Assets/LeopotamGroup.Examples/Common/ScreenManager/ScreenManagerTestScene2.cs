@@ -1,7 +1,7 @@
 ﻿using LeopotamGroup.Common;
 using UnityEngine;
 
-namespace LeopotamGroup.Examples.Common.ScreenManaging {
+namespace LeopotamGroup.Examples.Common.ScreenManagerTest {
     public class ScreenManagerTestScene2 : MonoBehaviour {
         void OnGUI () {
             GUILayout.Label ("Second scene loaded!");

@@ -1,7 +1,7 @@
 ﻿using LeopotamGroup.Common;
 using UnityEngine;
 
-namespace LeopotamGroup.Examples.Common.Singleton {
+namespace LeopotamGroup.Examples.Common.SingletonTest {
     public class MySingletonManager : UnitySingleton<MySingletonManager> {
         [SerializeField]
         string _stringParameter = "String param value";

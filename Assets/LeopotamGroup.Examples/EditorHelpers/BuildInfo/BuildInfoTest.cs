@@ -1,7 +1,7 @@
 ﻿using LeopotamGroup.EditorHelpers;
 using UnityEngine;
 
-namespace LeopotamGroup.Examples.EditorHelpers.BuildInfos {
+namespace LeopotamGroup.Examples.EditorHelpers.BuildInfoTest {
     public class BuildInfoTest : MonoBehaviour {
         void OnGUI () {
             GUILayout.Label ("You cant get app namespace and version at runtime for all platforms with standard unity api!");
