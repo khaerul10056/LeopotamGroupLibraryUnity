@@ -1,0 +1,78 @@
+﻿// One line comment. Any symbols will be ignored here to end of line.
+
+/*
+Multiple lines as
+long comment
+*/
+
+// You can call only declared function from unity code.
+// Each function can have up to 4 parameters (or more after change call method api at library).
+// If parameters were not inited during call - they will be inited as 'undefined'.
+// Each non-expression line should be ended with ';'.
+function main(param1FromHost, param2FromHost) {
+    // You can call registered as host api functions, we have 'test_sqrt' and 'test_sqrt'.
+    // 'test_echo' should return same data as received.
+    // 'test_sqrt' should return sqrt from numeric parameter.
+    // You can use 'debug' function to output parameters to console log.
+    debug('hello from script');
+
+    // You can use result of function call as nested parameter of calling other function.
+    debug(test_echo('call echo function from script and use returned value as debug parameter'));
+    debug(test_sqrt(144));
+
+    // You can declare vars with keyword 'var' and use them later.
+    // Each variable has type: number, string or undefined.
+    // Type cant be changed after variable will be declared.
+    // Type based on data what was used during declare.
+
+    // a is number
+    var a = 10;
+
+    // b is string. This is only one valid way of declare strings, double quotes cant be used!
+    var b = 'test';
+    debug(b);
+
+    // Only one valid operation with string can be applied - concatenation.
+    b = b + ' string was changed';
+    debug(b);
+    // Numbers will be converted to string on concatenation with other string.
+    b = b + ' around ' + 100500 + ' times';
+    debug(b);
+
+    // With numbers you can use any operations as bellow:
+    debug(123 + 456);
+    debug(123 - 456);
+    debug(123 * 456);
+    debug(123 / 456);
+    // You can use parenting for changing operation order.
+    debug((123 + 456) * 2);
+    debug(123 + 456 * 2);
+
+    debug((123 + 456) * 2);
+
+    // There is conditional execution.
+    if (10 > 0) {
+        debug('10 > 0');
+    }
+
+    // With optional 'else' block.
+    if (10 < 1) {
+        debug('wow, "10 < 1"');
+    } else {
+        debug('"10 < 1" is not true');
+    }
+
+    // There is another one system function - callWithDelay(sFuncName, nDelay).
+    // Function with name sFuncName will be called after nDelay seconds.
+    callWithDelay('onDelayedFunc', 5);
+
+    // Dont forget, you cant call another script functions from any script function,
+    // only through 'callWithDelay' (with nDelay = 0, for example - function will be called in next tick).
+
+    debug('first parameter from host: ' + param1FromHost);
+    debug('second parameter from host: ' + param2FromHost);
+}
+
+function onDelayedFunc() {
+    debug('wow, im still alive, even after main function completed!');
+}
