@@ -52,7 +52,7 @@ namespace LeopotamGroup.Tutorials {
             }
         }
 
-        public void ClearAllData (bool sendEvent = false) {
+        public void ClearAllScreensData (bool sendEvent = false) {
             _sceneMasks = new Dictionary<string, int> ();
             SaveData ();
             if (sendEvent) {

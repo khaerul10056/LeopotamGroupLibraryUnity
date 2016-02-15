@@ -1,6 +1,5 @@
-﻿using UnityEngine;
-using System.Collections;
-using LeopotamGroup.Scripting;
+﻿using LeopotamGroup.Scripting;
+using UnityEngine;
 
 namespace LeopotamGroup.Examples.ScriptingTest {
     public class ScriptingTest : MonoBehaviour {

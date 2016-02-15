@@ -3,6 +3,7 @@
 // Copyright (c) 2012-2016 Leopotam <leopotam@gmail.com>
 //-------------------------------------------------------
 
+using LeopotamGroup.Common;
 using UnityEngine;
 
 namespace LeopotamGroup.FX {
@@ -12,7 +13,7 @@ namespace LeopotamGroup.FX {
         Third = 2
     }
 
-    sealed class SoundManager : LeopotamGroup.Common.UnitySingleton<SoundManager> {
+    sealed class SoundManager : UnitySingleton<SoundManager> {
         public float SoundVolume {
             get { return _fxes[0].volume; }
             set {
