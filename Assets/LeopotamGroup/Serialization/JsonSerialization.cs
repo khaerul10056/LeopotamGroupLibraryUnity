@@ -84,6 +84,32 @@ namespace LeopotamGroup.Serialization {
                 _sb.Append (']');
                 return;
             }
+            // dict
+            var dict = obj as IDictionary;
+            if (dict != null) {
+                var dictEnum = dict.GetEnumerator ();
+                var isComma = false;
+                bool noNeedWrapKey;
+                _sb.Append ('{');
+                while (dictEnum.MoveNext ()) {
+                    noNeedWrapKey = dictEnum.Key is string;
+                    if (isComma) {
+                        _sb.Append (',');
+                    }
+                    if (!noNeedWrapKey) {
+                        _sb.Append ('"');
+                    }
+                    SerializeMember (dictEnum.Key);
+                    if (!noNeedWrapKey) {
+                        _sb.Append ('"');
+                    }
+                    _sb.Append (':');
+                    SerializeMember (dictEnum.Value);
+                }
+                _sb.Append ('}');
+                return;
+            }
+
             // object
             var desc = TypesCache.Instance.GetCache (objType);
             if (desc != null) {

@@ -26,8 +26,8 @@ class Parser {
 
 	readonly Scanner _scanner;
 
-	public Token t;    // last recognized token
-	public Token la;   // lookahead token
+	Token t;    // last recognized token
+	Token la;   // lookahead token
 	int errDist = _minErrDist;
 
 Type _type;
@@ -173,18 +173,31 @@ public void SetType(Type type) {
 	}
 
 	void Object(ref object v) {
-		object v1 = null; var objType = _type; string name = null;
+		object v1 = null; var objType = _type; string name = null; System.Collections.IDictionary dict = null; Type[] dictTypes = null;
 		if (_type != null) {
 		v = Activator.CreateInstance(objType);
+		dict = v as System.Collections.IDictionary;
+		if (dict != null) {
+			dictTypes = objType.GetGenericArguments();
+		}
 		}
 		
 		Expect(6);
 		if (la.kind == 2) {
 			Get();
-			if (objType != null) { name = t.val; _type = TypesCache.Instance.GetWantedType(objType, name); } 
+			if (objType != null) { name = t.val; _type = dict != null ? dictTypes[1] : TypesCache.Instance.GetWantedType(objType, name); } 
 			Expect(7);
 			Value(ref v1);
-			if (objType != null) { if (v1 != null) { TypesCache.Instance.SetValue(objType, name, v, v1); } _type = objType; } 
+			if (objType != null) {
+			if (v1 != null) {
+				if (dict != null) {
+					dict.Add(Convert.ChangeType(name.Substring(1, name.Length - 2), dictTypes[0], Extensions.NumberFormatInfo), v1);
+				} else {
+					TypesCache.Instance.SetValue(objType, name, v, v1);
+				}
+			}
+			_type = objType;
+			} 
 			while (la.kind == 8) {
 				Get();
 				Expect(2);

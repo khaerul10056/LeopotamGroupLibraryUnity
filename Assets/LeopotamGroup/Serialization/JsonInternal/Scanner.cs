@@ -7,7 +7,6 @@
 
 using System;
 using System.Collections.Generic;
-
 namespace LeopotamGroup.Serialization.JsonInternal {
 struct Token {
 	public int kind;    // token kind
