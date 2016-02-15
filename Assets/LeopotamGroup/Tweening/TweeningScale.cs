@@ -19,9 +19,10 @@ namespace LeopotamGroup.Tweening {
             }
         }
 
-        public TweeningScale Begin (Vector3 target, float time) {
+        public TweeningScale Begin (Vector3 start, Vector3 end, float time) {
             enabled = false;
-            EndValue = target;
+            StartValue = start;
+            EndValue = end;
             TweenTime = time;
             enabled = true;
             return this;
