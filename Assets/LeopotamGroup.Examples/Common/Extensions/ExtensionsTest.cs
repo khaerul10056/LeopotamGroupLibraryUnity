@@ -35,7 +35,7 @@ namespace LeopotamGroup.Examples.Common.Extensions {
                 0.12345f,
                 0.00005f
             }) {
-                Debug.LogFormat ("{0:F5}.ToNormalizedString = {1}", item, item.ToNormalizedString ());
+                Debug.LogFormat ("{0:0.#####}.ToNormalizedString = {1}", item, item.ToNormalizedString ());
             }
         }
 
