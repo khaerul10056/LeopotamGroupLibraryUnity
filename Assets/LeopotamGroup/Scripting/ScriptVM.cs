@@ -12,12 +12,16 @@ namespace LeopotamGroup.Scripting {
 
         readonly Parser _parser;
 
+        public bool InFunctionCall { get; private set; }
+
         public ScriptVM () {
+            InFunctionCall = false;
             _scanner = new Scanner ();
             _parser = new Parser (this, _scanner);
         }
 
         public string Load (string source) {
+            InFunctionCall = false;
             if (string.IsNullOrEmpty (source)) {
                 return "no source code";
             }
@@ -40,10 +44,15 @@ namespace LeopotamGroup.Scripting {
             ScriptVar? param1 = null, ScriptVar? param2 = null,
             ScriptVar? param3 = null, ScriptVar? param4 = null) {
             var undef = new ScriptVar ();
+            if (InFunctionCall) {
+                result = undef;
+                return "already in function call";
+            }
             if (!_parser.Vars.IsFunctionExists (funcName)) {
                 result = undef;
                 return string.Format ("function '{0}' not found", funcName);
             }
+            InFunctionCall = true;
             var func = _parser.Vars.GetFunction (funcName);
             _scanner.PC = func.PC;
             _parser.Vars.ResetVars ();
@@ -66,6 +75,7 @@ namespace LeopotamGroup.Scripting {
             }
             var err = _parser.CallFunction ();
             result = _parser.RetVal;
+            InFunctionCall = false;
             return err;
         }
 

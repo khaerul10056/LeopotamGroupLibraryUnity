@@ -85,6 +85,7 @@ namespace LeopotamGroup.Scripting {
         }
 
         public string LoadSource (string sourceText) {
+            ResetEvents ();
             return _vm.Load (sourceText);
         }
 
