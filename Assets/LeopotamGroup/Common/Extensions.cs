@@ -5,6 +5,7 @@
 
 using System;
 using System.Globalization;
+using System.Text;
 using UnityEngine;
 
 namespace LeopotamGroup.Common {
@@ -92,8 +93,69 @@ namespace LeopotamGroup.Common {
             return sign * (retVal1 + retVal2);
         }
 
+        static readonly StringBuilder _floatToStrBuf = new StringBuilder (64);
+
         static public string ToNormalizedString (this float data) {
-            return data.ToString ("0.#####");
+            lock (_floatToStrBuf) {
+                const int prec_mul = 100000;
+                _floatToStrBuf.Length = 0;
+                var isNeg = data < 0f;
+                if (isNeg) {
+                    data = -data;
+                }
+                var v0 = (uint) data;
+                var diff = (data - v0) * prec_mul;
+                var v1 = (uint) diff;
+                diff -= v1;
+                if (diff > 0.5f) {
+                    v1++;
+                    if (v1 >= prec_mul) {
+                        v1 = 0;
+                        v0++;
+                    }
+                } else {
+                    if (diff == 0.5f && (v1 == 0 || (v1 & 1) != 0)) {
+                        v1++;
+                    }
+                }
+                if (v1 > 0) {
+                    var count = 5;
+                    while ((v1 % 10) == 0) {
+                        count--;
+                        v1 /= 10;
+                    }
+
+                    do {
+                        count--;
+                        _floatToStrBuf.Append ((char) ((v1 % 10) + '0'));
+                        v1 /= 10;
+                    } while (v1 > 0);
+                    while (count > 0) {
+                        count--;
+                        _floatToStrBuf.Append ('0');
+                    }
+                    _floatToStrBuf.Append ('.');
+                }
+                do {
+                    _floatToStrBuf.Append ((char) ((v0 % 10) + '0'));
+                    v0 /= 10;
+                } while (v0 > 0);
+                if (isNeg) {
+                    _floatToStrBuf.Append ('-');
+                }
+                var i0 = 0;
+                var i1 = _floatToStrBuf.Length - 1;
+                char c;
+                while (i1 > i0) {
+                    c = _floatToStrBuf[i0];
+                    _floatToStrBuf[i0] = _floatToStrBuf[i1];
+                    _floatToStrBuf[i1] = c;
+                    i0++;
+                    i1--;
+                }
+
+                return _floatToStrBuf.ToString ();
+            }
         }
 
         static public Color ToColor24 (this string text) {
