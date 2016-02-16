@@ -113,14 +113,30 @@ namespace LeopotamGroup.Scripting {
 
         ScriptVar ApiCallWithDelay (ScriptVM vm) {
             var count = vm.GetParamsCount ();
-            var pEvent = vm.GetParamByID (0);
-            var pTimeout = vm.GetParamByID (1);
+            var pTimeout = vm.GetParamByID (0);
+            var pEvent = vm.GetParamByID (1);
             if (count < 2 || !pTimeout.IsNumber || !pEvent.IsString) {
-                _vm.SetRuntimeError ("(sFuncName, nTimeout) parameters required");
+                _vm.SetRuntimeError ("(nTimeout, sFuncName[, param1, param2]) parameters required");
                 return new ScriptVar ();
             }
+            ScriptVar? param1 = null;
+            if (count > 2) {
+                param1 = vm.GetParamByID (2);
+            }
+            ScriptVar? param2 = null;
+            if (count > 3) {
+                param2 = vm.GetParamByID (3);
+            }
+            ScriptVar? param3 = null;
+            if (count > 4) {
+                param3 = vm.GetParamByID (4);
+            }
+            ScriptVar? param4 = null;
+            if (count > 5) {
+                param4 = vm.GetParamByID (5);
+            }
 
-            CallFunctionWithDelay (pEvent.AsString, pTimeout.AsNumber);
+            CallFunctionWithDelay (pEvent.AsString, pTimeout.AsNumber, param1, param2, param3, param4);
 
             return new ScriptVar ();
         }

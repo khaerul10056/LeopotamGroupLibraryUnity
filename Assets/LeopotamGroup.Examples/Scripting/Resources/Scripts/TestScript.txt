@@ -62,9 +62,9 @@ function main(param1FromHost, param2FromHost) {
         debug('"10 < 1" is not true');
     }
 
-    // There is another one system function - callWithDelay(sFuncName, nDelay).
+    // There is another one system function - callWithDelay(nDelay, sFuncName[, param1, param2, param3, param4]).
     // Function with name sFuncName will be called after nDelay seconds.
-    callWithDelay('onDelayedFunc', 5);
+    callWithDelay(5, 'onDelayedFunc', 10 * 25, 'long ' + 'string', 10 > 1, 0);
 
     // Dont forget, you cant call another script functions from any script function,
     // only through 'callWithDelay' (with nDelay = 0, for example - function will be called in next tick).
@@ -73,6 +73,8 @@ function main(param1FromHost, param2FromHost) {
     debug('second parameter from host: ' + param2FromHost);
 }
 
-function onDelayedFunc() {
+function onDelayedFunc(a, b, c, d) {
     debug('wow, im still alive, even after main function completed!');
+    debug('caller sent "' + a + '" as first param and "' + b + '" as second.');
+    debug('caller sent "' + c + '" as third param and "' + d + '" as fourth.');
 }
