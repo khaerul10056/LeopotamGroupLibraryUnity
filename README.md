@@ -9,77 +9,83 @@ you can remove unnecessary code for current project:
 
 ----------------------------------------------------------------------------
 
+* Analytics
+
+Google Analytics.
+
+----------------------------------------------------------------------------
+
 * Common
 
-Common helpers, uses by other subsystems. 
+Common helpers, uses by other subsystems.
 
 ----------------------------------------------------------------------------
 
 * EditorHelpers
 
-Special helpers: extract info from editor to use in runtime, show fps, etc. 
+Special helpers: extract info from editor to use in runtime, show fps, etc.
 
 ----------------------------------------------------------------------------
 
 * FX
 
-Visual / audial effect helpers: sound / music manipulations, screen fading. 
+Visual / audial effect helpers: sound / music manipulations, screen fading.
 
 ----------------------------------------------------------------------------
 
 * Localization
 
-Localization support with csv support. 
+Localization support with csv support.
 
 ----------------------------------------------------------------------------
 
 * Math
 
-Additional types, 'mersenne twister'-based RNG. 
+Additional types, 'mersenne twister'-based RNG.
 
 ----------------------------------------------------------------------------
 
 * Mobile
 
-Helpers for mobiles only. 
+Helpers for mobiles only.
 
 ----------------------------------------------------------------------------
 
 * Notifications
 
-'Waiting' indicator, popup-message indicator. 
+'Waiting' indicator, popup-message indicator.
 
 ----------------------------------------------------------------------------
 
 * Pooling
 
-Pooling support for any prefabs. 
+Pooling support for any prefabs.
 
 ----------------------------------------------------------------------------
 
 * Scripting
 
-Embedded scripting engine, optimized for low gc usage. 
+Embedded scripting engine, optimized for low gc usage.
 
 ----------------------------------------------------------------------------
 
 * Serialization
 
 Csv deserialization, Json serialization / deserialization with support of
-structs and nested objects (lists, arrays, structs, etc). 
+structs and nested objects (lists, arrays, structs, etc).
 
 ----------------------------------------------------------------------------
 
 * Tutorials
 
 Step by step behaviour helpers, useful for creating tutorial or any
-other behaviour with ordered / dependent execution. Progress can be saved. 
+other behaviour with ordered / dependent execution. Progress can be saved.
 
 ----------------------------------------------------------------------------
 
 * Tweening
 
-Simple tweening. 
+Simple tweening.
 
 ----------------------------------------------------------------------------
 
