@@ -65,7 +65,7 @@ namespace LeopotamGroup.Tutorials {
         /// </summary>
         /// <param name="mask">Mask.</param>
         public bool ValidateMask (TutorialMask mask) {
-            var scene = ScreenManager.Instance.CurrentScreen;
+            var scene = ScreenManager.Instance.Current;
 
             if (_sceneMasks.ContainsKey (scene)) {
                 return (_sceneMasks[scene] & (int) mask) == (int) mask;
@@ -77,7 +77,7 @@ namespace LeopotamGroup.Tutorials {
         /// Get current mask.
         /// </summary>
         public TutorialMask GetMask () {
-            var scene = ScreenManager.Instance.CurrentScreen;
+            var scene = ScreenManager.Instance.Current;
 
             return (TutorialMask) (_sceneMasks.ContainsKey (scene) ? _sceneMasks[scene] : 0);
         }
@@ -88,7 +88,7 @@ namespace LeopotamGroup.Tutorials {
         /// <param name="mask">Masked bits.</param>
         /// <param name="state">New state.</param>
         public void SetMask (TutorialMask mask, bool state = true) {
-            var scene = ScreenManager.Instance.CurrentScreen;
+            var scene = ScreenManager.Instance.Current;
 
             var data = _sceneMasks.ContainsKey (scene) ? _sceneMasks[scene] : 0;
             var newData = data;
@@ -109,7 +109,7 @@ namespace LeopotamGroup.Tutorials {
         /// </summary>
         /// <param name="state">New state.</param>
         public void SetAll (bool state) {
-            var scene = ScreenManager.Instance.CurrentScreen;
+            var scene = ScreenManager.Instance.Current;
             if (state) {
                 _sceneMasks[scene] = (1 << MaxKeyAmount) - 1;
             } else {

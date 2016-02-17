@@ -9,25 +9,25 @@ using UnityEngine.SceneManagement;
 
 namespace LeopotamGroup.Common {
     sealed class ScreenManager : UnitySingleton<ScreenManager> {
-        public string PreviousScreen { get; private set; }
+        public string Previous { get; private set; }
 
-        public string CurrentScreen { get; private set; }
+        public string Current { get; private set; }
 
         readonly Stack<string> _history = new Stack<string> ();
 
         protected override void OnConstruct () {
             DontDestroyOnLoad (gameObject);
-            PreviousScreen = null;
-            CurrentScreen = SceneManager.GetActiveScene ().name;
+            Previous = null;
+            Current = SceneManager.GetActiveScene ().name;
         }
 
         public void NavigateTo (string screenName, bool saveToHistory = false) {
-            PreviousScreen = CurrentScreen;
+            Previous = Current;
             if (saveToHistory) {
-                _history.Push (PreviousScreen);
+                _history.Push (Previous);
             }
 
-            CurrentScreen = screenName;
+            Current = screenName;
             SceneManager.LoadScene (screenName);
         }
 
@@ -39,15 +39,15 @@ namespace LeopotamGroup.Common {
             }
             #endif
             if (_history.Count > 0) {
-                CurrentScreen = _history.Pop ();
-                PreviousScreen = _history.Count > 0 ? _history.Peek () : null;
-                SceneManager.LoadScene (CurrentScreen);
+                Current = _history.Pop ();
+                Previous = _history.Count > 0 ? _history.Peek () : null;
+                SceneManager.LoadScene (Current);
             }
         }
 
         public void ClearHistory () {
             _history.Clear ();
-            PreviousScreen = null;
+            Previous = null;
         }
     }
 }
