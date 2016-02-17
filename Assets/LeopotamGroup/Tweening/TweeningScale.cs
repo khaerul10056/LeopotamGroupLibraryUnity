@@ -28,6 +28,14 @@ namespace LeopotamGroup.Tweening {
             return this;
         }
 
+        public static TweeningScale Begin (GameObject go, Vector3 start, Vector3 end, float time) {
+            var tweener = Get<TweeningScale> (go);
+            if (tweener != null) {
+                tweener.Begin (start, end, time);
+            }
+            return tweener;
+        }
+
         protected override void OnUpdateValue () {
             Target.localScale = Vector3.Lerp (StartValue, EndValue, Value);
         }

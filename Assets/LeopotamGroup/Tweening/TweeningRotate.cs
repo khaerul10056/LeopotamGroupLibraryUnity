@@ -28,6 +28,14 @@ namespace LeopotamGroup.Tweening {
             return this;
         }
 
+        public static TweeningRotate Begin (GameObject go, Vector3 start, Vector3 end, float time) {
+            var tweener = Get<TweeningRotate> (go);
+            if (tweener != null) {
+                tweener.Begin (start, end, time);
+            }
+            return tweener;
+        }
+
         protected override void OnUpdateValue () {
             Target.localRotation = Quaternion.Euler (Vector3.Lerp (StartValue, EndValue, Value));
         }
