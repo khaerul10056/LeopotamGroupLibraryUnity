@@ -48,8 +48,6 @@ function main(param1FromHost, param2FromHost) {
     debug((123 + 456) * 2);
     debug(123 + 456 * 2);
 
-    debug((123 + 456) * 2);
-
     // There is conditional execution.
     if (10 > 0) {
         debug('10 > 0');
@@ -62,7 +60,7 @@ function main(param1FromHost, param2FromHost) {
         debug('"10 < 1" is not true');
     }
 
-    // There is another one system function - callWithDelay(nDelay, sFuncName[, param1, param2, param3, param4]).
+    // There is another one system function - callWithDelay(nDelay, sFuncName[, anyParam1, anyParam2, anyParam3, anyParam4]).
     // Function with name sFuncName will be called after nDelay seconds.
     callWithDelay(5, 'onDelayedFunc', 10 * 25, 'long ' + 'string', 10 > 1, 0);
 
