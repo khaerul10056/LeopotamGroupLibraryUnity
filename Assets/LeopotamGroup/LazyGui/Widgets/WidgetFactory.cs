@@ -22,7 +22,9 @@ namespace LeopotamGroup.LazyGui.Widgets {
         }
 
         public static LguiPanel CreateWidgetPanel () {
-            return CreateWidget<LguiPanel> ();
+            var widget = CreateWidget<LguiPanel> ();
+            widget.InitPhysics ();
+            return widget;
         }
 
         public static LguiSprite CreateWidgetSprite () {

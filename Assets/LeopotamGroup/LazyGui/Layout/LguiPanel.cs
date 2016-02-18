@@ -10,6 +10,7 @@ using UnityEngine;
 
 namespace LeopotamGroup.LazyGui.Layout {
     [ExecuteInEditMode]
+    [RequireComponent (typeof (Rigidbody))]
     public sealed class LguiPanel : MonoBehaviour {
         public PanelClipType ClipType {
             get { return _clipType; }
@@ -115,6 +116,12 @@ namespace LeopotamGroup.LazyGui.Layout {
                     mtrl.DisableKeyword (LguiConsts.ShaderKeyWordClipRange);
                     break;
             }
+        }
+
+        public void InitPhysics () {
+            var rb = GetComponent<Rigidbody> ();
+            rb.isKinematic = true;
+            rb.useGravity = false;
         }
 
         public Vector3 GetDepth (LguiVisualBase sprite) {

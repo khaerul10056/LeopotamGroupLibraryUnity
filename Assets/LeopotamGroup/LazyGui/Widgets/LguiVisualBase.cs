@@ -98,6 +98,7 @@ namespace LeopotamGroup.LazyGui.Widgets {
                 _visualPanel = GetComponentInParent<LguiPanel> ();
                 if (_visualPanel == null) {
                     _visualPanel = CachedTransform.root.gameObject.AddComponent<LguiPanel> ();
+                    _visualPanel.InitPhysics ();
                 }
                 while (!_visualPanel.IsPanelActive && _visualPanel.CachedTransform.parent != null) {
                     _visualPanel = _visualPanel.CachedTransform.parent.GetComponentInParent<LguiPanel> ();
