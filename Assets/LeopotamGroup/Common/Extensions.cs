@@ -11,7 +11,7 @@ using UnityEngine;
 namespace LeopotamGroup.Common {
     public static class Extensions {
         public static Transform FindRecursive (this Transform target, string name) {
-            if (string.CompareOrdinal (target.name, name) == 0) {
+            if (target == null || string.CompareOrdinal (target.name, name) == 0) {
                 return target;
             }
             Transform retVal = null;
@@ -21,7 +21,6 @@ namespace LeopotamGroup.Common {
                     break;
                 }
             }
-
             return retVal;
         }
 
@@ -182,6 +181,17 @@ namespace LeopotamGroup.Common {
             } catch {
                 return Color.black;
             }
+        }
+
+        static public T EnsureGetComponent<T> (this GameObject go) where T : Component {
+            if (go != null) {
+                var c = go.GetComponent <T> ();
+                if (c == null) {
+                    c = go.AddComponent <T> ();
+                }
+                return c;
+            }
+            return null;
         }
     }
 }

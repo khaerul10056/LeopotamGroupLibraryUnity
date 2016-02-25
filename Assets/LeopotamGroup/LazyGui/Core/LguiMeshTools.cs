@@ -13,9 +13,9 @@ namespace LeopotamGroup.LazyGui.Core {
 
         static readonly List<Vector2> _cacheUV = new List<Vector2> (4096);
 
-        static readonly List<int> _cacheT = new List<int> (4096);
-
         static readonly List<Color> _cacheC = new List<Color> (4096);
+
+        static readonly List<int> _cacheT = new List<int> (4096);
 
         static Rect _vRect;
 
@@ -100,7 +100,9 @@ namespace LeopotamGroup.LazyGui.Core {
             GetBuffers (mesh);
         }
 
-        public static void FillSlicedTiledSprite (Mesh mesh, int width, int height, Color color, SpriteData spriteData, Vector2 texSize, bool isHorTiled, bool isVerTiled, bool fillCenter) {
+        public static void FillSlicedTiledSprite (
+            Mesh mesh, int width, int height, Color color, SpriteData spriteData,
+            Vector2 texSize, bool isHorTiled, bool isVerTiled, bool fillCenter) {
             if (mesh == null) {
                 return;
             }
