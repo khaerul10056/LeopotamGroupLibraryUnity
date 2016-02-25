@@ -27,9 +27,25 @@ namespace LeopotamGroup.LazyGui.Core {
     public class SpriteData {
         public string Name;
 
-        public Rect UV;
+        public float CornerX;
 
-        public Rect Borders;
+        public float CornerY;
+
+        public float CornerW;
+
+        public float CornerH;
+
+        public float BorderL;
+
+        public float BorderT;
+
+        public float BorderR;
+
+        public float BorderB;
+
+        public float CenterWidth { get { return CornerW - BorderL - BorderR; } }
+
+        public float CenterHeight { get { return CornerH - BorderT - BorderB; } }
     }
 
     public enum PanelClipType {

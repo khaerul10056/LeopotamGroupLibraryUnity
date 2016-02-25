@@ -97,11 +97,11 @@ namespace LeopotamGroup.LazyGui.Widgets {
             _visualPanel = null;
         }
 
-        public void SetSizeToOriginal () {
+        public void ResetSize () {
             if (SpriteAtlas != null && !string.IsNullOrEmpty (SpriteName)) {
                 var sprData = SpriteAtlas.GetSpriteData (SpriteName);
-                Width = (int) (sprData.UV.width * SpriteAtlas.ColorTexture.width);
-                Height = (int) (sprData.UV.height * SpriteAtlas.ColorTexture.height);
+                Width = (int) (sprData.CornerW * SpriteAtlas.ColorTexture.width);
+                Height = (int) (sprData.CornerH * SpriteAtlas.ColorTexture.height);
             }
         }
 
@@ -114,26 +114,26 @@ namespace LeopotamGroup.LazyGui.Widgets {
                 int srcHeightCenter;
                 switch (SpriteType) {
                     case SpriteType.TiledHorizontal:
-                        srcWidthBorder = (int) ((sprData.Borders.xMin + sprData.Borders.xMax) * SpriteAtlas.ColorTexture.width);
-                        srcWidthCenter = (int) ((sprData.UV.width - sprData.Borders.xMin - sprData.Borders.xMax) * SpriteAtlas.ColorTexture.width);
+                        srcWidthBorder = (int) ((sprData.BorderL + sprData.BorderR) * SpriteAtlas.ColorTexture.width);
+                        srcWidthCenter = (int) (sprData.CenterWidth * SpriteAtlas.ColorTexture.width);
                         Width = Mathf.RoundToInt ((Width - srcWidthBorder) / (float) srcWidthCenter) * srcWidthCenter + srcWidthBorder;
                         break;
                     case SpriteType.TiledVertical:
-                        srcHeightBorder = (int) ((sprData.Borders.yMin + sprData.Borders.yMax) * SpriteAtlas.ColorTexture.height);
-                        srcHeightCenter = (int) ((sprData.UV.height - sprData.Borders.yMin - sprData.Borders.yMax) * SpriteAtlas.ColorTexture.height);
+                        srcHeightBorder = (int) ((sprData.BorderL + sprData.BorderR) * SpriteAtlas.ColorTexture.height);
+                        srcHeightCenter = (int) (sprData.CenterHeight * SpriteAtlas.ColorTexture.height);
                         Height = Mathf.RoundToInt ((Height - srcHeightBorder) / (float) srcHeightCenter) * srcHeightCenter + srcHeightBorder;
                         break;
                     case SpriteType.TiledBoth:
-                        srcWidthBorder = (int) ((sprData.Borders.xMin + sprData.Borders.xMax) * SpriteAtlas.ColorTexture.width);
-                        srcHeightBorder = (int) ((sprData.Borders.yMin + sprData.Borders.yMax) * SpriteAtlas.ColorTexture.height);
-                        srcWidthCenter = (int) ((sprData.UV.width - sprData.Borders.xMin - sprData.Borders.xMax) * SpriteAtlas.ColorTexture.width);
-                        srcHeightCenter = (int) ((sprData.UV.height - sprData.Borders.yMin - sprData.Borders.yMax) * SpriteAtlas.ColorTexture.height);
+                        srcWidthBorder = (int) ((sprData.BorderL + sprData.BorderR) * SpriteAtlas.ColorTexture.width);
+                        srcHeightBorder = (int) ((sprData.BorderT + sprData.BorderB) * SpriteAtlas.ColorTexture.height);
+                        srcWidthCenter = (int) (sprData.CenterWidth * SpriteAtlas.ColorTexture.width);
+                        srcHeightCenter = (int) (sprData.CenterHeight * SpriteAtlas.ColorTexture.height);
                         Width = Mathf.RoundToInt ((Width - srcWidthBorder) / (float) srcWidthCenter) * srcWidthCenter + srcWidthBorder;
                         Height = Mathf.RoundToInt ((Height - srcHeightBorder) / (float) srcHeightCenter) * srcHeightCenter + srcHeightBorder;
                         break;
                     default:
-                        var srcWidth = (int) (sprData.UV.width * SpriteAtlas.ColorTexture.width);
-                        var srcHeight = (int) (sprData.UV.height * SpriteAtlas.ColorTexture.height);
+                        var srcWidth = (int) (sprData.CornerW * SpriteAtlas.ColorTexture.width);
+                        var srcHeight = (int) (sprData.CornerH * SpriteAtlas.ColorTexture.height);
                         Width = Mathf.RoundToInt (Width / (float) srcWidth) * srcWidth;
                         Height = Mathf.RoundToInt (Height / (float) srcHeight) * srcHeight;
                         break;

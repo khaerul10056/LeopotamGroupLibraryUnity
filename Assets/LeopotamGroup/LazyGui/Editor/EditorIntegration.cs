@@ -29,7 +29,7 @@ namespace LeopotamGroup.LazyGui.UnityEditors {
                     spr.SpriteAtlas = AssetDatabase.LoadAssetAtPath<LguiAtlas> (assetPath);
                     var sprNames = spr.SpriteAtlas.GetSpriteNames ();
                     spr.SpriteName = sprNames != null && sprNames.Length > 0 ? sprNames[0] : null;
-                    spr.SetSizeToOriginal ();
+                    spr.ResetSize ();
                 }
                 FixWidgetParent (spr);
                 UpdateVisuals (spr);
@@ -59,7 +59,7 @@ namespace LeopotamGroup.LazyGui.UnityEditors {
                     spr.SpriteAtlas = AssetDatabase.LoadAssetAtPath<LguiAtlas> (assetPath);
                     var sprNames = spr.SpriteAtlas.GetSpriteNames ();
                     spr.SpriteName = sprNames != null && sprNames.Length > 0 ? sprNames[0] : null;
-                    spr.SetSizeToOriginal ();
+                    spr.ResetSize ();
                     UpdateVisuals (spr);
                 }
                 UpdateVisuals (button);

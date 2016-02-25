@@ -19,6 +19,8 @@ namespace LeopotamGroup.LazyGui.Core {
 
         static Rect _vRect;
 
+        static Rect _vRect2;
+
         static Rect _uvRect;
 
         static Rect _uvRect2;
@@ -78,12 +80,18 @@ namespace LeopotamGroup.LazyGui.Core {
         }
 
         public static void GetBuffers (Mesh mesh) {
-            mesh.Clear (true);
-            mesh.SetVertices (_cacheV);
-            mesh.SetUVs (0, _cacheUV);
-            mesh.SetColors (_cacheC);
-            mesh.SetTriangles (_cacheT, 0);
-            mesh.RecalculateBounds ();
+            if (mesh != null) {
+                mesh.Clear (true);
+                if (_cacheV.Count <= 65535) {
+                    mesh.SetVertices (_cacheV);
+                    mesh.SetUVs (0, _cacheUV);
+                    mesh.SetColors (_cacheC);
+                    mesh.SetTriangles (_cacheT, 0);
+                } else {
+                    Debug.LogWarning ("Too many vertices", mesh);
+                }
+                mesh.RecalculateBounds ();
+            }
         }
 
         public static void FillSimpleSprite (Mesh mesh, int width, int height, Color color, SpriteData spriteData) {
@@ -95,23 +103,28 @@ namespace LeopotamGroup.LazyGui.Core {
                 var halfW = 0.5f * width;
                 var halfH = 0.5f * height;
                 _vRect.Set (-halfW, -halfH, width, height);
-                FillBuffer (ref _vRect, ref spriteData.UV, ref color);
+                _uvRect.Set (spriteData.CornerX, spriteData.CornerY, spriteData.CornerW, spriteData.CornerH);
+                FillBuffer (ref _vRect, ref _uvRect, ref color);
             }
             GetBuffers (mesh);
         }
 
         public static void FillSlicedTiledSprite (
-            Mesh mesh, int width, int height, Color color, SpriteData spriteData,
+            Mesh mesh, int width, int height, Color color, SpriteData sd,
             Vector2 texSize, bool isHorTiled, bool isVerTiled, bool fillCenter) {
             if (mesh == null) {
                 return;
             }
             PrepareBuffer ();
-            if (spriteData != null && width > 0 && height > 0) {
-                var leftBorderV = (int) (spriteData.Borders.xMin * texSize.x);
-                var rightBorderV = (int) (spriteData.Borders.xMax * texSize.x);
-                var topBorderV = (int) (spriteData.Borders.yMax * texSize.y);
-                var bottomBorderV = (int) (spriteData.Borders.yMin * texSize.y);
+            if (sd != null && width > 0 && height > 0) {
+                var leftBorderV = (int) (sd.BorderL * texSize.x);
+                var rightBorderV = (int) (sd.BorderR * texSize.x);
+                var topBorderV = (int) (sd.BorderT * texSize.y);
+                var bottomBorderV = (int) (sd.BorderB * texSize.y);
+                var cW = sd.CenterWidth;
+                var cH = sd.CenterHeight;
+                var bR = sd.CornerX + sd.CornerW - sd.BorderR;
+                var bT = sd.CornerY + sd.CornerH - sd.BorderT;
 
                 var halfW = width >> 1;
                 var halfH = height >> 1;
@@ -123,90 +136,90 @@ namespace LeopotamGroup.LazyGui.Core {
                 int verTileCount;
 
                 if (isHorTiled) {
-                    centerWidthV = (int) ((spriteData.UV.xMax - spriteData.UV.xMin - spriteData.Borders.xMax - spriteData.Borders.xMin) * texSize.x);
+                    centerWidthV = (int) (cW * texSize.x);
                     horTileCount = Mathf.Max (0, Mathf.FloorToInt ((width - leftBorderV - rightBorderV) / (float) centerWidthV));
                 } else {
-                    centerWidthV = 0;
-                    horTileCount = 0;
+                    centerWidthV = width - rightBorderV - leftBorderV;
+                    horTileCount = 1;
                 }
 
                 if (isVerTiled) {
-                    centerHeightV = (int) ((spriteData.UV.yMax - spriteData.UV.yMin - spriteData.Borders.yMax - spriteData.Borders.yMin) * texSize.y);
+                    centerHeightV = (int) (cH * texSize.y);
                     verTileCount = Mathf.Max (0, Mathf.FloorToInt ((height - bottomBorderV - topBorderV) / (float) centerHeightV));
                 } else {
-                    centerHeightV = 0;
-                    verTileCount = 0;
+                    centerHeightV = height - topBorderV - bottomBorderV;
+                    verTileCount = 1;
                 }
 
                 // top-bottom sides
-                _uvRect.Set (spriteData.UV.xMin + spriteData.Borders.xMin, spriteData.UV.yMax - spriteData.Borders.yMax, spriteData.UV.width - spriteData.Borders.xMin - spriteData.Borders.xMax, spriteData.Borders.yMax);
-                _uvRect2.Set (spriteData.UV.xMin + spriteData.Borders.xMin, spriteData.UV.yMin, spriteData.UV.width - spriteData.Borders.xMin - spriteData.Borders.xMax, spriteData.Borders.yMin);
-                if (isHorTiled) {
+                if (sd.BorderT > 0 || sd.BorderB > 0) {
+                    _uvRect.Set (sd.CornerX + sd.BorderL, bT, cW, sd.BorderT);
+                    _uvRect2.Set (sd.CornerX + sd.BorderL, sd.CornerY, cW, sd.BorderB);
+                    _vRect.Set (-halfW + leftBorderV, halfH - topBorderV, centerWidthV, topBorderV);
+                    _vRect2.Set (-halfW + leftBorderV, -halfH, centerWidthV, bottomBorderV);
                     for (var i = 0; i < horTileCount; i++) {
-                        _vRect.Set (-halfW + leftBorderV + i * centerWidthV, halfH - topBorderV, centerWidthV, topBorderV);
                         FillBuffer (ref _vRect, ref _uvRect, ref color);
-                        _vRect.Set (-halfW + leftBorderV + i * centerWidthV, -halfH, centerWidthV, bottomBorderV);
-                        FillBuffer (ref _vRect, ref _uvRect2, ref color);
+                        FillBuffer (ref _vRect2, ref _uvRect2, ref color);
+                        _vRect.x += centerWidthV;
+                        _vRect2.x += centerWidthV;
                     }
-                } else {
-                    _vRect.Set (-halfW + leftBorderV, halfH - topBorderV, width - rightBorderV - leftBorderV, topBorderV);
-                    FillBuffer (ref _vRect, ref _uvRect, ref color);
-                    _vRect.Set (-halfW + leftBorderV, -halfH, width - rightBorderV - leftBorderV, bottomBorderV);
-                    FillBuffer (ref _vRect, ref _uvRect2, ref color);
                 }
 
                 // left-right sides
-                _uvRect.Set (spriteData.UV.xMin, spriteData.UV.yMin + spriteData.Borders.yMin, spriteData.Borders.xMin, spriteData.UV.height - spriteData.Borders.yMin - spriteData.Borders.yMax);
-                _uvRect2.Set (spriteData.UV.xMax - spriteData.Borders.xMax, spriteData.UV.yMin + spriteData.Borders.yMin, spriteData.Borders.xMax, spriteData.UV.height - spriteData.Borders.yMin - spriteData.Borders.yMax);
-                if (isVerTiled) {
+                if (sd.BorderL > 0 || sd.BorderR > 0) {
+                    _uvRect.Set (sd.CornerX, sd.CornerY + sd.BorderB, sd.BorderL, cH);
+                    _uvRect2.Set (bR, sd.CornerY + sd.BorderB, sd.BorderR, cH);
+                    _vRect.Set (-halfW, -halfH + bottomBorderV, leftBorderV, centerHeightV);
+                    _vRect2.Set (halfW - rightBorderV, -halfH + bottomBorderV, rightBorderV, centerHeightV);
                     for (var i = 0; i < verTileCount; i++) {
-                        _vRect.Set (-halfW, -halfH + bottomBorderV + i * centerHeightV, leftBorderV, centerHeightV);
                         FillBuffer (ref _vRect, ref _uvRect, ref color);
-                        _vRect.Set (halfW - rightBorderV, -halfH + bottomBorderV + i * centerHeightV, rightBorderV, centerHeightV);
-                        FillBuffer (ref _vRect, ref _uvRect2, ref color);
+                        FillBuffer (ref _vRect2, ref _uvRect2, ref color);
+                        _vRect.y += centerHeightV;
+                        _vRect2.y += centerHeightV;
                     }
-                } else {
-                    _vRect.Set (-halfW, -halfH + bottomBorderV, leftBorderV, height - bottomBorderV - topBorderV);
-                    FillBuffer (ref _vRect, ref _uvRect, ref color);
-                    _vRect.Set (halfW - rightBorderV, -halfH + bottomBorderV, rightBorderV, height - bottomBorderV - topBorderV);
-                    FillBuffer (ref _vRect, ref _uvRect2, ref color);
                 }
 
                 // center
                 if (fillCenter) {
-                    var rectCenter = new Rect (spriteData.UV.xMin + spriteData.Borders.xMin, spriteData.UV.yMin + spriteData.Borders.yMin, spriteData.UV.width - spriteData.Borders.xMin - spriteData.Borders.xMax, spriteData.UV.height - spriteData.Borders.yMin - spriteData.Borders.yMax);
-                    if (isHorTiled && isVerTiled) {
-                        for (var y = 0; y < verTileCount; y++) {
-                            for (var x = 0; x < horTileCount; x++) {
-                                _vRect.Set (-halfW + leftBorderV + x * centerWidthV, -halfH + bottomBorderV + y * centerHeightV, centerWidthV, centerHeightV);
-                                FillBuffer (ref _vRect, ref rectCenter, ref color);
-                            }
+                    _uvRect.Set (sd.CornerX + sd.BorderL, sd.CornerY + sd.BorderB, cW, cH);
+                    _vRect.Set (0, -halfH + bottomBorderV, centerWidthV, centerHeightV);
+                    for (var y = 0; y < verTileCount; y++) {
+                        _vRect.x = -halfW + leftBorderV;
+                        for (var x = 0; x < horTileCount; x++) {
+                            FillBuffer (ref _vRect, ref _uvRect, ref color);
+                            _vRect.x += centerWidthV;
                         }
-                    } else {
-                        _vRect.Set (-halfW + leftBorderV, -halfH + bottomBorderV, width - rightBorderV - leftBorderV, height - topBorderV - bottomBorderV);
-                        FillBuffer (ref _vRect, ref rectCenter, ref color);
+                        _vRect.y += centerHeightV;
                     }
                 }
 
                 // left-top corner
-                _vRect.Set (-halfW, halfH - topBorderV, leftBorderV, topBorderV);
-                _uvRect.Set (spriteData.UV.xMin, spriteData.UV.yMax - spriteData.Borders.yMax, spriteData.Borders.xMin, spriteData.Borders.yMax);
-                FillBuffer (ref _vRect, ref _uvRect, ref color);
+                if (sd.BorderL > 0 && sd.BorderT > 0) {
+                    _vRect.Set (-halfW, halfH - topBorderV, leftBorderV, topBorderV);
+                    _uvRect.Set (sd.CornerX, bT, sd.BorderL, sd.BorderT);
+                    FillBuffer (ref _vRect, ref _uvRect, ref color);
+                }
 
                 // right-top corner
-                _vRect.Set (halfW - rightBorderV, halfH - topBorderV, rightBorderV, topBorderV);
-                _uvRect.Set (spriteData.UV.xMax - spriteData.Borders.xMax, spriteData.UV.yMax - spriteData.Borders.yMax, spriteData.Borders.xMax, spriteData.Borders.yMax);
-                FillBuffer (ref _vRect, ref _uvRect, ref color);
+                if (sd.BorderR > 0 && sd.BorderT > 0) {
+                    _vRect.Set (halfW - rightBorderV, halfH - topBorderV, rightBorderV, topBorderV);
+                    _uvRect.Set (bR, bT, sd.BorderR, sd.BorderT);
+                    FillBuffer (ref _vRect, ref _uvRect, ref color);
+                }
 
                 // right-bottom corner
-                _vRect.Set (halfW - rightBorderV, -halfH, rightBorderV, bottomBorderV);
-                _uvRect.Set (spriteData.UV.xMax - spriteData.Borders.xMax, spriteData.UV.yMin, spriteData.Borders.xMax, spriteData.Borders.yMin);
-                FillBuffer (ref _vRect, ref _uvRect, ref color);
+                if (sd.BorderR > 0 && sd.BorderB > 0) {
+                    _vRect.Set (halfW - rightBorderV, -halfH, rightBorderV, bottomBorderV);
+                    _uvRect.Set (bR, sd.CornerY, sd.BorderR, sd.BorderB);
+                    FillBuffer (ref _vRect, ref _uvRect, ref color);
+                }
 
                 // left-bottom corner
-                _vRect.Set (-halfW, -halfH, leftBorderV, bottomBorderV);
-                _uvRect.Set (spriteData.UV.xMin, spriteData.UV.yMin, spriteData.Borders.xMin, spriteData.Borders.yMin);
-                FillBuffer (ref _vRect, ref _uvRect, ref color);
+                if (sd.BorderL > 0 && sd.BorderB > 0) {
+                    _vRect.Set (-halfW, -halfH, leftBorderV, bottomBorderV);
+                    _uvRect.Set (sd.CornerX, sd.CornerY, sd.BorderL, sd.BorderB);
+                    FillBuffer (ref _vRect, ref _uvRect, ref color);
+                }
             }
             GetBuffers (mesh);
         }

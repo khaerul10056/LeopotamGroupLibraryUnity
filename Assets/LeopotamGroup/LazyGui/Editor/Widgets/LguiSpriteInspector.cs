@@ -68,9 +68,9 @@ namespace LeopotamGroup.LazyGui.Widgets.UnityEditors {
             }
 
             bool needUpdate = false;
-            if (GUILayout.Button ("Snap size to original")) {
+            if (GUILayout.Button ("Reset size to original")) {
                 Undo.RecordObject (sprite, "lguisprite.set-original-size");
-                sprite.SetSizeToOriginal ();
+                sprite.ResetSize ();
                 needUpdate = true;
             }
             if (GUILayout.Button ("Align size to original")) {
@@ -102,7 +102,8 @@ namespace LeopotamGroup.LazyGui.Widgets.UnityEditors {
                     var c = r.center;
                     var size = Mathf.Min (r.width, r.height);
                     r.Set (c.x - size * 0.5f, c.y - size * 0.5f, size, size);
-                    GUI.DrawTextureWithTexCoords (r, sprite.SpriteAtlas.ColorTexture, sprData.UV);
+                    var uvRect = new Rect (sprData.CornerX, sprData.CornerY, sprData.CornerW, sprData.CornerH);
+                    GUI.DrawTextureWithTexCoords (r, sprite.SpriteAtlas.ColorTexture, uvRect);
                 }
             }
         }

@@ -123,18 +123,22 @@ namespace LeopotamGroup.LazyGui.Core.UnityEditors {
                     var match = _slicedMask.Match (sprName.ToLowerInvariant ());
                     if (match.Success) {
                         sprName = sprName.Replace (match.Value, string.Empty);
-
-                        sprData.Borders = new Rect ();
-                        sprData.Borders.xMin = int.Parse (match.Groups["left"].Value) / atlasWidth;
-                        sprData.Borders.yMax = int.Parse (match.Groups["top"].Value) / atlasHeight;
-                        sprData.Borders.xMax = rects[i].xMax - rects[i].xMin - int.Parse (match.Groups["right"].Value) / atlasWidth;
-                        sprData.Borders.yMin = rects[i].yMax - rects[i].yMin - int.Parse (match.Groups["bottom"].Value) / atlasHeight;
+                        sprData.BorderL = int.Parse (match.Groups["left"].Value) / atlasWidth;
+                        sprData.BorderT = int.Parse (match.Groups["top"].Value) / atlasHeight;
+                        sprData.BorderR = rects[i].width - int.Parse (match.Groups["right"].Value) / atlasWidth;
+                        sprData.BorderB = rects[i].height - int.Parse (match.Groups["bottom"].Value) / atlasHeight;
                     } else {
-                        sprData.Borders = new Rect ();
+                        sprData.BorderL = 0;
+                        sprData.BorderT = 0;
+                        sprData.BorderR = 0;
+                        sprData.BorderB = 0;
                     }
 
                     sprData.Name = sprName;
-                    sprData.UV = rects[i];
+                    sprData.CornerX =rects[i].x;
+                    sprData.CornerY =rects[i].y;
+                    sprData.CornerW =rects[i].width;
+                    sprData.CornerH =rects[i].height;
                     atlasSprites.Add (sprData);
                 }
 
