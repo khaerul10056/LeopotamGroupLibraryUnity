@@ -30,7 +30,7 @@ namespace LeopotamGroup.LazyGui.Core {
 
             var textLength = text.Length;
 
-            LguiMeshTools.PrepareBuffer (textLength);
+            LguiMeshTools.PrepareBuffer ();
 
             CharacterInfo ch;
 

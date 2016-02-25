@@ -151,27 +151,19 @@ namespace LeopotamGroup.LazyGui.Widgets {
                     _meshRenderer.sharedMaterial = _visualPanel.GetMaterial (SpriteAtlas);
                     if ((changes & (ChangeType.Geometry | ChangeType.Color)) != ChangeType.None) {
                         var sprData = SpriteAtlas.GetSpriteData (SpriteName);
-                        var texSize = new Vector2 (SpriteAtlas.ColorTexture.width, SpriteAtlas.ColorTexture.height);
-                        switch (SpriteType) {
-                            case SpriteType.Sliced:
-                                LguiMeshTools.FillSlicedTiledSprite (_meshFilter.sharedMesh, Width, Height, Color, sprData, texSize, false, false, IsSpriteCenterFilled);
-                                break;
-                            case SpriteType.TiledBoth:
-                                LguiMeshTools.FillSlicedTiledSprite (_meshFilter.sharedMesh, Width, Height, Color, sprData, texSize, true, true, IsSpriteCenterFilled);
-                                break;
-                            case SpriteType.TiledHorizontal:
-                                LguiMeshTools.FillSlicedTiledSprite (_meshFilter.sharedMesh, Width, Height, Color, sprData, texSize, true, false, IsSpriteCenterFilled);
-                                break;
-                            case SpriteType.TiledVertical:
-                                LguiMeshTools.FillSlicedTiledSprite (_meshFilter.sharedMesh, Width, Height, Color, sprData, texSize, false, true, IsSpriteCenterFilled);
-                                break;
-                            default:
-                                LguiMeshTools.FillSimpleSprite (_meshFilter.sharedMesh, Width, Height, Color, sprData);
-                                break;
+                        if (SpriteType == SpriteType.Simple) {
+                            LguiMeshTools.FillSimpleSprite (_meshFilter.sharedMesh, Width, Height, Color, sprData);
+                        } else {
+                            var texSize = new Vector2 (SpriteAtlas.ColorTexture.width, SpriteAtlas.ColorTexture.height);
+                            var isHorTiled = SpriteType == SpriteType.TiledBoth || SpriteType == SpriteType.TiledHorizontal;
+                            var isVerTiled = SpriteType == SpriteType.TiledBoth || SpriteType == SpriteType.TiledVertical;
+                            LguiMeshTools.FillSlicedTiledSprite (
+                                _meshFilter.sharedMesh, Width, Height, Color, sprData,
+                                texSize, isHorTiled, isVerTiled, IsSpriteCenterFilled);
                         }
                     }
                 } else {
-                    _meshFilter.sharedMesh.Clear ();
+                    _meshFilter.sharedMesh.Clear (true);
                 }
             }
             return true;
