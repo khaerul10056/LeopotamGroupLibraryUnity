@@ -13,25 +13,19 @@ namespace LeopotamGroup.LazyGui.Core {
 
         public OnTouchEventHandler OnDrag = new OnTouchEventHandler ();
 
-        public OnTouchEventHandler OnStateChanged = new OnTouchEventHandler ();
-
-        public bool IsColliderActivityAttached = true;
+        public OnTouchEventHandler OnEnableChanged = new OnTouchEventHandler ();
 
         void OnEnable () {
-            if (IsColliderActivityAttached) {
-                UpdateColliderState (true);
-            }
-            if (OnStateChanged != null) {
-                OnStateChanged.Invoke (this, new TouchEventArg (true, Vector2.zero, Vector2.zero));
+            UpdateColliderState (true);
+            if (OnEnableChanged != null) {
+                OnEnableChanged.Invoke (this, new TouchEventArg (true, Vector2.zero, Vector2.zero));
             }
         }
 
         void OnDisable () {
-            if (IsColliderActivityAttached) {
-                UpdateColliderState (false);
-            }
-            if (OnStateChanged != null) {
-                OnStateChanged.Invoke (this, new TouchEventArg (false, Vector2.zero, Vector2.zero));
+            UpdateColliderState (false);
+            if (OnEnableChanged != null) {
+                OnEnableChanged.Invoke (this, new TouchEventArg (false, Vector2.zero, Vector2.zero));
             }
         }
 
@@ -43,21 +37,18 @@ namespace LeopotamGroup.LazyGui.Core {
         }
 
         public void RaisePressEvent (TouchEventArg tea) {
-//            Debug.LogFormat ("{0} press: {1}", gameObject.name, tea.State);
             if (OnPress != null) {
                 OnPress.Invoke (this, tea);
             }
         }
 
         public void RaiseClickEvent (TouchEventArg tea) {
-//                Debug.LogFormat ("{0} click", gameObject.name);
             if (OnClick != null) {
                 OnClick.Invoke (this, tea);
             }
         }
 
         public void RaiseDragEvent (TouchEventArg tea) {
-//                Debug.LogFormat ("{0} drag: {1}", gameObject.name, tea.Delta);
             if (OnDrag != null) {
                 OnDrag.Invoke (this, tea);
             }

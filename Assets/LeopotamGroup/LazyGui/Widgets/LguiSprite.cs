@@ -4,6 +4,7 @@
 //-------------------------------------------------------
 
 using LeopotamGroup.LazyGui.Core;
+using LeopotamGroup.Math;
 using UnityEngine;
 
 namespace LeopotamGroup.LazyGui.Widgets {
@@ -97,11 +98,20 @@ namespace LeopotamGroup.LazyGui.Widgets {
             _visualPanel = null;
         }
 
-        public void ResetSize () {
+        public Vector2i GetOriginalSize() {
             if (SpriteAtlas != null && !string.IsNullOrEmpty (SpriteName)) {
                 var sprData = SpriteAtlas.GetSpriteData (SpriteName);
                 Width = (int) (sprData.CornerW * SpriteAtlas.ColorTexture.width);
                 Height = (int) (sprData.CornerH * SpriteAtlas.ColorTexture.height);
+            }
+            return Vector2i.zero;
+        }
+
+        public void ResetSize () {
+            var size = GetOriginalSize ();
+            if (size != Vector2i.zero) {
+                Width = size.x;
+                Height = size.x;
             }
         }
 

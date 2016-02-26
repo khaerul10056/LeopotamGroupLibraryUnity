@@ -4,46 +4,49 @@
 //-------------------------------------------------------
 
 using LeopotamGroup.LazyGui.Core;
+using LeopotamGroup.LazyGui.Tweeners;
 using LeopotamGroup.Tweening;
 using UnityEngine;
 
 namespace LeopotamGroup.LazyGui.Widgets {
     [RequireComponent (typeof (BoxCollider))]
-    public sealed class LguiButton : LguiEventReceiver {
+    public class LguiButton : LguiEventReceiver {
         public LguiVisualBase[] Visuals = null;
 
-        public Color EnabledColor = Color.white;
+        public Color EnableColor = Color.white;
 
-        public Color DisabledColor = Color.gray;
+        public Color ActiveColor = Color.white;
+
+        public Color DisableColor = Color.gray;
 
         public Vector3 ScaleOnPress = Vector3.one * 0.97f;
 
-        public float ScaleTime = 0.2f;
+        public float TweenTime = 0.2f;
 
         public Transform CachedTransform { get; private set; }
 
         void Awake () {
             CachedTransform = transform;
             OnPress.AddListener (OnBtnPressed);
-            OnStateChanged.AddListener (OnBtnStateChanged);
-            UpdateAttachedWidgets (enabled);
+            OnEnableChanged.AddListener (OnBtnStateChanged);
+            UpdateAttachedWidgets (enabled ? EnableColor : DisableColor);
             UpdateColliderState (enabled);
         }
 
         void OnBtnPressed (LguiEventReceiver sender, TouchEventArg tea) {
-            TweeningScale.Begin (gameObject, tea.State ? Vector3.one : ScaleOnPress, tea.State ? ScaleOnPress : Vector3.one, ScaleTime);
+            TweeningScale.Begin (gameObject, tea.State ? Vector3.one : ScaleOnPress, tea.State ? ScaleOnPress : Vector3.one, TweenTime);
+            UpdateAttachedWidgets (tea.State ? ActiveColor : (enabled ? EnableColor : DisableColor));
         }
 
         void OnBtnStateChanged (LguiEventReceiver sender, TouchEventArg tea) {
-            UpdateAttachedWidgets (tea.State);
+            UpdateAttachedWidgets (tea.State ? EnableColor : DisableColor);
         }
 
-        void UpdateAttachedWidgets (bool isEnabled) {
+        void UpdateAttachedWidgets (Color color) {
             if (Visuals != null) {
-                var color = isEnabled ? EnabledColor : DisabledColor;
                 foreach (var vis in Visuals) {
                     if (vis != null) {
-                        vis.Color = color;
+                        LguiTweenColor.Begin (vis.gameObject, vis.Color, color, TweenTime);
                     }
                 }
             }

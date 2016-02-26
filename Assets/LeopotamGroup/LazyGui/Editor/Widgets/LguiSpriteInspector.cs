@@ -93,6 +93,16 @@ namespace LeopotamGroup.LazyGui.Widgets.UnityEditors {
             return true;
         }
 
+        static readonly GUIStyle _inspectorLabel = new GUIStyle ()
+        {
+            alignment = TextAnchor.LowerCenter,
+            fontSize = 18,
+            normal = new GUIStyleState ()
+            {
+                textColor = Color.white
+            }
+        };
+
         public override void OnPreviewGUI (Rect r, GUIStyle background) {
             base.OnPreviewGUI (r, background);
             var sprite = target as LguiSprite;
@@ -104,6 +114,13 @@ namespace LeopotamGroup.LazyGui.Widgets.UnityEditors {
                     r.Set (c.x - size * 0.5f, c.y - size * 0.5f, size, size);
                     var uvRect = new Rect (sprData.CornerX, sprData.CornerY, sprData.CornerW, sprData.CornerH);
                     GUI.DrawTextureWithTexCoords (r, sprite.SpriteAtlas.ColorTexture, uvRect);
+
+                    var caption = string.Format ("size: {0}", sprite.GetOriginalSize ());
+                    GUI.color = Color.black;
+                    GUI.Label (r, caption, _inspectorLabel);
+                    r.position -= Vector2.one;
+                    GUI.color = Color.white;
+                    GUI.Label (r, caption, _inspectorLabel);
                 }
             }
         }

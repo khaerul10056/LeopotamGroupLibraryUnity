@@ -16,21 +16,21 @@ namespace LeopotamGroup.Math {
         public int z;
 
         // No protection from external property changes, dont be stupid to do this!
-        public static readonly Vector3i Zero = new Vector3i (0, 0, 0);
+        public static readonly Vector3i zero = new Vector3i (0, 0, 0);
 
-        public static readonly Vector3i One = new Vector3i (1, 1, 1);
+        public static readonly Vector3i one = new Vector3i (1, 1, 1);
 
-        public static readonly Vector3i Forward = new Vector3i (0, 0, 1);
+        public static readonly Vector3i forward = new Vector3i (0, 0, 1);
 
-        public static readonly Vector3i Back = new Vector3i (0, 0, -1);
+        public static readonly Vector3i back = new Vector3i (0, 0, -1);
 
-        public static readonly Vector3i Up = new Vector3i (0, 1, 0);
+        public static readonly Vector3i up = new Vector3i (0, 1, 0);
 
-        public static readonly Vector3i Down = new Vector3i (0, -1, 0);
+        public static readonly Vector3i down = new Vector3i (0, -1, 0);
 
-        public static readonly Vector3i Left = new Vector3i (-1, 0, 0);
+        public static readonly Vector3i left = new Vector3i (-1, 0, 0);
 
-        public static readonly Vector3i Right = new Vector3i (1, 0, 0);
+        public static readonly Vector3i right = new Vector3i (1, 0, 0);
 
         public Vector3i (int inX, int inY, int inZ) {
             x = inX;
@@ -97,7 +97,7 @@ namespace LeopotamGroup.Math {
             if (num > 0) {
                 return rhs / num;
             }
-            return Vector3i.Zero;
+            return Vector3i.zero;
         }
 
         public static int LossyMagnitude (Vector3i rhs) {

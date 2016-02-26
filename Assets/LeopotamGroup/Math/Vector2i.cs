@@ -14,17 +14,17 @@ namespace LeopotamGroup.Math {
         public int y;
 
         // No protection from external property changes, dont be stupid to do this!
-        public static readonly Vector2i Zero = new Vector2i (0, 0);
+        public static readonly Vector2i zero = new Vector2i (0, 0);
 
-        public static readonly Vector2i One = new Vector2i (1, 1);
+        public static readonly Vector2i one = new Vector2i (1, 1);
 
-        public static readonly Vector2i Up = new Vector2i (0, 1);
+        public static readonly Vector2i up = new Vector2i (0, 1);
 
-        public static readonly Vector2i Down = new Vector2i (0, -1);
+        public static readonly Vector2i down = new Vector2i (0, -1);
 
-        public static readonly Vector2i Left = new Vector2i (-1, 0);
+        public static readonly Vector2i left = new Vector2i (-1, 0);
 
-        public static readonly Vector2i Right = new Vector2i (1, 0);
+        public static readonly Vector2i right = new Vector2i (1, 0);
 
         public Vector2i (int inX, int inY) {
             x = inX;
@@ -87,7 +87,7 @@ namespace LeopotamGroup.Math {
             if (num > 0) {
                 return rhs / num;
             }
-            return Vector2i.Zero;
+            return Vector2i.zero;
         }
 
         public static int LossyMagnitude (Vector2i rhs) {

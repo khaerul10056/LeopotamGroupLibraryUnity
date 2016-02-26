@@ -1,4 +1,9 @@
-﻿using System.Collections;
+﻿//-------------------------------------------------------
+// LeopotamGroupLibrary for unity3d
+// Copyright (c) 2012-2016 Leopotam <leopotam@gmail.com>
+//-------------------------------------------------------
+
+using System.Collections;
 using System.Collections.Generic;
 using LeopotamGroup.Common;
 using LeopotamGroup.EditorHelpers;
