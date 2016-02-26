@@ -96,7 +96,7 @@ namespace LeopotamGroup.LazyGui.Widgets.UnityEditors {
         static readonly GUIStyle _inspectorLabel = new GUIStyle ()
         {
             alignment = TextAnchor.LowerCenter,
-            fontSize = 18,
+            fontSize = 16,
             normal = new GUIStyleState ()
             {
                 textColor = Color.white
@@ -115,7 +115,7 @@ namespace LeopotamGroup.LazyGui.Widgets.UnityEditors {
                     var uvRect = new Rect (sprData.CornerX, sprData.CornerY, sprData.CornerW, sprData.CornerH);
                     GUI.DrawTextureWithTexCoords (r, sprite.SpriteAtlas.ColorTexture, uvRect);
 
-                    var caption = string.Format ("size: {0}", sprite.GetOriginalSize ());
+                    var caption = sprite.GetOriginalSize ().ToString ();
                     GUI.color = Color.black;
                     GUI.Label (r, caption, _inspectorLabel);
                     r.position -= Vector2.one;

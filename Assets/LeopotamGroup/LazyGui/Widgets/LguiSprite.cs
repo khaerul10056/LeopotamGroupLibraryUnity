@@ -98,11 +98,12 @@ namespace LeopotamGroup.LazyGui.Widgets {
             _visualPanel = null;
         }
 
-        public Vector2i GetOriginalSize() {
+        public Vector2i GetOriginalSize () {
             if (SpriteAtlas != null && !string.IsNullOrEmpty (SpriteName)) {
                 var sprData = SpriteAtlas.GetSpriteData (SpriteName);
-                Width = (int) (sprData.CornerW * SpriteAtlas.ColorTexture.width);
-                Height = (int) (sprData.CornerH * SpriteAtlas.ColorTexture.height);
+                return new Vector2i (
+                    (int) (sprData.CornerW * SpriteAtlas.ColorTexture.width),
+                    (int) (sprData.CornerH * SpriteAtlas.ColorTexture.height));
             }
             return Vector2i.zero;
         }

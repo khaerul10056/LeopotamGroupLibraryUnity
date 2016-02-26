@@ -191,6 +191,9 @@ namespace LeopotamGroup.LazyGui.UnityEditors {
         public static void Open<T> (string title, string filter, T active, Action<string> cb) where T: UnityEngine.Object {
             var win = GetWindow <SearchWindow> ();
             win.minSize = new Vector2 (800, 600);
+            var pos = win.position;
+            pos.position = (new Vector2 (Screen.currentResolution.width, Screen.currentResolution.height) - win.minSize) * 0.5f;
+            win.position = pos; 
             win.titleContent = new GUIContent (title);
             win._cb = cb;
             win.Search<T> (filter, active);
