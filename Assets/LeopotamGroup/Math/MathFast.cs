@@ -14,7 +14,7 @@ namespace LeopotamGroup.Math {
 
         // All data can be used for inline calculations instead of using sin / cos function calls.
         // How to use - check sin / cos functions.
-        public const int SinCosCacheMask = ~(-1 << 12);
+        public const int SinCosCacheIndexMask = ~(-1 << 12);
 
         public static readonly float[] SinCacheInternal;
 
@@ -22,7 +22,7 @@ namespace LeopotamGroup.Math {
 
         public const float SinCosCacheIndexFactor = SinCosCacheSize / PI_2;
 
-        const int SinCosCacheSize = SinCosCacheMask + 1;
+        const int SinCosCacheSize = SinCosCacheIndexMask + 1;
 
         [StructLayout (LayoutKind.Explicit)]
         struct FloatInt {
@@ -43,8 +43,8 @@ namespace LeopotamGroup.Math {
 
             var factor = SinCosCacheSize / 360f;
             for (var i = 0; i < 360; i += 90) {
-                SinCacheInternal[(int) (i * factor) & SinCosCacheMask] = (float) System.Math.Sin (i * PI / 180f);
-                CosCacheInternal[(int) (i * factor) & SinCosCacheMask] = (float) System.Math.Cos (i * PI / 180f);
+                SinCacheInternal[(int) (i * factor) & SinCosCacheIndexMask] = (float) System.Math.Sin (i * PI / 180f);
+                CosCacheInternal[(int) (i * factor) & SinCosCacheIndexMask] = (float) System.Math.Cos (i * PI / 180f);
             }
         }
 
@@ -68,11 +68,11 @@ namespace LeopotamGroup.Math {
         }
 
         public static float Sin (float v) {
-            return SinCacheInternal[(int) (v * SinCosCacheIndexFactor) & SinCosCacheMask];
+            return SinCacheInternal[(int) (v * SinCosCacheIndexFactor) & SinCosCacheIndexMask];
         }
 
         public static float Cos (float v) {
-            return CosCacheInternal[(int) (v * SinCosCacheIndexFactor) & SinCosCacheMask];
+            return CosCacheInternal[(int) (v * SinCosCacheIndexFactor) & SinCosCacheIndexMask];
         }
     }
 }
