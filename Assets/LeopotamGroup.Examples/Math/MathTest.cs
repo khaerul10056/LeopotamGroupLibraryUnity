@@ -7,6 +7,7 @@ namespace LeopotamGroup.Examples.MathTest {
             RngTest ();
             Vector2iTest ();
             Vector3iTest ();
+            SinTest ();
         }
 
         void RngTest () {
@@ -36,6 +37,39 @@ namespace LeopotamGroup.Examples.MathTest {
             Debug.LogFormat ("{0} * {1} = {2}", v3i_0, v3i_1, v3i_0 * v3i_1);
             Debug.LogFormat ("{0} / {1} = {2}", v3i_0, v3i_1, v3i_0 / v3i_1);
             Debug.LogFormat ("{0}.lossyMagnitude = {2}, {1}.lossyMagnitude = {3}", v3i_0, v3i_1, v3i_0.LossyMagnituded, v3i_1.LossyMagnituded);
+        }
+
+        void SinTest () {
+            var T = 10000;
+            var sw = new System.Diagnostics.Stopwatch ();
+            float f;
+            float s = 1.345f;
+
+            sw.Reset ();
+            sw.Start ();
+            for (int i = 0; i < T; i++) {
+                f = Mathf.Sin (s);
+            }
+            Debug.Log ("sin-unity: " + sw.ElapsedTicks);
+
+            sw.Reset ();
+            sw.Start ();
+            for (int i = 0; i < T; i++) {
+                f = (float)System.Math.Sin (s);
+            }
+            Debug.Log ("sin-system: " + sw.ElapsedTicks);
+
+            sw.Reset ();
+            sw.Start ();
+            for (int i = 0; i < T; i++) {
+                f = MathFast.Sin (s);
+            }
+            Debug.Log ("sin-fast: " + sw.ElapsedTicks);
+
+            for (int i = 0; i < 10; i++) {
+                f = Rng.GetFloatStatic () * 3.1415926f;
+                Debug.LogFormat ("{0} => {1} + {2}", f, Mathf.Sin (f), MathFast.Sin (f));
+            }
         }
     }
 }
