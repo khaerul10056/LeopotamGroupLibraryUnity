@@ -93,7 +93,7 @@ namespace LeopotamGroup.LazyGui.Widgets.UnityEditors {
             return true;
         }
 
-        static readonly GUIStyle _inspectorLabel = new GUIStyle ()
+        static readonly GUIStyle _textStyle = new GUIStyle ()
         {
             alignment = TextAnchor.LowerCenter,
             fontSize = 16,
@@ -117,10 +117,22 @@ namespace LeopotamGroup.LazyGui.Widgets.UnityEditors {
 
                     var caption = sprite.GetOriginalSize ().ToString ();
                     GUI.color = Color.black;
-                    GUI.Label (r, caption, _inspectorLabel);
-                    r.position -= Vector2.one;
-                    GUI.color = Color.white;
-                    GUI.Label (r, caption, _inspectorLabel);
+                    GUI.Label (r, caption, _textStyle);
+                    var r2 = r;
+                    r2.position -= Vector2.one;
+                    GUI.color = Color.yellow;
+                    GUI.Label (r2, caption, _textStyle);
+
+                    Handles.color = Color.yellow;
+                    var offset = r.x + r.width * sprData.BorderL / sprData.CornerW;
+                    Handles.DrawAAPolyLine (4f, new Vector3 (offset, r.y), new Vector3 (offset, r.yMax));
+                    offset = r.xMax - r.width * sprData.BorderR / sprData.CornerW;
+                    Handles.DrawAAPolyLine (4f, new Vector3 (offset, r.y), new Vector3 (offset, r.yMax));
+
+                    offset = r.y + r.height * sprData.BorderT / sprData.CornerH;
+                    Handles.DrawAAPolyLine (4f, new Vector3 (r.x, offset), new Vector3 (r.xMax, offset));
+                    offset = r.yMax - r.height * sprData.BorderB / sprData.CornerH;
+                    Handles.DrawAAPolyLine (4f, new Vector3 (r.x, offset), new Vector3 (r.xMax, offset));
                 }
             }
         }

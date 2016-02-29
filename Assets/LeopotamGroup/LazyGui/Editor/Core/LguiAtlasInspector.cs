@@ -18,8 +18,8 @@ namespace LeopotamGroup.LazyGui.Core.UnityEditors {
         public override void OnInspectorGUI () {
             EditorGUILayout.HelpBox ("Use context menu at atlas asset for options.\n\n" +
             "Add suffix .slice_A_B_C_D to texture asset name for init slice borders for left (A), top (B), right (C) and bottom (D) sides.\n\n" +
-            "All coords - from top left corner in pixels!\n\n" +
-            "For example: button.sliced_10_5_15_50", MessageType.Info);
+            "All coords - in pixels from each side!\n\n" +
+            "For example: button.sliced_10_5_10_5", MessageType.Info);
 
             EditorGUILayout.Separator ();
 
@@ -125,8 +125,8 @@ namespace LeopotamGroup.LazyGui.Core.UnityEditors {
                         sprName = sprName.Replace (match.Value, string.Empty);
                         sprData.BorderL = int.Parse (match.Groups["left"].Value) / atlasWidth;
                         sprData.BorderT = int.Parse (match.Groups["top"].Value) / atlasHeight;
-                        sprData.BorderR = rects[i].width - int.Parse (match.Groups["right"].Value) / atlasWidth;
-                        sprData.BorderB = rects[i].height - int.Parse (match.Groups["bottom"].Value) / atlasHeight;
+                        sprData.BorderR = int.Parse (match.Groups["right"].Value) / atlasWidth;
+                        sprData.BorderB = int.Parse (match.Groups["bottom"].Value) / atlasHeight;
                     } else {
                         sprData.BorderL = 0;
                         sprData.BorderT = 0;
