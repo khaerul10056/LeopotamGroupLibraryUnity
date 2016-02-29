@@ -8,15 +8,19 @@ using UnityEngine;
 
 namespace LeopotamGroup.Math {
     public static class MathFast {
-        const float PI = 3.141592654f;
+        public const float PI = 3.141592654f;
 
-        const float PI_DIV_2 = 3.141592654f / 2f;
+        public const float PI_DIV_2 = 3.141592654f / 2f;
 
-        const float PI_2 = 3.141592654f * 2;
+        public const float PI_2 = 3.141592654f * 2;
 
-        const float FOUR_DIV_PI = 4 / PI;
+        const int SinTableSize = 4096;
 
-        const float FOUR_DIV_SQR_PI = 4 / (PI * PI);
+        const float SinTableIndexFactor = SinTableSize / PI_2;
+
+        static readonly float[] _sinTable;
+
+        static readonly float[] _cosTable;
 
         [StructLayout (LayoutKind.Explicit)]
         struct FloatInt {
@@ -27,13 +31,13 @@ namespace LeopotamGroup.Math {
             public int Int;
         }
 
-        [StructLayout (LayoutKind.Explicit)]
-        struct DoubleInt {
-            [FieldOffset (0)]
-            public double Double;
-
-            [FieldOffset (0)]
-            public int Int;
+        static MathFast () {
+            _sinTable = new float[SinTableSize];
+            _cosTable = new float[SinTableSize];
+            for (var i = 0; i < SinTableSize; i++) {
+                _sinTable[i] = (float) System.Math.Sin (i / (float) SinTableSize * PI_2);
+                _cosTable[i] = (float) System.Math.Cos (i / (float) SinTableSize * PI_2);
+            }
         }
 
         public static Vector2 NormalizedFast (this Vector2 v) {
@@ -55,34 +59,14 @@ namespace LeopotamGroup.Math {
             return v;
         }
 
-        public static float Sin2 (float x) {
-            if (x < -PI) {
-                x += PI_2;
-            } else {
-                if (x > PI) {
-                    x -= PI_2;
-                }
-            }
-            var sin = FOUR_DIV_PI * x + (x < 0f ? 1f : -1f) * FOUR_DIV_SQR_PI * x * x;
-            sin = 0.225f * ((sin < 0 ? -1f : 1f) * sin * sin - sin) + sin;
-            return sin;
+        public static float Sin (float v) {
+            v = v - (long) (v / PI_2) * PI_2;
+            return _sinTable[(int) (v * SinTableIndexFactor)];
         }
 
-        public static float Sin (float x) {
-            if (x < -PI) {
-                x += PI_2;
-            } else {
-                if (x > PI) {
-                    x -= PI_2;
-                }
-            }
-            x = x * (1.27323954f + (x < 0 ? 1f : -1f) * 0.405284735f * x);
-            x = x * (x < 0 ? -0.225f * (x + 1) + 1 : 0.225f * (x - 1) + 1);
-            return x;
-        }
-
-        public static float Cos (float x) {
-            return Sin (x + PI_DIV_2);
+        public static float Cos (float v) {
+            v = v - (long) (v / PI_2) * PI_2;
+            return _cosTable[(int) (v * SinTableIndexFactor)];
         }
     }
 }

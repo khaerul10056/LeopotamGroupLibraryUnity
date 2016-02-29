@@ -8,6 +8,7 @@ namespace LeopotamGroup.Examples.MathTest {
             Vector2iTest ();
             Vector3iTest ();
             SinTest ();
+            CosTest ();
         }
 
         void RngTest () {
@@ -40,7 +41,8 @@ namespace LeopotamGroup.Examples.MathTest {
         }
 
         void SinTest () {
-            var T = 10000;
+            Debug.Log (">>>>> sin tests >>>>>");
+            const int T = 10000;
             var sw = new System.Diagnostics.Stopwatch ();
             float f;
             float s = 1.345f;
@@ -50,25 +52,65 @@ namespace LeopotamGroup.Examples.MathTest {
             for (int i = 0; i < T; i++) {
                 f = Mathf.Sin (s);
             }
-            Debug.Log ("sin-unity: " + sw.ElapsedTicks);
+            Debug.LogFormat ("mathf.sin time on {0} iterations: {1}", T, sw.ElapsedTicks);
 
             sw.Reset ();
             sw.Start ();
             for (int i = 0; i < T; i++) {
-                f = (float)System.Math.Sin (s);
+                f = (float) System.Math.Sin (s);
             }
-            Debug.Log ("sin-system: " + sw.ElapsedTicks);
+            Debug.LogFormat ("system.math.sin time on {0} iterations: {1}", T, sw.ElapsedTicks);
+
+            // Warmup cache.
+            f = MathFast.Sin (s);
 
             sw.Reset ();
             sw.Start ();
             for (int i = 0; i < T; i++) {
                 f = MathFast.Sin (s);
             }
-            Debug.Log ("sin-fast: " + sw.ElapsedTicks);
+            Debug.LogFormat ("mathfast.sin time on {0} iterations: {1}", T, sw.ElapsedTicks);
 
             for (int i = 0; i < 10; i++) {
-                f = Rng.GetFloatStatic () * 3.1415926f;
-                Debug.LogFormat ("{0} => {1} + {2}", f, Mathf.Sin (f), MathFast.Sin (f));
+                f = Rng.GetFloatStatic () * 3.1415926f * 2;
+                Debug.LogFormat ("sin({0}) => {1} / {2}", f, Mathf.Sin (f), MathFast.Sin (f));
+            }
+        }
+
+        void CosTest () {
+            Debug.Log (">>>>> cos tests >>>>>");
+            const int T = 10000;
+            var sw = new System.Diagnostics.Stopwatch ();
+            float f;
+            float s = 1.345f;
+
+            sw.Reset ();
+            sw.Start ();
+            for (int i = 0; i < T; i++) {
+                f = Mathf.Cos (s);
+            }
+            Debug.LogFormat ("mathf.cos time on {0} iterations: {1}", T, sw.ElapsedTicks);
+
+            sw.Reset ();
+            sw.Start ();
+            for (int i = 0; i < T; i++) {
+                f = (float) System.Math.Cos (s);
+            }
+            Debug.LogFormat ("system.math.cos time on {0} iterations: {1}", T, sw.ElapsedTicks);
+
+            // Warmup cache.
+            f = MathFast.Cos (s);
+
+            sw.Reset ();
+            sw.Start ();
+            for (int i = 0; i < T; i++) {
+                f = MathFast.Cos (s);
+            }
+            Debug.LogFormat ("mathfast.cos time on {0} iterations: {1}", T, sw.ElapsedTicks);
+
+            for (int i = 0; i < 10; i++) {
+                f = Rng.GetFloatStatic () * 3.1415926f * 2;
+                Debug.LogFormat ("cos({0}) => {1} / {2}", f, Mathf.Cos (f), MathFast.Cos (f));
             }
         }
     }
