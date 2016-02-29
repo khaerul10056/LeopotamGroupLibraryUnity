@@ -8,11 +8,7 @@ using UnityEngine;
 
 namespace LeopotamGroup.Math {
     public static class MathFast {
-        public const float PI = 3.141592654f;
-
-        public const float PI_DIV_2 = 3.141592654f / 2f;
-
-        public const float PI_2 = 3.141592654f * 2;
+        public const float PI_2 = 3.141592654f * 2f;
 
         const int SinTableSize = 4096;
 
