@@ -8,15 +8,21 @@ using UnityEngine;
 
 namespace LeopotamGroup.Math {
     public static class MathFast {
-        public const float PI_2 = 3.141592654f * 2f;
+        public const float PI = 3.141592654f;
 
-        const int SinTableSize = 4096;
+        public const float PI_2 = PI * 2f;
 
-        const float SinTableIndexFactor = SinTableSize / PI_2;
+        // All data can be used for inline calculations instead of using sin / cos function calls.
+        // How to use - check sin / cos functions.
+        public const int SinCosCacheMask = ~(-1 << 12);
 
-        static readonly float[] _sinTable;
+        public static readonly float[] SinCacheInternal;
 
-        static readonly float[] _cosTable;
+        public static readonly float[] CosCacheInternal;
+
+        public const float SinCosCacheIndexFactor = SinCosCacheSize / PI_2;
+
+        const int SinCosCacheSize = SinCosCacheMask + 1;
 
         [StructLayout (LayoutKind.Explicit)]
         struct FloatInt {
@@ -28,11 +34,17 @@ namespace LeopotamGroup.Math {
         }
 
         static MathFast () {
-            _sinTable = new float[SinTableSize];
-            _cosTable = new float[SinTableSize];
-            for (var i = 0; i < SinTableSize; i++) {
-                _sinTable[i] = (float) System.Math.Sin (i / (float) SinTableSize * PI_2);
-                _cosTable[i] = (float) System.Math.Cos (i / (float) SinTableSize * PI_2);
+            SinCacheInternal = new float[SinCosCacheSize];
+            CosCacheInternal = new float[SinCosCacheSize];
+            for (var i = 0; i < SinCosCacheSize; i++) {
+                SinCacheInternal[i] = (float) System.Math.Sin ((i + 0.5f) / (float) SinCosCacheSize * PI_2);
+                CosCacheInternal[i] = (float) System.Math.Cos ((i + 0.5f) / (float) SinCosCacheSize * PI_2);
+            }
+
+            var factor = SinCosCacheSize / 360f;
+            for (var i = 0; i < 360; i += 90) {
+                SinCacheInternal[(int) (i * factor) & SinCosCacheMask] = (float) System.Math.Sin (i * PI / 180f);
+                CosCacheInternal[(int) (i * factor) & SinCosCacheMask] = (float) System.Math.Cos (i * PI / 180f);
             }
         }
 
@@ -56,13 +68,11 @@ namespace LeopotamGroup.Math {
         }
 
         public static float Sin (float v) {
-            v = v - (long) (v / PI_2) * PI_2;
-            return _sinTable[(int) (v * SinTableIndexFactor)];
+            return SinCacheInternal[(int) (v * SinCosCacheIndexFactor) & SinCosCacheMask];
         }
 
         public static float Cos (float v) {
-            v = v - (long) (v / PI_2) * PI_2;
-            return _cosTable[(int) (v * SinTableIndexFactor)];
+            return CosCacheInternal[(int) (v * SinCosCacheIndexFactor) & SinCosCacheMask];
         }
     }
 }
