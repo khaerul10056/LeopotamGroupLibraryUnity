@@ -64,6 +64,12 @@ Helpers for mobiles only.
 
 ----------------------------------------------------------------------------
 
+* Protection
+
+Protection for Int, Long, Float types from in-memory searching.
+
+----------------------------------------------------------------------------
+
 * Pooling
 
 Pooling support for any prefabs.
