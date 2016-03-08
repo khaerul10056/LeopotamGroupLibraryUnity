@@ -16,7 +16,7 @@ namespace LeopotamGroup.LazyGui.Core.UnityEditors {
             EditorGUILayout.PropertyField (serializedObject.FindProperty ("OnPress"));
             EditorGUILayout.PropertyField (serializedObject.FindProperty ("OnClick"));
             EditorGUILayout.PropertyField (serializedObject.FindProperty ("OnDrag"));
-            EditorGUILayout.PropertyField (serializedObject.FindProperty ("OnStateChanged"));
+            EditorGUILayout.PropertyField (serializedObject.FindProperty ("OnEnableChanged"));
 
             if (serializedObject.ApplyModifiedProperties () || (Event.current.type == EventType.ExecuteCommand && Event.current.commandName == "UndoRedoPerformed")) {
                 EditorIntegration.UpdateVisuals (target);
