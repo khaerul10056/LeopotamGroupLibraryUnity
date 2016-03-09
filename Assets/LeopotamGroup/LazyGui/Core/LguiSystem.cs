@@ -181,7 +181,8 @@ namespace LeopotamGroup.LazyGui.Core {
                 } else {
                     isMouse = false;
                 }
-                if (_touches[i].IsStateChanged) {
+
+                if (_touches[i].IsStateChanged || _touches[i].IsDeltaChanged) {
                     if (Physics.Raycast (Camera.ScreenPointToRay (_touches[i].RawPosition), out hitInfo, Camera.farClipPlane, 1 << gameObject.layer)) {
                         newReceiver = hitInfo.collider.gameObject.GetComponent<LguiEventReceiver> ();
                     } else {
@@ -190,19 +191,27 @@ namespace LeopotamGroup.LazyGui.Core {
 
                     te = new TouchEventArg (_touches[i].State, _touches[i].RawPosition, _touches[i].Delta);
 
-                    if (!_touches[i].State) {
+                    if (_touches[i].IsDeltaChanged) {
+                        if (_touches[i].Receiver != null) {
+                            _touches[i].Receiver.RaiseDragEvent (te);
+                        }
+                    }
+
+                    if (_touches[i].IsStateChanged) {
+                        if (!_touches[i].State) {
+                            if (_touches[i].Receiver != null) {
+                                _touches[i].Receiver.RaisePressEvent (te);
+                                if (!_touches[i].IsDeltaChanged && _touches[i].Receiver == newReceiver) {
+                                    _touches[i].Receiver.RaiseClickEvent (te);
+                                }
+                            }
+                            newReceiver = null;
+                        } else {
+                            _touches[i].Receiver = newReceiver;
+                        }
                         if (_touches[i].Receiver != null) {
                             _touches[i].Receiver.RaisePressEvent (te);
-                            if (!_touches[i].IsDrag && _touches[i].Receiver == newReceiver) {
-                                _touches[i].Receiver.RaiseClickEvent (te);
-                            }
                         }
-                        newReceiver = null;
-                    }
-                    _touches[i].Receiver = newReceiver;
-
-                    if (_touches[i].Receiver != null) {
-                        _touches[i].Receiver.RaisePressEvent (te);
                     }
                 }
                 _touches[i].ResetChanges ();
@@ -232,11 +241,11 @@ namespace LeopotamGroup.LazyGui.Core {
 
             public LguiEventReceiver Receiver;
 
-            public bool IsDrag;
+            //            public bool IsDrag;
 
             public static int DragOffsetSqr = 25 * 25;
 
-            Vector2 _startPos;
+//            Vector2 _startPos;
 
             static Vector2 _mousePos;
 
@@ -249,18 +258,19 @@ namespace LeopotamGroup.LazyGui.Core {
                 RawPosition = info.position;
                 Position = camera.ScreenToWorldPoint (RawPosition);
                 if (info.phase == TouchPhase.Began) {
-                    _startPos = Position;
-                    IsDrag = false;
+//                    _startPos = Position;
+                    IsDeltaChanged = false;
+//                    IsDrag = false;
                 }
-                if (!State) {
-                    IsDrag = (Position - _startPos).sqrMagnitude > DragOffsetSqr;
-                }
+//                if (!State) {
+//                    IsDrag = (Position - _startPos).sqrMagnitude > DragOffsetSqr;
+//                }
             }
 
             public void ResetChanges () {
                 IsStateChanged = false;
                 IsDeltaChanged = false;
-                IsDrag = false;
+//                IsDrag = false;
             }
 
             public bool ProcessMouse (Camera camera, int screenHeight) {
@@ -281,12 +291,13 @@ namespace LeopotamGroup.LazyGui.Core {
 
                     Position = camera.ScreenToWorldPoint (RawPosition);
                     if (State && IsStateChanged) {
-                        _startPos = Position;
-                        IsDrag = false;
+//                        _startPos = Position;
+                        IsDeltaChanged = false;
+//                        IsDrag = false;
                     }
-                    if (!State) {
-                        IsDrag = (Position - _startPos).sqrMagnitude > DragOffsetSqr;
-                    }
+//                    if (!State) {
+//                        IsDrag = (Position - _startPos).sqrMagnitude > DragOffsetSqr;
+//                    }
                 }
 
                 return IsStateChanged || IsDeltaChanged;

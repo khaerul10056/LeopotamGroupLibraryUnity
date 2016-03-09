@@ -71,6 +71,9 @@ namespace LeopotamGroup.LazyGui.Layout {
 
         void Awake () {
             CachedTransform = transform;
+            var rb = GetComponent<Rigidbody> ();
+            rb.useGravity = false;
+            rb.isKinematic = true;
         }
 
         void OnEnable () {

@@ -8,7 +8,8 @@ using UnityEngine;
 namespace LeopotamGroup.Common {
     public abstract class MonoBehaviourBase : MonoBehaviour {
         /// <summary>
-        /// Patched transform, gains 2-2.5x performance boost compare to standard.
+        /// Patched transform, gains 2-2.5x performance boost compare to standard. Be aware, enable GO + component
+        /// before use this property (once).
         /// </summary>
         /// <value>The transform.</value>
         public new Transform transform { get; private set; }
