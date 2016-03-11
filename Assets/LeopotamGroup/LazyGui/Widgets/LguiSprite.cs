@@ -112,7 +112,7 @@ namespace LeopotamGroup.LazyGui.Widgets {
             var size = GetOriginalSize ();
             if (size != Vector2i.zero) {
                 Width = size.x;
-                Height = size.x;
+                Height = size.y;
             }
         }
 
