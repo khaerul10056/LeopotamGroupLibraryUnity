@@ -18,7 +18,7 @@ namespace LeopotamGroup.LazyGui.Core {
 
         static Vector2 _uv3;
 
-        public static void FillText (Mesh mesh, int width, int height, Color color, Alignment align, Font font, string text, int fontSize, FontStyle style, float lineHgt) {
+        public static void FillText (Mesh mesh, int width, int height, Color color, Alignment align, Font font, string text, int fontSize, float lineHgt) {
             if (mesh == null) {
                 return;
             }
@@ -26,7 +26,8 @@ namespace LeopotamGroup.LazyGui.Core {
             if (font == null || string.IsNullOrEmpty (text)) {
                 return;
             }
-            font.RequestCharactersInTexture (text, fontSize, style);
+
+            font.RequestCharactersInTexture (text, fontSize, FontStyle.Normal);
 
             var textLength = text.Length;
 
@@ -34,8 +35,10 @@ namespace LeopotamGroup.LazyGui.Core {
 
             CharacterInfo ch;
 
-            font.GetCharacterInfo (text[0], out ch, fontSize, style);
-            var lineHeight = (int)(font.lineHeight * lineHgt);
+            var lineHeight = (int)(fontSize * lineHgt);
+
+            // TODO: Parsing bb-codes
+            var style = FontStyle.Normal;
 
             int lineWidth;
             int j;

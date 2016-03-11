@@ -47,7 +47,16 @@ namespace LeopotamGroup.LazyGui.Layout {
 
         public bool IsPanelActive { get; private set; }
 
-        public Transform CachedTransform { get; private set; }
+        public Transform CachedTransform {
+            get {
+                if (_cachedTransform == null) {
+                    _cachedTransform = transform;
+                }
+                return _cachedTransform;
+            }
+        }
+
+        Transform _cachedTransform;
 
         [HideInInspector]
         [SerializeField]
@@ -70,17 +79,12 @@ namespace LeopotamGroup.LazyGui.Layout {
         const float DepthSlice = 0.5f;
 
         void Awake () {
-            CachedTransform = transform;
             var rb = GetComponent<Rigidbody> ();
             rb.useGravity = false;
             rb.isKinematic = true;
         }
 
         void OnEnable () {
-            if (CachedTransform == null) {
-                CachedTransform = transform;
-            }
-
             _clipDataRaw = new Vector4 (1f / _clipData.x * _clipData.z * 2f, 1f / _clipData.y * _clipData.w * 2f, _clipData.z, _clipData.w);
             IsChanged = true;
             IsPanelActive = true;
@@ -91,7 +95,7 @@ namespace LeopotamGroup.LazyGui.Layout {
             BroadcastMessage (LguiConsts.MethodOnLguiPanelChanged, SendMessageOptions.DontRequireReceiver);
         }
 
-        void Update () {
+        void LateUpdate () {
             if (IsChanged) {
                 IsChanged = false;
                 UpdateVisuals ();

@@ -82,7 +82,7 @@ namespace LeopotamGroup.LazyGui.Widgets {
 
         protected MeshRenderer _meshRenderer;
 
-        void Update () {
+        void LateUpdate () {
             if (VisualChanges != ChangeType.None) {
                 var changes = VisualChanges;
                 VisualChanges = ChangeType.None;

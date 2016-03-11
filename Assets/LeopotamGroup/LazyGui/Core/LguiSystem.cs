@@ -151,7 +151,7 @@ namespace LeopotamGroup.LazyGui.Core {
             Camera.depth = _depth;
         }
 
-        void Update () {
+        void LateUpdate () {
             if (_isChanged) {
                 _isChanged = false;
                 FixCamera ();
@@ -183,7 +183,7 @@ namespace LeopotamGroup.LazyGui.Core {
                 }
 
                 if (_touches[i].IsStateChanged || _touches[i].IsDeltaChanged) {
-                    if (Physics.Raycast (Camera.ScreenPointToRay (_touches[i].RawPosition), out hitInfo, Camera.farClipPlane, 1 << gameObject.layer)) {
+                    if (Physics.Raycast (Camera.ScreenPointToRay (_touches[i].RawPosition), out hitInfo, Camera.farClipPlane - Camera.nearClipPlane, 1 << gameObject.layer)) {
                         newReceiver = hitInfo.collider.gameObject.GetComponent<LguiEventReceiver> ();
                     } else {
                         newReceiver = null;

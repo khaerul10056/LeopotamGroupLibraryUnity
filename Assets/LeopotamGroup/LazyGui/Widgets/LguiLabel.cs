@@ -94,7 +94,7 @@ namespace LeopotamGroup.LazyGui.Widgets {
 
         [HideInInspector]
         [SerializeField]
-        float _lineHeight = 2f;
+        float _lineHeight = 1f;
 
         MeshFilter _meshFilter;
 
@@ -139,7 +139,7 @@ namespace LeopotamGroup.LazyGui.Widgets {
                     _meshRenderer.sharedMaterial = _visualPanel.GetFontMaterial (Font);
 
                     if ((changes & (ChangeType.Geometry | ChangeType.Color)) != ChangeType.None) {
-                        LguiTextTools.FillText (_meshFilter.sharedMesh, Width, Height, Color, Alignment, Font, Text, FontSize, FontStyle, LineHeight);
+                        LguiTextTools.FillText (_meshFilter.sharedMesh, Width, Height, Color, Alignment, Font, Text, FontSize, LineHeight);
                     }
                 }
             }

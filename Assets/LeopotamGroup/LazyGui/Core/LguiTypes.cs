@@ -8,7 +8,6 @@ using UnityEngine;
 using UnityEngine.Events;
 
 namespace LeopotamGroup.LazyGui.Core {
-
     public enum SpriteType {
         Simple = 0,
         Sliced,
