@@ -130,7 +130,7 @@ namespace LeopotamGroup.LazyGui.Widgets {
                         Width = Mathf.RoundToInt ((Width - srcWidthBorder) / (float) srcWidthCenter) * srcWidthCenter + srcWidthBorder;
                         break;
                     case SpriteType.TiledVertical:
-                        srcHeightBorder = (int) ((sprData.BorderL + sprData.BorderR) * SpriteAtlas.ColorTexture.height);
+                        srcHeightBorder = (int) ((sprData.BorderT + sprData.BorderB) * SpriteAtlas.ColorTexture.height);
                         srcHeightCenter = (int) (sprData.CenterHeight * SpriteAtlas.ColorTexture.height);
                         Height = Mathf.RoundToInt ((Height - srcHeightBorder) / (float) srcHeightCenter) * srcHeightCenter + srcHeightBorder;
                         break;
