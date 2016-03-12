@@ -8,11 +8,20 @@ using UnityEngine;
 namespace LeopotamGroup.Common {
     public abstract class MonoBehaviourBase : MonoBehaviour {
         /// <summary>
-        /// Patched transform, gains 2-2.5x performance boost compare to standard. Be aware, enable GO + component
-        /// before use this property (once).
+        /// Patched transform, gains 2x performance boost compare to standard.
         /// </summary>
         /// <value>The transform.</value>
-        public new Transform transform { get; private set; }
+        public new Transform transform {
+            get {
+                if (!_isTransformPatched) {
+                    _isTransformPatched = true;
+                    _cachedTransform = base.transform;
+                }
+                return _cachedTransform;
+            }
+        }
+
+        bool _isTransformPatched;
 
         /// <summary>
         /// Internal cached transform. Dont be fool to overwrite it, no protection for additional 2x performance boost.
@@ -20,8 +29,9 @@ namespace LeopotamGroup.Common {
         protected Transform _cachedTransform;
 
         protected virtual void Awake () {
-            transform = base.transform;
-            _cachedTransform = transform;
+            if (_cachedTransform == null) {
+                _cachedTransform = base.transform;
+            }
         }
     }
 }

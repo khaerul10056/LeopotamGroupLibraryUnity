@@ -16,10 +16,16 @@ namespace LeopotamGroup.LazyGui.Core {
         TiledBoth
     }
 
-    public enum Alignment {
+    public enum HorizontalAlignment {
         Left = 0,
         Right,
         Center
+    }
+
+    public enum VerticalAlignment {
+        Top = 0,
+        Center,
+        Bottom
     }
 
     [Serializable]

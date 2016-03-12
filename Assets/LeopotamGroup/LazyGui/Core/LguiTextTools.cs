@@ -18,7 +18,7 @@ namespace LeopotamGroup.LazyGui.Core {
 
         static Vector2 _uv3;
 
-        public static void FillText (Mesh mesh, int width, int height, Color color, Alignment align, Font font, string text, int fontSize, float lineHgt) {
+        public static void FillText (Mesh mesh, int width, int height, Color color, HorizontalAlignment align, Font font, string text, int fontSize, float lineHgt) {
             if (mesh == null) {
                 return;
             }
@@ -65,10 +65,10 @@ namespace LeopotamGroup.LazyGui.Core {
 
                 pos.y = -line * lineHeight;
                 switch (align) {
-                    case Alignment.Center:
+                    case HorizontalAlignment.Center:
                         pos.x = -lineWidth * 0.5f;
                         break;
-                    case Alignment.Right:
+                    case HorizontalAlignment.Right:
                         pos.x = width * 0.5f - lineWidth;
                         break;
                     default:

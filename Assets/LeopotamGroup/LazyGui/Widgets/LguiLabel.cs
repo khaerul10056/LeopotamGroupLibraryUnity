@@ -51,7 +51,7 @@ namespace LeopotamGroup.LazyGui.Widgets {
             }
         }
 
-        public Alignment Alignment {
+        public HorizontalAlignment Alignment {
             get { return _alignment; }
             set {
                 if (value != _alignment) {
@@ -73,7 +73,7 @@ namespace LeopotamGroup.LazyGui.Widgets {
 
         [HideInInspector]
         [SerializeField]
-        Alignment _alignment = Alignment.Center;
+        HorizontalAlignment _alignment = HorizontalAlignment.Center;
 
         [HideInInspector]
         [SerializeField]
