@@ -163,9 +163,9 @@ namespace LeopotamGroup.LazyGui.UnityEditors {
         }
 
         public static void UpdateVisuals (UnityEngine.Object obj) {
-            var widget = obj as LguiWidgetBase;
+            var widget = obj as LguiVisualBase;
             if (widget != null) {
-                widget.SendMessage ("UpdateVisuals", ChangeType.All, SendMessageOptions.DontRequireReceiver);
+                widget.SendMessage ("NeedToUpdateVisuals", ChangeType.All, SendMessageOptions.DontRequireReceiver);
                 widget.SendMessage (LguiConsts.MethodOnLguiVisualSizeChanged, SendMessageOptions.DontRequireReceiver);
             } else {
                 EditorUtility.SetDirty (obj);

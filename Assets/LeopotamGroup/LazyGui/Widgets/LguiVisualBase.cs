@@ -3,13 +3,14 @@
 // Copyright (c) 2012-2016 Leopotam <leopotam@gmail.com>
 //-------------------------------------------------------
 
+using LeopotamGroup.Common;
 using LeopotamGroup.LazyGui.Core;
 using LeopotamGroup.LazyGui.Layout;
 using UnityEngine;
 
 namespace LeopotamGroup.LazyGui.Widgets {
     [ExecuteInEditMode]
-    public abstract class LguiVisualBase : LguiWidgetBase {
+    public abstract class LguiVisualBase : MonoBehaviourBase {
         public ChangeType VisualChanges { get; private set; }
 
         public virtual void AddVisualChanges (ChangeType changes) {
@@ -86,22 +87,19 @@ namespace LeopotamGroup.LazyGui.Widgets {
             if (VisualChanges != ChangeType.None) {
                 var changes = VisualChanges;
                 VisualChanges = ChangeType.None;
-                UpdateVisuals (changes);
+                NeedToUpdateVisuals (changes);
             }
         }
 
-        protected override bool UpdateVisuals (ChangeType changes) {
-            if (!base.UpdateVisuals (changes)) {
-                return false;
-            }
+        protected virtual bool NeedToUpdateVisuals (ChangeType changes) {
             if (_visualPanel == null || ((changes & ChangeType.Panel) != ChangeType.None)) {
                 _visualPanel = GetComponentInParent<LguiPanel> ();
                 if (_visualPanel == null) {
-                    _visualPanel = CachedTransform.root.gameObject.AddComponent<LguiPanel> ();
+                    _visualPanel = transform.root.gameObject.AddComponent<LguiPanel> ();
                     _visualPanel.InitPhysics ();
                 }
-                while (!_visualPanel.IsPanelActive && _visualPanel.CachedTransform.parent != null) {
-                    _visualPanel = _visualPanel.CachedTransform.parent.GetComponentInParent<LguiPanel> ();
+                while (!_visualPanel.IsPanelActive && _visualPanel.transform.parent != null) {
+                    _visualPanel = _visualPanel.transform.parent.GetComponentInParent<LguiPanel> ();
                 }
             }
 
@@ -109,7 +107,7 @@ namespace LeopotamGroup.LazyGui.Widgets {
                 return false;
             }
 
-            var pos = CachedTransform.position;
+            var pos = transform.position;
 
             if (_visualPanel.ClipType != PanelClipType.None) {
                 // Clipping by height.
@@ -142,7 +140,7 @@ namespace LeopotamGroup.LazyGui.Widgets {
             }
 
             if ((changes & ChangeType.Depth) != ChangeType.None) {
-                CachedTransform.position = _visualPanel.GetDepth (this);
+                _cachedTransform.position = _visualPanel.GetDepth (this);
             }
             return true;
         }

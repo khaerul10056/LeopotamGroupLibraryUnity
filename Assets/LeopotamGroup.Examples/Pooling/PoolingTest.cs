@@ -18,9 +18,9 @@ namespace LeopotamGroup.Examples.PoolingTest {
             PoolObject obj;
             while (true) {
                 obj = _pool.Get ();
-                obj.CachedTransform.localPosition = new Vector3 (
+                obj.transform.localPosition = new Vector3 (
                     Mathf.Lerp (-1f, 1f, Rng.GetFloatStatic ()), Mathf.Lerp (-1f, 1f, Rng.GetFloatStatic ()), 0f);
-                obj.CachedTransform.localRotation =
+                obj.transform.localRotation =
                     Quaternion.Euler (new Vector3 (0f, Mathf.Lerp (-180f, 1f, Rng.GetFloatStatic ()), 0f));
                 obj.SetActive (true);
                 yield return waiter;

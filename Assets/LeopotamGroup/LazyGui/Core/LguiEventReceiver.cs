@@ -3,10 +3,11 @@
 // Copyright (c) 2012-2016 Leopotam <leopotam@gmail.com>
 //-------------------------------------------------------
 
+using LeopotamGroup.Common;
 using UnityEngine;
 
 namespace LeopotamGroup.LazyGui.Core {
-    public class LguiEventReceiver : MonoBehaviour {
+    public class LguiEventReceiver : MonoBehaviourBase {
         public OnTouchEventHandler OnPress = new OnTouchEventHandler ();
 
         public OnTouchEventHandler OnClick = new OnTouchEventHandler ();

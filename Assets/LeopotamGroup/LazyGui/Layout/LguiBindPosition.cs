@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace LeopotamGroup.LazyGui.Layout {
     [ExecuteInEditMode]
-    public class LguiBindPosition : MonoBehaviour {
+    public class LguiBindPosition : MonoBehaviourBase {
         public bool Once = true;
 
         [Range (0f, 1f)]
@@ -18,10 +18,7 @@ namespace LeopotamGroup.LazyGui.Layout {
         [Range (0f, 1f)]
         public float Vertical = 0.5f;
 
-        Transform _cachedTransform;
-
         void OnEnable () {
-            _cachedTransform = transform;
             Validate ();
         }
 
@@ -37,7 +34,7 @@ namespace LeopotamGroup.LazyGui.Layout {
             Horizontal = Mathf.Clamp01 (Horizontal);
             Vertical = Mathf.Clamp01 (Vertical);
             if (cam.pixelRect.width > 0) {
-                _cachedTransform.position =
+                transform.position =
                     cam.ScreenToWorldPoint (new Vector3 (cam.pixelWidth * Horizontal, cam.pixelHeight * Vertical, 0f));
             }
         }

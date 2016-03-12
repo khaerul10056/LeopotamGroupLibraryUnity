@@ -70,7 +70,8 @@ namespace LeopotamGroup.LazyGui.Widgets {
 
         MeshFilter _meshFilter;
 
-        void Awake () {
+        protected override void Awake () {
+            base.Awake ();
             _meshFilter = GetComponent<MeshFilter> ();
             _meshFilter.sharedMesh = null;
         }
@@ -152,8 +153,8 @@ namespace LeopotamGroup.LazyGui.Widgets {
             }
         }
 
-        protected override bool UpdateVisuals (ChangeType changes) {
-            if (!base.UpdateVisuals (changes)) {
+        protected override bool NeedToUpdateVisuals (ChangeType changes) {
+            if (!base.NeedToUpdateVisuals (changes)) {
                 return false;
             }
 

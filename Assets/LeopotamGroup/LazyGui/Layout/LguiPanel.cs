@@ -4,6 +4,7 @@
 //-------------------------------------------------------
 
 using System.Collections.Generic;
+using LeopotamGroup.Common;
 using LeopotamGroup.LazyGui.Core;
 using LeopotamGroup.LazyGui.Widgets;
 using UnityEngine;
@@ -11,7 +12,7 @@ using UnityEngine;
 namespace LeopotamGroup.LazyGui.Layout {
     [ExecuteInEditMode]
     [RequireComponent (typeof (Rigidbody))]
-    public sealed class LguiPanel : MonoBehaviour {
+    public sealed class LguiPanel : MonoBehaviourBase {
         public PanelClipType ClipType {
             get { return _clipType; }
             set {
@@ -47,17 +48,6 @@ namespace LeopotamGroup.LazyGui.Layout {
 
         public bool IsPanelActive { get; private set; }
 
-        public Transform CachedTransform {
-            get {
-                if (_cachedTransform == null) {
-                    _cachedTransform = transform;
-                }
-                return _cachedTransform;
-            }
-        }
-
-        Transform _cachedTransform;
-
         [HideInInspector]
         [SerializeField]
         PanelClipType _clipType = PanelClipType.None;
@@ -78,10 +68,9 @@ namespace LeopotamGroup.LazyGui.Layout {
 
         const float DepthSlice = 0.5f;
 
-        void Awake () {
-            var rb = GetComponent<Rigidbody> ();
-            rb.useGravity = false;
-            rb.isKinematic = true;
+        protected override void Awake () {
+            base.Awake ();
+            InitPhysics ();
         }
 
         void OnEnable () {
@@ -132,9 +121,9 @@ namespace LeopotamGroup.LazyGui.Layout {
         }
 
         public Vector3 GetDepth (LguiVisualBase sprite) {
-            var pos = CachedTransform.InverseTransformPoint (sprite.CachedTransform.position);
+            var pos = transform.InverseTransformPoint (sprite.transform.position);
             pos.z = -DepthSlice * sprite.Depth;
-            return CachedTransform.TransformPoint (pos);
+            return _cachedTransform.TransformPoint (pos);
         }
 
         public Material GetMaterial (LguiAtlas atlas) {

@@ -15,7 +15,7 @@ namespace LeopotamGroup.LazyGui.Core.UnityEditors {
         public override void OnInspectorGUI () {
             bool isFound = false;
             foreach (var item in targets) {
-                if ((item as Transform).GetComponent <LguiWidgetBase> ()) {
+                if ((item as Transform).GetComponent <LguiVisualBase> ()) {
                     isFound = true;
                     break;
                 }

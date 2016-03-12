@@ -23,10 +23,8 @@ namespace LeopotamGroup.LazyGui.Widgets {
 
         public float TweenTime = 0.2f;
 
-        public Transform CachedTransform { get; private set; }
-
-        void Awake () {
-            CachedTransform = transform;
+        protected override void Awake () {
+            base.Awake ();
             OnPress.AddListener (OnBtnPressed);
             OnEnableChanged.AddListener (OnBtnStateChanged);
             UpdateAttachedWidgets (enabled ? EnableColor : DisableColor);

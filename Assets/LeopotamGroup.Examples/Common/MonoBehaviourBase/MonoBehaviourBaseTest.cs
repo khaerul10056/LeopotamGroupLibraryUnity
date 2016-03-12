@@ -9,6 +9,7 @@ namespace LeopotamGroup.Examples.Common.MonoBehaviourTest {
 
             var sw = new System.Diagnostics.Stopwatch ();
             var T = 1000000;
+            #pragma warning disable 219
             Transform t;
 
             sw.Reset ();
@@ -35,6 +36,7 @@ namespace LeopotamGroup.Examples.Common.MonoBehaviourTest {
             }
             sw.Stop ();
             Debug.Log (sw.ElapsedTicks + " - standard transform, access from external component");
+            #pragma warning restore 219
         }
     }
 }

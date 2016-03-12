@@ -3,13 +3,13 @@
 // Copyright (c) 2012-2016 Leopotam <leopotam@gmail.com>
 //-------------------------------------------------------
 
+using LeopotamGroup.Common;
 using UnityEngine;
 
 namespace LeopotamGroup.LazyGui.Layout {
-    public class LguiGrid : MonoBehaviour {
+    [ExecuteInEditMode]
+    public class LguiGrid : MonoBehaviourBase {
         public bool NeedValidate = true;
-
-//        public bool IsSorted = false;
 
         public float CellWidth = 100f;
 
@@ -21,9 +21,7 @@ namespace LeopotamGroup.LazyGui.Layout {
 
         public TextAlignment AlignInLine = TextAlignment.Left;
 
-        Transform _cachedTransform;
-
-        void Update () {
+        void LateUpdate () {
             if (NeedValidate) {
                 if (Application.isPlaying) {
                     NeedValidate = false;
@@ -33,10 +31,7 @@ namespace LeopotamGroup.LazyGui.Layout {
         }
 
         public void Validate () {
-            if (_cachedTransform == null) {
-                _cachedTransform = transform;
-            }
-//            var sortedNames = IsSorted ? LguiSystem.GetSortedTransformChildren (_cachedTransform) : null;
+            var root = transform;
             Transform tr;
             Vector3 pos;
             float xOrigin;
@@ -55,8 +50,8 @@ namespace LeopotamGroup.LazyGui.Layout {
                     yOrigin = 0.5f * CellHeight;
                     break;
             }
-            for (int i = 0, iMax = _cachedTransform.childCount; i < iMax; i++) {
-                tr = _cachedTransform.GetChild (i); // IsSorted ? _cachedTransform.Find (sortedNames[i]) : _cachedTransform.GetChild (i);
+            for (int i = 0, iMax = root.childCount; i < iMax; i++) {
+                tr = root.GetChild (i);
                 pos = tr.localPosition;
 
                 if (isVertical) {

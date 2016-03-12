@@ -3,10 +3,11 @@
 // Copyright (c) 2012-2016 Leopotam <leopotam@gmail.com>
 //-------------------------------------------------------
 
+using LeopotamGroup.Common;
 using UnityEngine;
 
 namespace LeopotamGroup.Pooling {
-    public sealed class PoolObject : MonoBehaviour {
+    public sealed class PoolObject : MonoBehaviourBase {
         public PoolContainer Pool {
             get { return _pool; }
             set {
@@ -19,13 +20,7 @@ namespace LeopotamGroup.Pooling {
             }
         }
 
-        public Transform CachedTransform { get; private set; }
-
         PoolContainer _pool;
-
-        void Awake () {
-            CachedTransform = transform;
-        }
 
         public void Recycle () {
             if (Pool != null) {
