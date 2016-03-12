@@ -4,6 +4,7 @@
 //-------------------------------------------------------
 
 using LeopotamGroup.Common;
+using LeopotamGroup.LazyGui.Core;
 using UnityEngine;
 
 namespace LeopotamGroup.LazyGui.Layout {
@@ -15,11 +16,11 @@ namespace LeopotamGroup.LazyGui.Layout {
 
         public float CellHeight = 100f;
 
-        public int LineLength = 0;
+        public int ItemsInRow = 0;
 
-        public bool isVertical = false;
+        public bool VerticalOrder = true;
 
-        public TextAlignment AlignInLine = TextAlignment.Left;
+        public VerticalAlignment VerticalAlignment = VerticalAlignment.Top;
 
         void LateUpdate () {
             if (NeedValidate) {
@@ -32,37 +33,43 @@ namespace LeopotamGroup.LazyGui.Layout {
 
         public void Validate () {
             var root = transform;
-            Transform tr;
-            Vector3 pos;
-            float xOrigin;
-            float yOrigin;
-            switch (AlignInLine) {
-                case TextAlignment.Center:
-                    xOrigin = isVertical ? 0.5f * CellWidth : (0.5f - LineLength * 0.5f) * CellWidth; 
-                    yOrigin = isVertical ? (0.5f - LineLength * 0.5f) * CellHeight : 0.5f * CellHeight;
-                    break;
-                case TextAlignment.Right:
-                    xOrigin = isVertical ? 0.5f * CellWidth : (0.5f - LineLength) * CellWidth; 
-                    yOrigin = isVertical ? (0.5f - LineLength) * CellHeight : 0.5f * CellHeight;
-                    break;
-                default:
-                    xOrigin = 0.5f * CellWidth;
-                    yOrigin = 0.5f * CellHeight;
-                    break;
-            }
-            for (int i = 0, iMax = root.childCount; i < iMax; i++) {
-                tr = root.GetChild (i);
-                pos = tr.localPosition;
+            var childCount = root.childCount;
 
-                if (isVertical) {
-                    pos.x = (LineLength > 0 ? (i / LineLength) : 0) * CellWidth + xOrigin;
-                    pos.y = (LineLength > 0 ? (i % LineLength) : i) * CellHeight + yOrigin;
-                } else {
-                    pos.x = (LineLength > 0 ? (i % LineLength) : i) * CellWidth + xOrigin;
-                    pos.y = (LineLength > 0 ? (i / LineLength) : 0) * CellHeight + yOrigin;
+            if (childCount > 0) {
+                Transform tr;
+                Vector3 pos;
+                float offset;
+
+                // For top to down direction.
+                var cH = -CellHeight;
+                var iIR = (float) (ItemsInRow == 0 ? 1 : ItemsInRow);
+
+                switch (VerticalAlignment) {
+                    case VerticalAlignment.Bottom:
+                        offset = CellHeight * childCount / iIR;
+                        break;
+                    case VerticalAlignment.Center:
+                        offset = CellHeight * childCount / iIR * 0.5f;
+                        break;
+                    default:
+                        offset = 0f;
+                        break;
                 }
 
-                tr.localPosition = pos;
+                for (var i = 0; i < childCount; i++) {
+                    tr = root.GetChild (i);
+                    pos = tr.localPosition;
+
+                    if (VerticalOrder) {
+                        pos.x = (ItemsInRow > 0 ? (i / ItemsInRow) : 0) * CellWidth;
+                        pos.y = (ItemsInRow > 0 ? (i % ItemsInRow) : i) * cH + offset;
+                    } else {
+                        pos.x = (ItemsInRow > 0 ? (i % ItemsInRow) : i) * CellWidth;
+                        pos.y = (ItemsInRow > 0 ? (i / ItemsInRow) : 0) * cH + offset;
+                    }
+
+                    tr.localPosition = pos;
+                }
             }
         }
     }
