@@ -168,6 +168,7 @@ namespace LeopotamGroup.LazyGui.UnityEditors {
                 widget.SendMessage ("NeedToUpdateVisuals", ChangeType.All, SendMessageOptions.DontRequireReceiver);
                 widget.SendMessage (LguiConsts.MethodOnLguiVisualSizeChanged, SendMessageOptions.DontRequireReceiver);
             } else {
+                Debug.LogWarning ("invalid request for update widget", obj);
                 EditorUtility.SetDirty (obj);
             }
         }

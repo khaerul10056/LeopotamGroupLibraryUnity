@@ -84,6 +84,15 @@ namespace LeopotamGroup.LazyGui.Widgets.UnityEditors {
             EditorGUILayout.PropertyField (serializedObject.FindProperty ("_depth"));
             EditorGUILayout.PropertyField (serializedObject.FindProperty ("_color"));
 
+            var prop = serializedObject.FindProperty ("_effect");
+            EditorGUILayout.PropertyField (prop);
+
+            if (prop.enumValueIndex != 0) {
+                prop = serializedObject.FindProperty ("_effectValue");
+                prop.vector2Value = EditorGUILayout.Vector2Field ("Effect Value", prop.vector2Value);
+                EditorGUILayout.PropertyField (serializedObject.FindProperty ("_effectColor"));
+            }
+
             if (needUpdate || serializedObject.ApplyModifiedProperties () || (Event.current.type == EventType.ExecuteCommand && Event.current.commandName == "UndoRedoPerformed")) {
                 EditorIntegration.UpdateVisuals (target);
             }

@@ -25,6 +25,12 @@ namespace LeopotamGroup.LazyGui.Core {
 
         static Rect _uvRect2;
 
+        static SpriteEffect _effect;
+
+        static Vector2 _effectValue;
+
+        static Color _effectColor;
+
         public static Mesh GetNewMesh () {
             var mesh = new Mesh ();
             mesh.MarkDynamic ();
@@ -32,32 +38,113 @@ namespace LeopotamGroup.LazyGui.Core {
             return mesh;
         }
 
-        public static void PrepareBuffer () {
+        public static void PrepareBuffer (SpriteEffect effect = SpriteEffect.None, Vector2? effectValue = null, Color? effectColor = null) {
             _cacheV.Clear ();
             _cacheUV.Clear ();
             _cacheC.Clear ();
             _cacheT.Clear ();
+            _effect = effect;
+            _effectValue = effectValue.HasValue ? effectValue.Value : Vector2.zero;
+            _effectColor = effectColor.HasValue ? effectColor.Value : Color.black;
         }
 
         public static void FillBuffer (ref Rect v, ref Rect uv, ref Color color) {
-            FillBufferT ();
-            FillBufferVC (ref v, ref color);
-            _cacheUV.Add (new Vector2 (uv.xMin, uv.yMin));
-            _cacheUV.Add (new Vector2 (uv.xMin, uv.yMax));
-            _cacheUV.Add (new Vector2 (uv.xMax, uv.yMax));
-            _cacheUV.Add (new Vector2 (uv.xMax, uv.yMin));
+            var uv0 = new Vector2 (uv.xMin, uv.yMin);
+            var uv1 = new Vector2 (uv.xMin, uv.yMax);
+            var uv2 = new Vector2 (uv.xMax, uv.yMax);
+            var uv3 = new Vector2 (uv.xMax, uv.yMin);
+            FillBuffer (ref v, ref uv0, ref uv1, ref uv2, ref uv3, ref color);
         }
 
         public static void FillBuffer (ref Rect v, ref Vector2 uv0, ref Vector2 uv1, ref Vector2 uv2, ref Vector2 uv3, ref Color color) {
+            var v0 = new Vector3 (v.xMin, v.yMin, 0f);
+            var v1 = new Vector3 (v.xMin, v.yMax, 0f);
+            var v2 = new Vector3 (v.xMax, v.yMax, 0f);
+            var v3 = new Vector3 (v.xMax, v.yMin, 0f);
+            FillBuffer (ref v0, ref v1, ref v2, ref v3, ref uv0, ref uv1, ref uv2, ref uv3, ref color);
+        }
+
+        public static void FillBuffer (
+            ref Vector3 v0, ref Vector3 v1, ref Vector3 v2, ref Vector3 v3,
+            ref Vector2 uv0, ref Vector2 uv1, ref Vector2 uv2, ref Vector2 uv3, ref Color color) {
+
+            if (_effect != SpriteEffect.None) {
+//                Debug.LogFormat ("effect {0} / {1} / {2}", _effect, _effectValue, _effectColor);
+                FillBufferT ();
+
+                _cacheC.Add (_effectColor);
+                _cacheC.Add (_effectColor);
+                _cacheC.Add (_effectColor);
+                _cacheC.Add (_effectColor);
+
+                _cacheUV.Add (uv0);
+                _cacheUV.Add (uv1);
+                _cacheUV.Add (uv2);
+                _cacheUV.Add (uv3);
+                switch (_effect) {
+                    case SpriteEffect.Shadow:
+                        _cacheV.Add (new Vector3 (v0.x + _effectValue.x, v0.y - _effectValue.y, v0.z + 0.01f));
+                        _cacheV.Add (new Vector3 (v1.x + _effectValue.x, v1.y - _effectValue.y, v1.z + 0.01f));
+                        _cacheV.Add (new Vector3 (v2.x + _effectValue.x, v2.y - _effectValue.y, v2.z + 0.01f));
+                        _cacheV.Add (new Vector3 (v3.x + _effectValue.x, v3.y - _effectValue.y, v3.z + 0.01f));
+                        break;
+                    case SpriteEffect.Outline:
+                        for (int i = 0; i < 3; i++) {
+                            _cacheC.Add (_effectColor);
+                            _cacheC.Add (_effectColor);
+                            _cacheC.Add (_effectColor);
+                            _cacheC.Add (_effectColor);
+                            _cacheUV.Add (uv0);
+                            _cacheUV.Add (uv1);
+                            _cacheUV.Add (uv2);
+                            _cacheUV.Add (uv3);
+                        }
+
+                        _cacheV.Add (new Vector3 (v0.x + _effectValue.x, v0.y, v0.z + 0.01f));
+                        _cacheV.Add (new Vector3 (v1.x + _effectValue.x, v1.y, v1.z + 0.01f));
+                        _cacheV.Add (new Vector3 (v2.x + _effectValue.x, v2.y, v2.z + 0.01f));
+                        _cacheV.Add (new Vector3 (v3.x + _effectValue.x, v3.y, v3.z + 0.01f));
+
+                        FillBufferT ();
+                        _cacheV.Add (new Vector3 (v0.x - _effectValue.x, v0.y, v0.z + 0.01f));
+                        _cacheV.Add (new Vector3 (v1.x - _effectValue.x, v1.y, v1.z + 0.01f));
+                        _cacheV.Add (new Vector3 (v2.x - _effectValue.x, v2.y, v2.z + 0.01f));
+                        _cacheV.Add (new Vector3 (v3.x - _effectValue.x, v3.y, v3.z + 0.01f));
+
+                        FillBufferT ();
+                        _cacheV.Add (new Vector3 (v0.x, v0.y + _effectValue.y, v0.z + 0.01f));
+                        _cacheV.Add (new Vector3 (v1.x, v1.y + _effectValue.y, v1.z + 0.01f));
+                        _cacheV.Add (new Vector3 (v2.x, v2.y + _effectValue.y, v2.z + 0.01f));
+                        _cacheV.Add (new Vector3 (v3.x, v3.y + _effectValue.y, v3.z + 0.01f));
+
+                        FillBufferT ();
+                        _cacheV.Add (new Vector3 (v0.x, v0.y - _effectValue.y, v0.z + 0.01f));
+                        _cacheV.Add (new Vector3 (v1.x, v1.y - _effectValue.y, v1.z + 0.01f));
+                        _cacheV.Add (new Vector3 (v2.x, v2.y - _effectValue.y, v2.z + 0.01f));
+                        _cacheV.Add (new Vector3 (v3.x, v3.y - _effectValue.y, v3.z + 0.01f));
+                        break;
+                }
+            }
+
             FillBufferT ();
-            FillBufferVC (ref v, ref color);
+
+            _cacheC.Add (color);
+            _cacheC.Add (color);
+            _cacheC.Add (color);
+            _cacheC.Add (color);
+
+            _cacheV.Add (v0);
+            _cacheV.Add (v1);
+            _cacheV.Add (v2);
+            _cacheV.Add (v3);
+
             _cacheUV.Add (uv0);
             _cacheUV.Add (uv1);
             _cacheUV.Add (uv2);
             _cacheUV.Add (uv3);
         }
 
-        static void FillBufferVC (ref Rect v, ref Color color) {
+        static void FillBufferVC1 (ref Rect v, ref Color color) {
             _cacheC.Add (color);
             _cacheC.Add (color);
             _cacheC.Add (color);
@@ -94,11 +181,12 @@ namespace LeopotamGroup.LazyGui.Core {
             }
         }
 
-        public static void FillSimpleSprite (Mesh mesh, int width, int height, Color color, SpriteData spriteData) {
+        public static void FillSimpleSprite (Mesh mesh, int width, int height, Color color, SpriteData spriteData,
+            SpriteEffect effect = SpriteEffect.None, Vector2? effectValue = null, Color? effectColor = null) {
             if (mesh == null) {
                 return;
             }
-            PrepareBuffer ();
+            PrepareBuffer (effect, effectValue, effectColor);
             if (spriteData != null) {
                 var halfW = 0.5f * width;
                 var halfH = 0.5f * height;
@@ -111,11 +199,12 @@ namespace LeopotamGroup.LazyGui.Core {
 
         public static void FillSlicedTiledSprite (
             Mesh mesh, int width, int height, Color color, SpriteData sd,
-            Vector2 texSize, bool isHorTiled, bool isVerTiled, bool fillCenter) {
+            Vector2 texSize, bool isHorTiled, bool isVerTiled, bool fillCenter,
+            SpriteEffect effect = SpriteEffect.None, Vector2? effectValue = null, Color? effectColor = null) {
             if (mesh == null) {
                 return;
             }
-            PrepareBuffer ();
+            PrepareBuffer (effect, effectValue, effectColor);
             if (sd != null && width > 0 && height > 0) {
                 var leftBorderV = (int) (sd.BorderL * texSize.x);
                 var rightBorderV = (int) (sd.BorderR * texSize.x);

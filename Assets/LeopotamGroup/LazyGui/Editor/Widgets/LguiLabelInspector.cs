@@ -15,8 +15,11 @@ namespace LeopotamGroup.LazyGui.Widgets.UnityEditors {
         public override void OnInspectorGUI () {
             serializedObject.Update ();
             EditorGUILayout.PropertyField (serializedObject.FindProperty ("_font"));
-            EditorGUILayout.PropertyField (serializedObject.FindProperty ("_fontSize"));
-            EditorGUILayout.PropertyField (serializedObject.FindProperty ("_fontStyle"));
+            var prop = serializedObject.FindProperty ("_fontSize");
+            EditorGUILayout.PropertyField (prop);
+            if (prop.intValue < 4) {
+                prop.intValue = 4;
+            }
             EditorGUILayout.PropertyField (serializedObject.FindProperty ("_alignment"));
             EditorGUILayout.PropertyField (serializedObject.FindProperty ("_text"));
             EditorGUILayout.PropertyField (serializedObject.FindProperty ("_width"));
@@ -24,11 +27,19 @@ namespace LeopotamGroup.LazyGui.Widgets.UnityEditors {
             EditorGUILayout.PropertyField (serializedObject.FindProperty ("_depth"));
             EditorGUILayout.PropertyField (serializedObject.FindProperty ("_color"));
 
-            var propLineHeight = serializedObject.FindProperty ("_lineHeight");
-            var prevLineHeight = propLineHeight.floatValue;
-            EditorGUILayout.PropertyField (propLineHeight);
-            if (propLineHeight.floatValue <= 0f) {
-                propLineHeight.floatValue = prevLineHeight;
+            prop = serializedObject.FindProperty ("_lineHeight");
+            EditorGUILayout.PropertyField (prop);
+            if (prop.floatValue <= 0.1f) {
+                prop.floatValue = 0.1f;
+            }
+
+            prop = serializedObject.FindProperty ("_effect");
+            EditorGUILayout.PropertyField (prop);
+
+            if (prop.enumValueIndex != 0) {
+                prop = serializedObject.FindProperty ("_effectValue");
+                prop.vector2Value = EditorGUILayout.Vector2Field ("Effect Value", prop.vector2Value);
+                EditorGUILayout.PropertyField (serializedObject.FindProperty ("_effectColor"));
             }
 
             if (serializedObject.ApplyModifiedProperties () || (Event.current.type == EventType.ExecuteCommand && Event.current.commandName == "UndoRedoPerformed")) {
@@ -41,27 +52,6 @@ namespace LeopotamGroup.LazyGui.Widgets.UnityEditors {
             if (lbl.IsVisible) {
                 Gizmos.color = Color.white;
                 Gizmos.DrawWireCube (lbl.transform.position, new Vector3 (lbl.Width, lbl.Height, 0f));
-            }
-        }
-    }
-
-    sealed class LguiLabelOnSceneSaveFixer : UnityEditor.AssetModificationProcessor {
-        static string[] OnWillSaveAssets (string[] paths) {
-            var currentScene = SceneManager.GetActiveScene ().name;
-            foreach (var path in paths) {
-                if (path == currentScene) {
-                    FixLabels ();
-                    break;
-                }
-            }
-
-            return paths;
-        }
-
-        static void FixLabels () {
-            foreach (var item in Object.FindObjectsOfType<LguiLabel> ()) {
-                item.AddVisualChanges (ChangeType.Geometry);
-                EditorUtility.SetDirty (item);
             }
         }
     }

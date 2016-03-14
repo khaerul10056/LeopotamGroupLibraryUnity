@@ -16,6 +16,12 @@ namespace LeopotamGroup.LazyGui.Core {
         TiledBoth
     }
 
+    public enum SpriteEffect {
+        None = 0,
+        Shadow,
+        Outline
+    }
+
     public enum HorizontalAlignment {
         Left = 0,
         Right,

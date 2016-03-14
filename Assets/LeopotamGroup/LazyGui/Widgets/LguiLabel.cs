@@ -31,16 +31,6 @@ namespace LeopotamGroup.LazyGui.Widgets {
             }
         }
 
-        public FontStyle FontStyle {
-            get { return _fontStyle; }
-            set {
-                if (value != _fontStyle) {
-                    _fontStyle = value;
-                    AddVisualChanges (ChangeType.Geometry);
-                }
-            }
-        }
-
         public string Text {
             get { return _text; }
             set {
@@ -51,7 +41,7 @@ namespace LeopotamGroup.LazyGui.Widgets {
             }
         }
 
-        public HorizontalAlignment Alignment {
+        public TextAnchor Alignment {
             get { return _alignment; }
             set {
                 if (value != _alignment) {
@@ -71,9 +61,39 @@ namespace LeopotamGroup.LazyGui.Widgets {
             }
         }
 
+        public SpriteEffect Effect {
+            get { return _effect; }
+            set {
+                if (_effect != value) {
+                    _effect = value;
+                    AddVisualChanges (ChangeType.Geometry);
+                }
+            }
+        }
+
+        public Vector2 EffectValue {
+            get { return _effectValue; }
+            set {
+                if (_effectValue != value) {
+                    _effectValue = value;
+                    AddVisualChanges (ChangeType.Geometry);
+                }
+            }
+        }
+
+        public Color EffectColor {
+            get { return _effectColor; }
+            set {
+                if (_effectColor != value) {
+                    _effectColor = value;
+                    AddVisualChanges (ChangeType.Geometry);
+                }
+            }
+        }
+
         [HideInInspector]
         [SerializeField]
-        HorizontalAlignment _alignment = HorizontalAlignment.Center;
+        TextAnchor _alignment = TextAnchor.MiddleCenter;
 
         [HideInInspector]
         [SerializeField]
@@ -83,10 +103,6 @@ namespace LeopotamGroup.LazyGui.Widgets {
         [SerializeField]
         int _fontSize = 32;
 
-        [HideInInspector]
-        [SerializeField]
-        FontStyle _fontStyle = FontStyle.Normal;
-
         [Multiline (5)]
         [HideInInspector]
         [SerializeField]
@@ -95,6 +111,18 @@ namespace LeopotamGroup.LazyGui.Widgets {
         [HideInInspector]
         [SerializeField]
         float _lineHeight = 1f;
+
+        [HideInInspector]
+        [SerializeField]
+        SpriteEffect _effect = SpriteEffect.None;
+
+        [HideInInspector]
+        [SerializeField]
+        Vector2 _effectValue = Vector2.one;
+
+        [HideInInspector]
+        [SerializeField]
+        Color _effectColor = Color.black;
 
         MeshFilter _meshFilter;
 
@@ -140,7 +168,7 @@ namespace LeopotamGroup.LazyGui.Widgets {
                     _meshRenderer.sharedMaterial = _visualPanel.GetFontMaterial (Font);
 
                     if ((changes & (ChangeType.Geometry | ChangeType.Color)) != ChangeType.None) {
-                        LguiTextTools.FillText (_meshFilter.sharedMesh, Width, Height, Color, Alignment, Font, Text, FontSize, LineHeight);
+                        LguiTextTools.FillText (_meshFilter.sharedMesh, Width, Height, Text, Color, Alignment, Font, FontSize, LineHeight, _effect, _effectValue, _effectColor);
                     }
                 }
             }

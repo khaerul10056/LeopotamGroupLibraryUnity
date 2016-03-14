@@ -68,6 +68,18 @@ namespace LeopotamGroup.LazyGui.Widgets {
         [SerializeField]
         bool _isSpriteCenterFilled = true;
 
+        [HideInInspector]
+        [SerializeField]
+        SpriteEffect _effect = SpriteEffect.None;
+
+        [HideInInspector]
+        [SerializeField]
+        Vector2 _effectValue = Vector2.one;
+
+        [HideInInspector]
+        [SerializeField]
+        Color _effectColor = Color.black;
+
         MeshFilter _meshFilter;
 
         protected override void Awake () {
@@ -164,14 +176,15 @@ namespace LeopotamGroup.LazyGui.Widgets {
                     if ((changes & (ChangeType.Geometry | ChangeType.Color)) != ChangeType.None) {
                         var sprData = SpriteAtlas.GetSpriteData (SpriteName);
                         if (SpriteType == SpriteType.Simple) {
-                            LguiMeshTools.FillSimpleSprite (_meshFilter.sharedMesh, Width, Height, Color, sprData);
+                            LguiMeshTools.FillSimpleSprite (_meshFilter.sharedMesh, Width, Height, Color, sprData, _effect, _effectValue, _effectColor);
                         } else {
                             var texSize = new Vector2 (SpriteAtlas.ColorTexture.width, SpriteAtlas.ColorTexture.height);
                             var isHorTiled = SpriteType == SpriteType.TiledBoth || SpriteType == SpriteType.TiledHorizontal;
                             var isVerTiled = SpriteType == SpriteType.TiledBoth || SpriteType == SpriteType.TiledVertical;
                             LguiMeshTools.FillSlicedTiledSprite (
                                 _meshFilter.sharedMesh, Width, Height, Color, sprData,
-                                texSize, isHorTiled, isVerTiled, IsSpriteCenterFilled);
+                                texSize, isHorTiled, isVerTiled, IsSpriteCenterFilled,
+                                _effect, _effectValue, _effectColor);
                         }
                     }
                 } else {
