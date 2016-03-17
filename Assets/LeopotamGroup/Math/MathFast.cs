@@ -115,10 +115,6 @@ namespace LeopotamGroup.Math {
             return _cosCache[(int) (v * _sinCosIndexFactor) & _sinCosIndexMask];
         }
 
-        public static float Atan2Sys (float y, float x) {
-            return (float) System.Math.Atan2 (y, x);
-        }
-
         public static float Atan2 (float y, float x) {
             if (x >= 0) {
                 if (y >= 0) {
