@@ -1,14 +1,17 @@
 ﻿using UnityEngine;
 using LeopotamGroup.Math;
+using System.Collections;
 
 namespace LeopotamGroup.Examples.MathTest {
     public class MathTest : MonoBehaviour {
-        void Start () {
+        IEnumerator Start () {
+            yield return new WaitForSeconds (1f);
             RngTest ();
             Vector2iTest ();
             Vector3iTest ();
             SinTest ();
             CosTest ();
+            Atan2Test ();
         }
 
         void RngTest () {
@@ -52,6 +55,7 @@ namespace LeopotamGroup.Examples.MathTest {
             for (int i = 0; i < T; i++) {
                 f = Mathf.Sin (s);
             }
+            sw.Stop ();
             Debug.LogFormat ("mathf.sin time on {0} iterations: {1}", T, sw.ElapsedTicks);
 
             sw.Reset ();
@@ -59,6 +63,7 @@ namespace LeopotamGroup.Examples.MathTest {
             for (int i = 0; i < T; i++) {
                 f = (float) System.Math.Sin (s);
             }
+            sw.Stop ();
             Debug.LogFormat ("system.math.sin time on {0} iterations: {1}", T, sw.ElapsedTicks);
 
             // Warmup cache.
@@ -69,6 +74,7 @@ namespace LeopotamGroup.Examples.MathTest {
             for (int i = 0; i < T; i++) {
                 f = MathFast.Sin (s);
             }
+            sw.Stop ();
             Debug.LogFormat ("mathfast.sin time on {0} iterations: {1}", T, sw.ElapsedTicks);
 
             for (int i = 0; i < 10; i++) {
@@ -89,6 +95,7 @@ namespace LeopotamGroup.Examples.MathTest {
             for (int i = 0; i < T; i++) {
                 f = Mathf.Cos (s);
             }
+            sw.Stop ();
             Debug.LogFormat ("mathf.cos time on {0} iterations: {1}", T, sw.ElapsedTicks);
 
             sw.Reset ();
@@ -96,6 +103,7 @@ namespace LeopotamGroup.Examples.MathTest {
             for (int i = 0; i < T; i++) {
                 f = (float) System.Math.Cos (s);
             }
+            sw.Stop ();
             Debug.LogFormat ("system.math.cos time on {0} iterations: {1}", T, sw.ElapsedTicks);
 
             // Warmup cache.
@@ -106,11 +114,47 @@ namespace LeopotamGroup.Examples.MathTest {
             for (int i = 0; i < T; i++) {
                 f = MathFast.Cos (s);
             }
+            sw.Stop ();
             Debug.LogFormat ("mathfast.cos time on {0} iterations: {1}", T, sw.ElapsedTicks);
 
             for (int i = 0; i < 10; i++) {
-                f = Rng.GetFloatStatic () * 3.1415926f * 2;
-                Debug.LogFormat ("cos({0}) => {1} / {2}", f, Mathf.Cos (f), MathFast.Cos (f));
+                f = Rng.GetFloatStatic () * MathFast.PI_2;
+                Debug.LogFormat ("cos({0}) error checking => {1} / {2}", f, Mathf.Cos (f), MathFast.Cos (f));
+            }
+        }
+
+        void Atan2Test () {
+            Debug.Log (">>>>> atan2 tests >>>>>");
+            const int T = 10000;
+            var sw = new System.Diagnostics.Stopwatch ();
+            float f;
+            var sy = 1.234f;
+            var sx = 2.345f;
+
+            sw.Reset ();
+            sw.Start ();
+            for (int i = 0; i < T; i++) {
+                f = Mathf.Atan2 (sy, sx);
+            }
+            sw.Stop ();
+            Debug.LogFormat ("mathf.atan2 time on {0} iterations: {1}", T, sw.ElapsedTicks);
+
+            // Warmup cache.
+            f = MathFast.Atan2 (sy, sx);
+
+            sw.Reset ();
+            sw.Start ();
+            for (int i = 0; i < T; i++) {
+                f = MathFast.Atan2 (sy, sx);
+            }
+            sw.Stop ();
+            Debug.LogFormat ("mathfast.atan2 time on {0} iterations: {1}", T, sw.ElapsedTicks);
+
+            for (int i = 0; i < 10; i++) {
+                sy = Rng.GetFloatStatic () * MathFast.PI_2;
+                sx = Rng.GetFloatStatic () * MathFast.PI_2;
+                Debug.LogFormat ("atan2({0}, {1}) error checking => {2} / {3}",
+                    sy, sx, Mathf.Atan2 (sy, sx) * MathFast.Rad2Deg, MathFast.Atan2 (sy, sx) * MathFast.Rad2Deg);
             }
         }
     }
