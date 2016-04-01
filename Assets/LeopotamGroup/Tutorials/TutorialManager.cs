@@ -15,7 +15,7 @@ namespace LeopotamGroup.Tutorials {
 
         Dictionary<string, int> _sceneMasks;
 
-        const int MaxKeyAmount = 32;
+        const int MaxKeyAmount = 30;
 
         const string TutorialKey = "tutorial";
 

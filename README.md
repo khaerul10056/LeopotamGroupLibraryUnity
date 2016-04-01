@@ -33,13 +33,6 @@ Visual / audial effect helpers: sound / music manipulations, screen fading.
 
 ----------------------------------------------------------------------------
 
-* LazyGui
-
-Ngui replacement: Sprite rendering with alpha-splitted atlas for any platform,
-manual order tuning for drawcall optimizations, etc.
-
-----------------------------------------------------------------------------
-
 * Localization
 
 Localization support with csv support.
