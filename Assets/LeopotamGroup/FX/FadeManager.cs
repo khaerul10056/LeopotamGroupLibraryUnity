@@ -14,14 +14,26 @@ namespace LeopotamGroup.FX {
 
         float _opaque;
 
-        Texture2D _blackTexture;
+        Texture2D _tex;
 
         Rect _screenRect;
+
+        Rect _texRect;
+
+        Material _mtrl;
 
         Coroutine _cb;
 
         protected override void OnConstruct () {
             DontDestroyOnLoad (gameObject);
+
+            gameObject.layer = LayerMask.NameToLayer ("UI");
+
+            _texRect = new Rect (0f, 0f, 1f, 1f);
+            _tex = new Texture2D (1, 1, TextureFormat.RGB24, false);
+            _tex.SetPixel (0, 0, Color.white);
+            _tex.Apply (false, true);
+            _mtrl = new Material (Shader.Find ("Unlit/Transparent Colored"));
 
             SetFade (0f);
         }
@@ -74,29 +86,16 @@ namespace LeopotamGroup.FX {
             }
         }
 
-        void OnGUI () {
-            if (_opaque <= 0f || Event.current.type != EventType.Repaint) {
+        void OnRenderObject () {
+            if (_opaque <= 0f) {
                 return;
             }
-
-            if ((int) _screenRect.width != Screen.width || (int) _screenRect.height != Screen.height) {
-                _screenRect = new Rect (0, 0, Screen.width, Screen.height);
+            if ((int)_screenRect.width != Screen.width || (int)_screenRect.height != Screen.height) {
+                _screenRect = new Rect (-Screen.width * 0.5f, -Screen.height * 0.5f, Screen.width, Screen.height);
             }
 
-            if (_blackTexture == null) {
-                _blackTexture = new Texture2D (1, 1);
-                _blackTexture.SetPixel (0, 0, Color.black);
-                _blackTexture.Apply (false, true);
-            }
-
-            var saveColor = GUI.color;
-            var saveDepth = GUI.depth;
-            GUI.depth = -9999;
-            GUI.color = new Color (0, 0, 0, _opaque);
-            GUI.DrawTexture (_screenRect, _blackTexture);
-
-            GUI.depth = saveDepth;
-            GUI.color = saveColor;
+            var color = Color.Lerp (Color.clear, Color.black, _opaque);
+            Graphics.DrawTexture (_screenRect, _tex, _texRect, 0, 0, 0, 0, color, _mtrl);
         }
     }
 }
