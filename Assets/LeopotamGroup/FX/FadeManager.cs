@@ -14,11 +14,11 @@ namespace LeopotamGroup.FX {
 
         float _opaque;
 
-        Texture2D _tex;
+        Texture2D _dummyTex;
 
         Rect _screenRect;
 
-        Rect _texRect;
+        Rect _dummyTexRect;
 
         Material _mtrl;
 
@@ -29,11 +29,11 @@ namespace LeopotamGroup.FX {
 
             gameObject.layer = LayerMask.NameToLayer ("UI");
 
-            _texRect = new Rect (0f, 0f, 1f, 1f);
-            _tex = new Texture2D (1, 1, TextureFormat.RGB24, false);
-            _tex.SetPixel (0, 0, Color.white);
-            _tex.Apply (false, true);
-            _mtrl = new Material (Shader.Find ("Unlit/Transparent Colored"));
+            _mtrl = new Material (Shader.Find ("LeopotamGroup/FX/ScreenFade"));
+
+            // Graphics.DrawTexture requires any texture.
+            _dummyTex = new Texture2D (1, 1, TextureFormat.RGB24, false);
+            _dummyTexRect = new Rect (0f, 0f, 1f, 1f);
 
             SetFade (0f);
         }
@@ -90,12 +90,12 @@ namespace LeopotamGroup.FX {
             if (_opaque <= 0f) {
                 return;
             }
-            if ((int)_screenRect.width != Screen.width || (int)_screenRect.height != Screen.height) {
+            if ((int) _screenRect.width != Screen.width || (int) _screenRect.height != Screen.height) {
                 _screenRect = new Rect (-Screen.width * 0.5f, -Screen.height * 0.5f, Screen.width, Screen.height);
             }
 
             var color = Color.Lerp (Color.clear, Color.black, _opaque);
-            Graphics.DrawTexture (_screenRect, _tex, _texRect, 0, 0, 0, 0, color, _mtrl);
+            Graphics.DrawTexture (_screenRect, _dummyTex, _dummyTexRect, 0, 0, 0, 0, color, _mtrl);
         }
     }
 }
