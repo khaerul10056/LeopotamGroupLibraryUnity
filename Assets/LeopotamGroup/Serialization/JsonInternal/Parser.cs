@@ -137,12 +137,32 @@ public void SetType(Type type) {
 		switch (la.kind) {
 		case 2: {
 			Get();
-			if (_type != null) { v = t.val.Substring(1, t.val.Length - 2); } 
+			if (_type != null) {
+			var asStr = t.val.Substring (1, t.val.Length - 2);
+			if (asStr.IndexOf("\\\\") != -1) {
+				asStr = asStr.Replace("\\\\", "\\");
+			}
+			if (asStr.IndexOf("\\\"") != -1) {
+				asStr = asStr.Replace("\\\"", "\"");
+			}
+			v = asStr;
+			Console.WriteLine("STR: " + t.val + " / " + asStr);
+			}
+			
 			break;
 		}
 		case 1: {
 			Get();
-			if (_type != null) { var n = t.val.ToFloatUnchecked(); v = _type.IsEnum ? Enum.ToObject(_type , (int)n) : Convert.ChangeType(n, _type, Extensions.NumberFormatInfo); } 
+			if (_type != null) {
+			var n = t.val.ToFloatUnchecked ();
+			if (_type.IsEnum) {
+				v = Enum.ToObject(_type , (int) n);
+			} else {
+				var nullableType = Nullable.GetUnderlyingType(_type);
+				v = Convert.ChangeType(n, nullableType ?? _type, Extensions.NumberFormatInfo);
+			}
+			}
+			
 			break;
 		}
 		case 6: {

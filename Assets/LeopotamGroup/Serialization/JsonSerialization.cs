@@ -55,12 +55,26 @@ namespace LeopotamGroup.Serialization {
             var asStr = obj as string;
             if (asStr != null) {
                 _sb.Append ('"');
+                if (asStr.IndexOf ('"') != -1) {
+                    asStr = asStr.Replace ("\\", "\\\\");
+                    asStr = asStr.Replace ("\"", "\\\"");
+                }
                 _sb.Append (asStr);
                 _sb.Append ('"');
                 return;
             }
-            // number
+
             var objType = obj.GetType ();
+
+            // nullable
+            // null value will be skipped, dont use overrided default values for nullable types.
+//            var nullableType = Nullable.GetUnderlyingType (objType);
+//            if (nullableType != null) {
+//                _sb.Append ("null");
+//                return;
+//            }
+
+            // number
             if (_numericTypes.Contains (objType)) {
                 _sb.Append (((float) Convert.ChangeType (obj, typeof (float))).ToNormalizedString ());
                 return;
@@ -72,16 +86,16 @@ namespace LeopotamGroup.Serialization {
             // array
             var list = obj as IList;
             if (list != null) {
-                _sb.Append ('[');
+                _sb.Append ("[");
                 var iMax = list.Count;
                 if (iMax > 0) {
                     SerializeMember (list[0]);
                 }
                 for (var i = 1; i < iMax; i++) {
-                    _sb.Append (',');
+                    _sb.Append (",");
                     SerializeMember (list[i]);
                 }
-                _sb.Append (']');
+                _sb.Append ("]");
                 return;
             }
             // dict
@@ -90,23 +104,24 @@ namespace LeopotamGroup.Serialization {
                 var dictEnum = dict.GetEnumerator ();
                 var isComma = false;
                 bool noNeedWrapKey;
-                _sb.Append ('{');
+                _sb.Append ("{");
                 while (dictEnum.MoveNext ()) {
                     noNeedWrapKey = dictEnum.Key is string;
                     if (isComma) {
-                        _sb.Append (',');
+                        _sb.Append (",");
                     }
                     if (!noNeedWrapKey) {
-                        _sb.Append ('"');
+                        _sb.Append ("\"");
                     }
                     SerializeMember (dictEnum.Key);
                     if (!noNeedWrapKey) {
-                        _sb.Append ('"');
+                        _sb.Append ("\"");
                     }
-                    _sb.Append (':');
+                    _sb.Append (":");
                     SerializeMember (dictEnum.Value);
+                    isComma = true;
                 }
-                _sb.Append ('}');
+                _sb.Append ("}");
                 return;
             }
 
@@ -115,15 +130,15 @@ namespace LeopotamGroup.Serialization {
             if (desc != null) {
                 var isComma = false;
                 object val;
-                _sb.Append ('{');
+                _sb.Append ("{");
                 foreach (var field in desc.Fields) {
                     val = field.Value.GetValue (obj);
                     if (val != null) {
                         if (isComma) {
-                            _sb.Append (',');
+                            _sb.Append (",");
                         }
                         _sb.Append (field.Key);
-                        _sb.Append (':');
+                        _sb.Append (":");
                         SerializeMember (val);
                         isComma = true;
                     }
@@ -132,15 +147,15 @@ namespace LeopotamGroup.Serialization {
                     val = prop.Value.GetValue (obj, null);
                     if (val != null) {
                         if (isComma) {
-                            _sb.Append (',');
+                            _sb.Append (",");
                         }
                         _sb.Append (prop.Key);
-                        _sb.Append (':');
+                        _sb.Append (":");
                         SerializeMember (val);
                         isComma = true;
                     }
                 }
-                _sb.Append ('}');
+                _sb.Append ("}");
             }
         }
 

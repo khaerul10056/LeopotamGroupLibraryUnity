@@ -66,15 +66,15 @@ class Scanner {
 		for (int i = 48; i <= 57; ++i) start[i] = 2;
 		start[45] = 1; 
 		start[34] = 5; 
-		start[116] = 7; 
-		start[102] = 11; 
-		start[110] = 16; 
-		start[123] = 20; 
-		start[58] = 21; 
-		start[44] = 22; 
-		start[125] = 23; 
-		start[91] = 24; 
-		start[93] = 25; 
+		start[116] = 8; 
+		start[102] = 12; 
+		start[110] = 17; 
+		start[123] = 21; 
+		start[58] = 22; 
+		start[44] = 23; 
+		start[125] = 24; 
+		start[91] = 25; 
+		start[93] = 26; 
 		start[Buffer.EOF] = -1;
 
 	}
@@ -177,58 +177,62 @@ class Scanner {
 				if (ch >= '0' && ch <= '9') {AddCh(); goto case 4;}
 				else {t.kind = 1; break;}
 			case 5:
-				if (ch <= '!' || ch >= '#' && ch <= 65535) {AddCh(); goto case 5;}
+				if (ch <= '!' || ch >= '#' && ch <= '[' || ch >= ']' && ch <= 65535) {AddCh(); goto case 5;}
 				else if (ch == '"') {AddCh(); goto case 6;}
+				else if (ch == 92) {AddCh(); goto case 7;}
 				else {goto case 0;}
 			case 6:
 				{t.kind = 2; break;}
 			case 7:
-				if (ch == 'r') {AddCh(); goto case 8;}
+				if (ch == '"' || ch == 92) {AddCh(); goto case 5;}
 				else {goto case 0;}
 			case 8:
-				if (ch == 'u') {AddCh(); goto case 9;}
+				if (ch == 'r') {AddCh(); goto case 9;}
 				else {goto case 0;}
 			case 9:
-				if (ch == 'e') {AddCh(); goto case 10;}
+				if (ch == 'u') {AddCh(); goto case 10;}
 				else {goto case 0;}
 			case 10:
-				{t.kind = 3; break;}
-			case 11:
-				if (ch == 'a') {AddCh(); goto case 12;}
+				if (ch == 'e') {AddCh(); goto case 11;}
 				else {goto case 0;}
+			case 11:
+				{t.kind = 3; break;}
 			case 12:
-				if (ch == 'l') {AddCh(); goto case 13;}
+				if (ch == 'a') {AddCh(); goto case 13;}
 				else {goto case 0;}
 			case 13:
-				if (ch == 's') {AddCh(); goto case 14;}
+				if (ch == 'l') {AddCh(); goto case 14;}
 				else {goto case 0;}
 			case 14:
-				if (ch == 'e') {AddCh(); goto case 15;}
+				if (ch == 's') {AddCh(); goto case 15;}
 				else {goto case 0;}
 			case 15:
-				{t.kind = 4; break;}
-			case 16:
-				if (ch == 'u') {AddCh(); goto case 17;}
+				if (ch == 'e') {AddCh(); goto case 16;}
 				else {goto case 0;}
+			case 16:
+				{t.kind = 4; break;}
 			case 17:
-				if (ch == 'l') {AddCh(); goto case 18;}
+				if (ch == 'u') {AddCh(); goto case 18;}
 				else {goto case 0;}
 			case 18:
 				if (ch == 'l') {AddCh(); goto case 19;}
 				else {goto case 0;}
 			case 19:
-				{t.kind = 5; break;}
+				if (ch == 'l') {AddCh(); goto case 20;}
+				else {goto case 0;}
 			case 20:
-				{t.kind = 6; break;}
+				{t.kind = 5; break;}
 			case 21:
-				{t.kind = 7; break;}
+				{t.kind = 6; break;}
 			case 22:
-				{t.kind = 8; break;}
+				{t.kind = 7; break;}
 			case 23:
-				{t.kind = 9; break;}
+				{t.kind = 8; break;}
 			case 24:
-				{t.kind = 10; break;}
+				{t.kind = 9; break;}
 			case 25:
+				{t.kind = 10; break;}
+			case 26:
 				{t.kind = 11; break;}
 
 		}
