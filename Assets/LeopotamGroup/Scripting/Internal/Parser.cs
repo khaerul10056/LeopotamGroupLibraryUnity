@@ -18,7 +18,7 @@ class Parser {
 	public const int _IDENT = 1;
 	public const int _NUMBER = 2;
 	public const int _STRING = 3;
-	public const int maxT = 23;
+	public const int maxT = 28;
 
 	const bool _T = true;
 	const bool _x = false;
@@ -187,7 +187,7 @@ public readonly List<ScriptVar> CallParams = new List<ScriptVar>(8);
 	void Seq() {
 		
 		while (StartOf(1)) {
-			if (la.kind == 21) {
+			if (la.kind == 26) {
 				If();
 			} else if (la.kind == 10) {
 				Get();
@@ -208,7 +208,7 @@ public readonly List<ScriptVar> CallParams = new List<ScriptVar>(8);
 
 	void If() {
 		
-		Expect(21);
+		Expect(26);
 		Expect(5);
 		ScriptVar v; 
 		Expr(out v);
@@ -230,7 +230,7 @@ public readonly List<ScriptVar> CallParams = new List<ScriptVar>(8);
 		}
 		}
 		
-		if (la.kind == 22) {
+		if (la.kind == 27) {
 			Get();
 			if (!_isParsing) {
 			isSwitched = isValid;
@@ -252,40 +252,27 @@ public readonly List<ScriptVar> CallParams = new List<ScriptVar>(8);
 	}
 
 	void Expr(out ScriptVar v) {
-		ScriptVar b; int mode; 
-		Expr2(out v);
-		while (la.kind == 12 || la.kind == 13 || la.kind == 14) {
+		ScriptVar b; int op; 
+		Expr1(out v);
+		while (la.kind == 12 || la.kind == 13) {
 			if (la.kind == 12) {
 				Get();
-				mode = 0; 
-			} else if (la.kind == 13) {
-				Get();
-				mode = 1; 
+				op = 0; 
 			} else {
 				Get();
-				mode = 2; 
+				op = 1; 
 			}
-			Expr2(out b);
+			Expr1(out b);
 			if (!_isParsing) {
-			switch (mode) {
+			if (!v.IsNumber || !b.IsNumber) {
+				SemErr("'<' operator can be applied to numbers only");
+			}
+			switch (op) {
 				case 0:
-					if (!v.IsNumber || !b.IsNumber) {
-						SemErr("'<' operator can be applied to numbers only");
-					}
-					v.AsNumber = v.AsNumber < b.AsNumber ? 1f : 0f;
+					v.AsNumber = v.AsNumber != 0f || b.AsNumber != 0f ? 1f : 0f;
 					break;
 				case 1:
-					if (v.Type != b.Type) {
-						v.AsNumber = 0f;
-					} else {
-						v.AsNumber = v.IsNumber ? (v.AsNumber == b.AsNumber ? 1f : 0f) : (v.AsString == b.AsString ? 1f : 0f);
-					}
-					break;
-				case 2:
-					if (!v.IsNumber || !b.IsNumber) {
-						SemErr("'>' operator can be applied to numbers only");
-					}
-					v.AsNumber = v.AsNumber > b.AsNumber ? 1f : 0f;
+					v.AsNumber = v.AsNumber != 0f && b.AsNumber != 0f ? 1f : 0f;
 					break;
 			}
 			}
@@ -295,7 +282,7 @@ public readonly List<ScriptVar> CallParams = new List<ScriptVar>(8);
 
 	void Decl() {
 		var isNew = false; var type = ScriptVarType.Undefined; ScriptVar v; var isCalling = false; string name = null; var isAssigned = false; 
-		if (la.kind == 19) {
+		if (la.kind == 24) {
 			Get();
 			isNew = true; 
 		}
@@ -323,8 +310,8 @@ public readonly List<ScriptVar> CallParams = new List<ScriptVar>(8);
 			if (isNew) { SemErr("Invalid usage of variable declaration"); } 
 			Expr(out v);
 			isCalling = true; 
-		} else SynErr(24);
-		if (la.kind == 20) {
+		} else SynErr(29);
+		if (la.kind == 25) {
 			if (isCalling) { SemErr("Only variable can be assigned, not expression"); } 
 			Get();
 			Expr(out v);
@@ -342,18 +329,93 @@ public readonly List<ScriptVar> CallParams = new List<ScriptVar>(8);
 		if (_isParsing && isNew && !isCalling && !isAssigned) { SemErr(string.Format("Variable '{0}' should be initialized", name)); } 
 	}
 
+	void Expr1(out ScriptVar v) {
+		ScriptVar b; int op; 
+		Expr2(out v);
+		while (la.kind == 14 || la.kind == 15) {
+			if (la.kind == 14) {
+				Get();
+				op = 0; 
+			} else {
+				Get();
+				op = 1; 
+			}
+			Expr2(out b);
+			if (!_isParsing) {
+			switch (op) {
+				case 0:
+					if (v.Type != b.Type) {
+						v.AsNumber = 0f;
+					} else {
+						v.AsNumber = v.IsNumber ? (v.AsNumber == b.AsNumber ? 1f : 0f) : (v.AsString == b.AsString ? 1f : 0f);
+					}
+					break;
+				case 1:
+					if (v.Type != b.Type) {
+						v.AsNumber = 1f;
+					} else {
+						v.AsNumber = v.IsNumber ? (v.AsNumber != b.AsNumber ? 1f : 0f) : (v.AsString != b.AsString ? 1f : 0f);
+					}
+					break;
+			}
+			}
+			
+		}
+	}
+
 	void Expr2(out ScriptVar v) {
-		ScriptVar b; bool isSub; 
+		ScriptVar b; int mode; 
 		Expr3(out v);
-		while (la.kind == 15 || la.kind == 16) {
-			if (la.kind == 15) {
+		while (StartOf(3)) {
+			if (la.kind == 16) {
+				Get();
+				mode = 0; 
+			} else if (la.kind == 17) {
+				Get();
+				mode = 1; 
+			} else if (la.kind == 18) {
+				Get();
+				mode = 2; 
+			} else {
+				Get();
+				mode = 3; 
+			}
+			Expr3(out b);
+			if (!_isParsing) {
+			if (!v.IsNumber || !b.IsNumber) {
+				SemErr("'<' operator can be applied to numbers only");
+			}
+			switch (mode) {
+				case 0:				
+					v.AsNumber = v.AsNumber < b.AsNumber ? 1f : 0f;
+					break;
+				case 1:
+					v.AsNumber = v.AsNumber > b.AsNumber ? 1f : 0f;
+					break;
+				case 2:
+					v.AsNumber = v.AsNumber <= b.AsNumber ? 1f : 0f;
+					break;
+				case 3:
+					v.AsNumber = v.AsNumber >= b.AsNumber ? 1f : 0f;
+					break;
+			}
+			}
+			
+		}
+	}
+
+	void Expr3(out ScriptVar v) {
+		ScriptVar b; bool isSub; 
+		Expr4(out v);
+		while (la.kind == 20 || la.kind == 21) {
+			if (la.kind == 20) {
 				Get();
 				isSub = false; 
 			} else {
 				Get();
 				isSub = true; 
 			}
-			Expr3(out b);
+			Expr4(out b);
 			if (!_isParsing) {
 			if (v.IsString || b.IsString) {
 				if (isSub) {
@@ -371,19 +433,19 @@ public readonly List<ScriptVar> CallParams = new List<ScriptVar>(8);
 		}
 	}
 
-	void Expr3(out ScriptVar v) {
+	void Expr4(out ScriptVar v) {
 		ScriptVar b; 
-		Expr4(out v);
-		while (la.kind == 17 || la.kind == 18) {
+		Expr5(out v);
+		while (la.kind == 22 || la.kind == 23) {
 			bool isDiv; 
-			if (la.kind == 17) {
+			if (la.kind == 22) {
 				Get();
 				isDiv = false; 
 			} else {
 				Get();
 				isDiv = true; 
 			}
-			Expr4(out b);
+			Expr5(out b);
 			if (!_isParsing) {
 			if (!v.IsNumber || !b.IsNumber) {
 				SemErr(string.Format("Operator '{0}' cant be applied to numbers only", isDiv ? '/' : '*'));
@@ -394,9 +456,9 @@ public readonly List<ScriptVar> CallParams = new List<ScriptVar>(8);
 		}
 	}
 
-	void Expr4(out ScriptVar v) {
+	void Expr5(out ScriptVar v) {
 		v = new ScriptVar(); var isNegative = false; 
-		if (la.kind == 16) {
+		if (la.kind == 21) {
 			Get();
 			isNegative = true; 
 		}
@@ -406,7 +468,7 @@ public readonly List<ScriptVar> CallParams = new List<ScriptVar>(8);
 			Expect(7);
 		} else if (la.kind == 1 || la.kind == 2 || la.kind == 3) {
 			Term(out v);
-		} else SynErr(25);
+		} else SynErr(30);
 		if (!_isParsing) {
 		if (isNegative) {
 			if (v.IsNumber) {
@@ -470,7 +532,7 @@ public readonly List<ScriptVar> CallParams = new List<ScriptVar>(8);
 			v.AsString = t.val;
 			}
 			
-		} else SynErr(26);
+		} else SynErr(31);
 	}
 
 
@@ -488,9 +550,10 @@ public readonly List<ScriptVar> CallParams = new List<ScriptVar>(8);
 	}
 	
 	static readonly bool[,] set = {
-		{_T,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x},
-		{_x,_T,_T,_T, _x,_T,_x,_x, _x,_x,_T,_x, _x,_x,_x,_x, _T,_x,_x,_T, _x,_T,_x,_x, _x},
-		{_x,_T,_T,_T, _x,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _T,_x,_x,_x, _x,_x,_x,_x, _x}
+		{_T,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x},
+		{_x,_T,_T,_T, _x,_T,_x,_x, _x,_x,_T,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_T,_x,_x, _T,_x,_T,_x, _x,_x},
+		{_x,_T,_T,_T, _x,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_T,_x,_x, _x,_x,_x,_x, _x,_x},
+		{_x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _T,_T,_T,_T, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x}
 
 	};
 }
@@ -513,21 +576,26 @@ static class Errors {
 			case 9: s = "\"}\" expected"; break;
 			case 10: s = "\"return\" expected"; break;
 			case 11: s = "\";\" expected"; break;
-			case 12: s = "\"<\" expected"; break;
-			case 13: s = "\"==\" expected"; break;
-			case 14: s = "\">\" expected"; break;
-			case 15: s = "\"+\" expected"; break;
-			case 16: s = "\"-\" expected"; break;
-			case 17: s = "\"*\" expected"; break;
-			case 18: s = "\"/\" expected"; break;
-			case 19: s = "\"var\" expected"; break;
-			case 20: s = "\"=\" expected"; break;
-			case 21: s = "\"if\" expected"; break;
-			case 22: s = "\"else\" expected"; break;
-			case 23: s = "??? expected"; break;
-			case 24: s = "invalid Decl"; break;
-			case 25: s = "invalid Expr4"; break;
-			case 26: s = "invalid Term"; break;
+			case 12: s = "\"||\" expected"; break;
+			case 13: s = "\"&&\" expected"; break;
+			case 14: s = "\"==\" expected"; break;
+			case 15: s = "\"!=\" expected"; break;
+			case 16: s = "\"<\" expected"; break;
+			case 17: s = "\">\" expected"; break;
+			case 18: s = "\"<=\" expected"; break;
+			case 19: s = "\">=\" expected"; break;
+			case 20: s = "\"+\" expected"; break;
+			case 21: s = "\"-\" expected"; break;
+			case 22: s = "\"*\" expected"; break;
+			case 23: s = "\"/\" expected"; break;
+			case 24: s = "\"var\" expected"; break;
+			case 25: s = "\"=\" expected"; break;
+			case 26: s = "\"if\" expected"; break;
+			case 27: s = "\"else\" expected"; break;
+			case 28: s = "??? expected"; break;
+			case 29: s = "invalid Decl"; break;
+			case 30: s = "invalid Expr5"; break;
+			case 31: s = "invalid Term"; break;
 
 			default: s = "error " + n; break;
 		}

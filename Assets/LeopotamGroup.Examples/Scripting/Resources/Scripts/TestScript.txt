@@ -60,6 +60,58 @@ function main(param1FromHost, param2FromHost) {
         debug('"10 < 1" is not true');
     }
 
+    if (1 > 0) {
+        debug('1 > 0');
+    }
+
+    if (10 < 0) {
+        debug('10 < 0');
+    } else {
+        debug('"10 < 0" is not true"');
+    }
+
+    if (1 >= 1) {
+        debug('1 >= 0');
+    }
+
+    if (1 <= 10) {
+        debug('1 <= 10');
+    }
+
+    if (1 || 0) {
+        debug('1 || 0');
+    }
+
+    if (1 || 2) {
+        debug('1 || 2');
+    }
+
+    if (1 && 0) {
+        debug('1 && 0');
+    } else {
+        debug('"1 && 0" not true');
+    }
+
+    if (1 == 1) {
+        debug('1 == 1');
+    }
+
+    if (1 == 0) {
+        debug('1 == 0');
+    } else {
+        debug('"1 == 0" not true');
+    }
+
+    if ('a' == 'a') {
+        debug('"a" == "a"');
+    }
+
+    if ('a' == 'b') {
+        debug('"a" == "b"');
+    } else {
+        debug('"a" == "b" is not true');
+    }
+
     // There is another one system function - callWithDelay(nDelay, sFuncName[, anyParam1, anyParam2, anyParam3, anyParam4]).
     // Function with name sFuncName will be called after nDelay seconds.
     callWithDelay(5, 'onDelayedFunc', 10 * 25, 'long ' + 'string', 10 > 1, 0);
