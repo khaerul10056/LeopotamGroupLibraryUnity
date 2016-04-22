@@ -488,7 +488,7 @@ public readonly List<ScriptVar> CallParams = new List<ScriptVar>(8);
 			var identName = t.val; 
 			if (la.kind == 5) {
 				Get();
-				ScriptVar p; if (!_isParsing) { isCall = true; callOffset = CallParams.Count; } 
+				ScriptVar p; isCall = true; if (!_isParsing) { callOffset = CallParams.Count; } 
 				if (StartOf(2)) {
 					Expr(out p);
 					if (!_isParsing) { CallParams.Add(p); } 
@@ -500,13 +500,13 @@ public readonly List<ScriptVar> CallParams = new List<ScriptVar>(8);
 				}
 				Expect(7);
 			}
-			if (!_isParsing) {
-			bool isExists;
 			if (isCall) {
-				isExists = Vars.IsHostFunctionExists(identName);
-				if (!isExists) {
-					SemErr(string.Format("Cant find host function with name '{0}'", identName));
-				}
+			if (!Vars.IsHostFunctionExists(identName)) {
+				SemErr(string.Format("Cant find host function with name '{0}'", identName));
+			}
+			}
+			if (!_isParsing) {
+			if (isCall) {
 				CallParamsOffset = callOffset;
 				v = Vars.CallHostFunction(identName);
 				while (CallParams.Count > callOffset) {
