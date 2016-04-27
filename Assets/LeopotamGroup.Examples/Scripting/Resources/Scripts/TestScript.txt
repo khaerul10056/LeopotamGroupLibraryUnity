@@ -112,6 +112,46 @@ function main(param1FromHost, param2FromHost) {
         debug('"a" == "b" is not true');
     }
 
+    // switch supports number and string types, default case not supported.
+    var switchNumber = 10;
+    switch (switchNumber) {
+        case 1: {
+            debug('switch case 1 found');
+        }
+        case 5: {
+            debug('switch case 5 found');
+        }
+        case 10: {
+            debug('switch case 10 found');
+        }
+        case 20: {
+            debug('switch case 20 found');
+        }
+    }
+
+    var switchString = 'test';
+    switch (switchString) {
+        case '1': {
+            debug('switch case "1" found');
+        }
+        case 'test1': {
+            debug('switch case "test1" found');
+        }
+        case 'test': {
+            debug('switch case "test" found');
+        }
+        case 'blabla': {
+            debug('switch case "blabla" found');
+        }
+        // cases can have doubles, but only first one will be processed.
+        case 'test': {
+            debug('switch case "test" found again!!!');
+        }
+        case 'test2': {
+            debug('switch case "test2" found');
+        }
+    }
+
     // There is another one system function - callWithDelay(nDelay, sFuncName[, anyParam1, anyParam2, anyParam3, anyParam4]).
     // Function with name sFuncName will be called after nDelay seconds.
     callWithDelay(5, 'onDelayedFunc', 10 * 25, 'long ' + 'string', 10 > 1, 0);

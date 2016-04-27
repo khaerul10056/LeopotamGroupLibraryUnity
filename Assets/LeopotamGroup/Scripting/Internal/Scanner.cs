@@ -24,8 +24,8 @@ class Token {
 class Scanner {
 	const char EOL = '\n';
 	const int eofSym = 0; /* pdt */
-	const int maxT = 28;
-	const int noSym = 28;
+	const int maxT = 31;
+	const int noSym = 31;
 
 
 	public static readonly Token EmptyToken = new Token { kind = 0, val = "" };
@@ -80,14 +80,15 @@ class Scanner {
 		start[59] = 12; 
 		start[124] = 13; 
 		start[38] = 15; 
-		start[61] = 26; 
+		start[61] = 27; 
 		start[33] = 18; 
-		start[60] = 27; 
-		start[62] = 28; 
+		start[60] = 28; 
+		start[62] = 29; 
 		start[43] = 22; 
 		start[45] = 23; 
 		start[42] = 24; 
 		start[47] = 25; 
+		start[58] = 26; 
 		start[Buffer.EOF] = -1;
 
 	}
@@ -229,6 +230,8 @@ class Scanner {
 			case "var": t.kind = 24; break;
 			case "if": t.kind = 26; break;
 			case "else": t.kind = 27; break;
+			case "switch": t.kind = 28; break;
+			case "case": t.kind = 29; break;
 			default: break;
 		}
 	}
@@ -321,14 +324,16 @@ class Scanner {
 			case 25:
 				{t.kind = 23; break;}
 			case 26:
+				{t.kind = 30; break;}
+			case 27:
 				recEnd = pos; recKind = 25;
 				if (ch == '=') {AddCh(); goto case 17;}
 				else {t.kind = 25; break;}
-			case 27:
+			case 28:
 				recEnd = pos; recKind = 16;
 				if (ch == '=') {AddCh(); goto case 20;}
 				else {t.kind = 16; break;}
-			case 28:
+			case 29:
 				recEnd = pos; recKind = 17;
 				if (ch == '=') {AddCh(); goto case 21;}
 				else {t.kind = 17; break;}

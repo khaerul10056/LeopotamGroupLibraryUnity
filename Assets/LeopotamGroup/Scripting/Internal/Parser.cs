@@ -18,7 +18,7 @@ class Parser {
 	public const int _IDENT = 1;
 	public const int _NUMBER = 2;
 	public const int _STRING = 3;
-	public const int maxT = 28;
+	public const int maxT = 31;
 
 	const bool _T = true;
 	const bool _x = false;
@@ -189,6 +189,8 @@ public readonly List<ScriptVar> CallParams = new List<ScriptVar>(8);
 		while (StartOf(1)) {
 			if (la.kind == 26) {
 				If();
+			} else if (la.kind == 28) {
+				Switch();
 			} else if (la.kind == 10) {
 				Get();
 				if (StartOf(2)) {
@@ -251,6 +253,67 @@ public readonly List<ScriptVar> CallParams = new List<ScriptVar>(8);
 		}
 	}
 
+	void Switch() {
+		
+		Expect(28);
+		Expect(5);
+		ScriptVar v; var caseType = ScriptVarType.Undefined; var caseFound = false; var casePassed = false; var isSwitched = false; 
+		Expr(out v);
+		if (!_isParsing) {
+		caseType = v.Type;
+		if (caseType == ScriptVarType.Undefined) {
+			SemErr("Expression should be string or number");
+		}
+		}
+		
+		Expect(7);
+		Expect(8);
+		while (la.kind == 29) {
+			Get();
+			if (la.kind == 2) {
+				Get();
+				if (!_isParsing && !caseFound) {
+				if (caseType != ScriptVarType.Number) {
+					SemErr(string.Format("Invalid type in case, {0} required", caseType));
+				}
+				if (!casePassed && v.AsNumber == t.val.ToFloatUnchecked()) {
+					caseFound = true;
+					casePassed = true;
+				}
+				}
+				
+			} else if (la.kind == 3) {
+				Get();
+				if (!_isParsing && !caseFound) {
+				if (caseType != ScriptVarType.String) {
+					SemErr(string.Format("Invalid type in case, {0} required", caseType));
+				}
+				if (!_isParsing) {
+					if (!casePassed && v.AsString == t.val) {
+						caseFound = true;
+						casePassed = true;
+					}
+				}
+				}
+				
+			} else SynErr(32);
+			Expect(30);
+			if (!_isParsing && !caseFound) {
+			_isParsing = true;
+			isSwitched = true;
+			}
+			
+			Block();
+			if (isSwitched) {
+			_isParsing = false;
+			isSwitched = false;
+			}
+			caseFound = false;
+			
+		}
+		Expect(9);
+	}
+
 	void Expr(out ScriptVar v) {
 		ScriptVar b; int op; 
 		Expr1(out v);
@@ -310,7 +373,7 @@ public readonly List<ScriptVar> CallParams = new List<ScriptVar>(8);
 			if (isNew) { SemErr("Invalid usage of variable declaration"); } 
 			Expr(out v);
 			isCalling = true; 
-		} else SynErr(29);
+		} else SynErr(33);
 		if (la.kind == 25) {
 			if (isCalling) { SemErr("Only variable can be assigned, not expression"); } 
 			Get();
@@ -468,7 +531,7 @@ public readonly List<ScriptVar> CallParams = new List<ScriptVar>(8);
 			Expect(7);
 		} else if (la.kind == 1 || la.kind == 2 || la.kind == 3) {
 			Term(out v);
-		} else SynErr(30);
+		} else SynErr(34);
 		if (!_isParsing) {
 		if (isNegative) {
 			if (v.IsNumber) {
@@ -532,7 +595,7 @@ public readonly List<ScriptVar> CallParams = new List<ScriptVar>(8);
 			v.AsString = t.val;
 			}
 			
-		} else SynErr(31);
+		} else SynErr(35);
 	}
 
 
@@ -550,10 +613,10 @@ public readonly List<ScriptVar> CallParams = new List<ScriptVar>(8);
 	}
 	
 	static readonly bool[,] set = {
-		{_T,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x},
-		{_x,_T,_T,_T, _x,_T,_x,_x, _x,_x,_T,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_T,_x,_x, _T,_x,_T,_x, _x,_x},
-		{_x,_T,_T,_T, _x,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_T,_x,_x, _x,_x,_x,_x, _x,_x},
-		{_x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _T,_T,_T,_T, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x}
+		{_T,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x},
+		{_x,_T,_T,_T, _x,_T,_x,_x, _x,_x,_T,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_T,_x,_x, _T,_x,_T,_x, _T,_x,_x,_x, _x},
+		{_x,_T,_T,_T, _x,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x},
+		{_x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _T,_T,_T,_T, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x}
 
 	};
 }
@@ -592,10 +655,14 @@ static class Errors {
 			case 25: s = "\"=\" expected"; break;
 			case 26: s = "\"if\" expected"; break;
 			case 27: s = "\"else\" expected"; break;
-			case 28: s = "??? expected"; break;
-			case 29: s = "invalid Decl"; break;
-			case 30: s = "invalid Expr5"; break;
-			case 31: s = "invalid Term"; break;
+			case 28: s = "\"switch\" expected"; break;
+			case 29: s = "\"case\" expected"; break;
+			case 30: s = "\":\" expected"; break;
+			case 31: s = "??? expected"; break;
+			case 32: s = "invalid Switch"; break;
+			case 33: s = "invalid Decl"; break;
+			case 34: s = "invalid Expr5"; break;
+			case 35: s = "invalid Term"; break;
 
 			default: s = "error " + n; break;
 		}
