@@ -16,6 +16,8 @@ namespace LeopotamGroup.Common {
         /// <value>Instance.</value>
         public static T Instance {
             get {
+                // Workaround for slow checking "_instance == null" operation
+                // (unity issue, overrided equality operators for additional internal checking).
                 if (!_instanceCreated) {
 #if UNITY_EDITOR
                     if (!Application.isPlaying) {
@@ -59,7 +61,6 @@ namespace LeopotamGroup.Common {
         /// Replacement of Awake method, will be raised only once for singleton.
         /// Dont use Awake method in inherited classes!
         /// </summary>
-        /// <returns>The construct.</returns>
         protected virtual void OnConstruct () {
         }
 
@@ -67,7 +68,6 @@ namespace LeopotamGroup.Common {
         /// Replacement of OnDestroy method, will be raised only once for singleton.
         /// Dont use OnDestroy method in inherited classes!
         /// </summary>
-        /// <returns>The destruct.</returns>
         protected virtual void OnDestruct () {
         }
 
