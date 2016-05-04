@@ -13,7 +13,7 @@ namespace LeopotamGroup.EditorHelpers.UnityEditors {
     /// Build info on build processing helper.
     /// </summary>
     static class BuildInfoInspector {
-        [PreBuild (true)]
+        [PreBuild]
         static void UpdateBuildInfo () {
             var buildVersion = new BuildInfo {
                 AppName = PlayerSettings.bundleIdentifier,
