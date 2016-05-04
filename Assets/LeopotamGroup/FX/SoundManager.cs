@@ -7,13 +7,22 @@ using LeopotamGroup.Common;
 using UnityEngine;
 
 namespace LeopotamGroup.FX {
+    /// <summary>
+    /// SoundManager channel for playing FX.
+    /// </summary>
     public enum SoundFXChannel {
         First = 0,
         Second = 1,
         Third = 2
     }
 
+    /// <summary>
+    /// Sound manager.
+    /// </summary>
     sealed class SoundManager : UnitySingleton<SoundManager> {
+        /// <summary>
+        /// FX-es volume.
+        /// </summary>
         public float SoundVolume {
             get { return _fxes[0].volume; }
             set {
@@ -23,11 +32,17 @@ namespace LeopotamGroup.FX {
             }
         }
 
+        /// <summary>
+        /// Music volume.
+        /// </summary>
         public float MusicVolume {
             get { return _music.volume; }
             set { _music.volume = value; }
         }
 
+        /// <summary>
+        /// Name of last played music.
+        /// </summary>
         public string LastPlayedMusic { get; private set; }
 
         bool _isLastPlayedMusicLooped;
@@ -40,7 +55,7 @@ namespace LeopotamGroup.FX {
             DontDestroyOnLoad (gameObject);
 
             _music = gameObject.AddComponent<AudioSource> ();
-            _fxes = new []
+            _fxes = new[]
             {
                 gameObject.AddComponent<AudioSource> (),
                 gameObject.AddComponent<AudioSource> (),
@@ -51,10 +66,15 @@ namespace LeopotamGroup.FX {
             _music.playOnAwake = false;
             foreach (var item in _fxes) {
                 item.loop = false;
-                item.playOnAwake = false;   
+                item.playOnAwake = false;
             }
         }
 
+        /// <summary>
+        /// Play music.
+        /// </summary>
+        /// <param name="music">Music name.</param>
+        /// <param name="isLooped">Is looped.</param>
         public void PlayMusic (string music, bool isLooped = false) {
             if (LastPlayedMusic == music && _music.isPlaying) {
                 return;
@@ -72,6 +92,12 @@ namespace LeopotamGroup.FX {
             }
         }
 
+        /// <summary>
+        /// Play FX.
+        /// </summary>
+        /// <param name="clip">AudioClip object.</param>
+        /// <param name="channel">Channel for playing.</param>
+        /// <param name="forceInterrupt">Force interrupt previous FX at chanel.</param>
         public void PlayFX (AudioClip clip, SoundFXChannel channel = SoundFXChannel.First, bool forceInterrupt = false) {
             var fx = _fxes[(int) channel];
             if (!forceInterrupt && fx.isPlaying) {
@@ -87,6 +113,10 @@ namespace LeopotamGroup.FX {
             }
         }
 
+        /// <summary>
+        /// Stop playing FX at channel.
+        /// </summary>
+        /// <param name="channel">Channel.</param>
         public void StopFX (SoundFXChannel channel) {
             var fx = _fxes[(int) channel];
             if (fx.isPlaying) {
@@ -95,10 +125,18 @@ namespace LeopotamGroup.FX {
             fx.clip = null;
         }
 
+        /// <summary>
+        /// Stop playing music.
+        /// </summary>
+        /// <returns>The music.</returns>
         public void StopMusic () {
             _music.Stop ();
         }
 
+        /// <summary>
+        /// Validates music after music volume set to zero / restore volume.
+        /// </summary>
+        /// <returns>The music.</returns>
         public void ValidateMusic () {
             if (MusicVolume > 0f && !string.IsNullOrEmpty (LastPlayedMusic)) {
                 if (!_music.isPlaying) {

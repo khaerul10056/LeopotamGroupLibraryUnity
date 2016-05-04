@@ -7,10 +7,13 @@ using LeopotamGroup.Common;
 using UnityEngine;
 
 namespace LeopotamGroup.EditorHelpers {
+    /// <summary>
+    /// Fps counter.
+    /// </summary>
     sealed class FpsCounter : UnitySingleton<FpsCounter> {
         const int UpdateFrequency = 2;
 
-        const float _invUpdatesPerSecond = 1f / (float) UpdateFrequency;
+        const float _invUpdatesPerSecond = 1f / (float)UpdateFrequency;
 
         const float RectWidth = 100f;
 
@@ -53,6 +56,10 @@ namespace LeopotamGroup.EditorHelpers {
             }
         }
 
+        /// <summary>
+        /// Get current fps.
+        /// </summary>
+        /// <value>The current fps.</value>
         public float CurrentFps { get; private set; }
     }
 }

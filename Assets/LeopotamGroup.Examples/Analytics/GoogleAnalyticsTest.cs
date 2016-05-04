@@ -4,7 +4,7 @@ using UnityEngine;
 namespace LeopotamGroup.Examples.Analytics.GoogleAnalyticsTest {
     public class GoogleAnalyticsTest : MonoBehaviour {
         void OnGUI () {
-            if (string.IsNullOrEmpty (GoogleAnalyticsManager.Instance.TrackerID)) {
+            if (string.IsNullOrEmpty (GoogleAnalyticsManager.Instance._trackerID)) {
                 GUILayout.Label ("Fill TrackerID field for GoogleAnalytics object first!");
                 return;
             }

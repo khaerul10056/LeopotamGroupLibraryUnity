@@ -6,6 +6,9 @@
 using UnityEngine;
 
 namespace LeopotamGroup.EditorHelpers {
+    /// <summary>
+    /// Helper for custom flags selector.
+    /// </summary>
     public sealed class EnumFlagsAttribute : PropertyAttribute {
     }
 }

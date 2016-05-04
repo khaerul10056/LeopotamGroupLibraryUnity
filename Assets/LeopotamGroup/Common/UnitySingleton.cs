@@ -6,6 +6,9 @@
 using UnityEngine;
 
 namespace LeopotamGroup.Common {
+    /// <summary>
+    /// Singleton pattern, unity version.
+    /// </summary>
     public abstract class UnitySingleton<T> : MonoBehaviour where T : MonoBehaviour {
         static T _instance;
         static bool _instanceCreated;

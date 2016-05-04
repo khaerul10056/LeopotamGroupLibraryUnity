@@ -9,7 +9,16 @@ using System.Text;
 using UnityEngine;
 
 namespace LeopotamGroup.Common {
+    /// <summary>
+    /// Holder of extensions / helpers.
+    /// </summary>
     public static class Extensions {
+        /// <summary>
+        /// Find GameObject with name in recursive hierarchy.
+        /// </summary>
+        /// <returns>Transform of found GameObject.</returns>
+        /// <param name="target">Root of search.</param>
+        /// <param name="name">Name to search.</param>
         public static Transform FindRecursive (this Transform target, string name) {
             if (target == null || string.CompareOrdinal (target.name, name) == 0) {
                 return target;
@@ -24,11 +33,18 @@ namespace LeopotamGroup.Common {
             return retVal;
         }
 
-        public static readonly NumberFormatInfo NumberFormatInfo = new NumberFormatInfo
-        {
+        /// <summary>
+        /// Normalized NumberFormatInfo.
+        /// </summary>
+        public static readonly NumberFormatInfo NumberFormatInfo = new NumberFormatInfo {
             NumberDecimalSeparator = "."
         };
 
+        /// <summary>
+        /// Convert number to normalized string with support of "kilo-million-billion" short names.
+        /// </summary>
+        /// <returns>Normalized string.</returns>
+        /// <param name="data">Source Number.</param>
         public static string ToShortString (this int data) {
             if (data < 0) {
                 data = -data;
@@ -45,17 +61,32 @@ namespace LeopotamGroup.Common {
             return data.ToString ();
         }
 
-        static public void BroadcastToAll (string method) {
-            foreach (var go in UnityEngine.Object.FindObjectsOfType<GameObject>()) {
-                go.SendMessage (method, SendMessageOptions.DontRequireReceiver);
+        /// <summary>
+        /// Broadcast method with data to all active GameObjects.
+        /// </summary>
+        /// <param name="method">Method name.</param>
+        /// <param name="data">Optional data.</param>
+        public static void BroadcastToAll (string method, object data = null) {
+            foreach (var go in UnityEngine.Object.FindObjectsOfType<GameObject> ()) {
+                go.SendMessage (method, data, SendMessageOptions.DontRequireReceiver);
             }
         }
 
-        static public float ToFloat (this string text) {
+        /// <summary>
+        /// Convert string to float.
+        /// </summary>
+        /// <returns>Float number.</returns>
+        /// <param name="text">Source string.</param>
+        public static float ToFloat (this string text) {
             return float.Parse (text, NumberFormatInfo);
         }
 
-        static public float ToFloatUnchecked (this string text) {
+        /// <summary>
+        /// Fast convert string to float. Fast, no GC allocation, no support for scientific format.
+        /// </summary>
+        /// <returns>Float number.</returns>
+        /// <param name="text">Raw string.</param>
+        public static float ToFloatUnchecked (this string text) {
             var retVal1 = 0f;
             var retVal2 = 0f;
             var sign = 1f;
@@ -94,7 +125,12 @@ namespace LeopotamGroup.Common {
 
         static readonly StringBuilder _floatToStrBuf = new StringBuilder (64);
 
-        static public string ToNormalizedString (this float data) {
+        /// <summary>
+        /// Convert float number to string. Fast, no support for scientific format.
+        /// </summary>
+        /// <returns>Normalized string.</returns>
+        /// <param name="data">Data.</param>
+        public static string ToNormalizedString (this float data) {
             lock (_floatToStrBuf) {
                 const int prec_mul = 100000;
                 _floatToStrBuf.Length = 0;
@@ -157,7 +193,12 @@ namespace LeopotamGroup.Common {
             }
         }
 
-        static public Color ToColor24 (this string text) {
+        /// <summary>
+        /// Convert string "rrggbb" to Color.
+        /// </summary>
+        /// <returns>Color.</returns>
+        /// <param name="text">"rrggbb" string.</param>
+        public static Color ToColor24 (this string text) {
             try {
                 var data = Convert.ToInt32 (text.Length > 6 ? text.Substring (0, 6) : text, 16);
                 return new Color (
@@ -170,7 +211,12 @@ namespace LeopotamGroup.Common {
             }
         }
 
-        static public Color ToColor32 (this string text) {
+        /// <summary>
+        /// Convert string "rrggbbaa" to Color32.
+        /// </summary>
+        /// <returns>Color.</returns>
+        /// <param name="text">"rrggbbaa" string.</param>
+        public static Color ToColor32 (this string text) {
             try {
                 var data = Convert.ToInt32 (text.Length > 8 ? text.Substring (0, 8) : text, 16);
                 return new Color (
@@ -183,11 +229,17 @@ namespace LeopotamGroup.Common {
             }
         }
 
-        static public T EnsureGetComponent<T> (this GameObject go) where T : Component {
+        /// <summary>
+        /// Ensure that GammeObject have component.
+        /// </summary>
+        /// <returns>Wanted component.</returns>
+        /// <param name="go">Target GameObject.</param>
+        /// <typeparam name="T">Any unity-based component.</typeparam>
+        public static T EnsureGetComponent<T> (this GameObject go) where T : Component {
             if (go != null) {
-                var c = go.GetComponent <T> ();
+                var c = go.GetComponent<T> ();
                 if (c == null) {
-                    c = go.AddComponent <T> ();
+                    c = go.AddComponent<T> ();
                 }
                 return c;
             }

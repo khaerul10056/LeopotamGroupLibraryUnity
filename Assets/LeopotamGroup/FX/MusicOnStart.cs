@@ -7,9 +7,18 @@ using System.Collections;
 using UnityEngine;
 
 namespace LeopotamGroup.FX {
+    /// <summary>
+    /// Setup music parameters on start.
+    /// </summary>
     public sealed class MusicOnStart : MonoBehaviour {
+        /// <summary>
+        /// Music path (for SoundManager).
+        /// </summary>
         public string Music = null;
 
+        /// <summary>
+        /// Is music looped.
+        /// </summary>
         public bool IsLooped = true;
 
         IEnumerator Start () {

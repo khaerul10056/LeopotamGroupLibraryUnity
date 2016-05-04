@@ -11,8 +11,12 @@ using LeopotamGroup.Localization;
 using UnityEngine;
 
 namespace LeopotamGroup.Analytics {
+    /// <summary>
+    /// Simple GoogleAnalytics manager. Supports tracking of events, screens.
+    /// </summary>
     sealed class GoogleAnalyticsManager : UnitySingleton<GoogleAnalyticsManager> {
-        public string TrackerID = null;
+        [SerializeField]
+        public string _trackerID = null;
 
         const string AnalyticsUrl = "http://www.google-analytics.com/collect?v=1&tid={0}&cid={1}&sr={2}x{3}&an={4}&av={5}&z=";
 
@@ -28,15 +32,15 @@ namespace LeopotamGroup.Analytics {
             _requestUrl = null;
             // Wait for additional init.
             yield return null;
-            #if UNITY_EDITOR
-            if (string.IsNullOrEmpty (TrackerID)) {
+#if UNITY_EDITOR
+            if (string.IsNullOrEmpty (_trackerID)) {
                 Debug.LogWarning ("GA.TrackerID not defined");
             }
-            #endif
-            if (!string.IsNullOrEmpty (TrackerID)) {
+#endif
+            if (!string.IsNullOrEmpty (_trackerID)) {
                 _requestUrl = string.Format (
                     AnalyticsUrl,
-                    TrackerID,
+                    _trackerID,
                     SystemInfo.deviceUniqueIdentifier,
                     Screen.width, Screen.height,
                     BuildInfo.Instance.AppName,
@@ -57,9 +61,9 @@ namespace LeopotamGroup.Analytics {
                 }
 
                 if (url != null) {
-                    #if UNITY_EDITOR
+#if UNITY_EDITOR
                     Debug.Log ("[GA REQUEST] " + url);
-                    #endif
+#endif
 
                     using (var www = new WWW (url)) {
                         yield return www;
@@ -75,14 +79,26 @@ namespace LeopotamGroup.Analytics {
             _requests.Enqueue (url);
         }
 
+        /// <summary>
+        /// Track current screen.
+        /// </summary>
         public void TrackScreen () {
             TrackScreen (ScreenManager.Instance.Current);
         }
 
+        /// <summary>
+        /// Track screen with custom name.
+        /// </summary>
+        /// <param name="screenName">Custom screen name.</param>
         public void TrackScreen (string screenName) {
             EnqueueRequest (string.Format ("t=screenview&cd={0}", WWW.EscapeURL (screenName)));
         }
 
+        /// <summary>
+        /// Track event.
+        /// </summary>
+        /// <param name="category">Category name.</param>
+        /// <param name="action">Action name.</param>
         public void TrackEvent (string category, string action) {
             EnqueueRequest (string.Format ("t=event&ec={0}&ea={1}",
                 WWW.EscapeURL (category),
@@ -90,6 +106,13 @@ namespace LeopotamGroup.Analytics {
             ));
         }
 
+        /// <summary>
+        /// Track event.
+        /// </summary>
+        /// <param name="category">Category name.</param>
+        /// <param name="action">Action name.</param>
+        /// <param name="label">Label name.</param>
+        /// <param name="value">Value.</param>
         public void TrackEvent (string category, string action, string label, string value) {
             EnqueueRequest (string.Format ("t=event&ec={0}&ea={1}&el={2}&ev={3}",
                 WWW.EscapeURL (category),
@@ -99,11 +122,13 @@ namespace LeopotamGroup.Analytics {
             ));
         }
 
+        /// <summary>
+        /// Track exception event.
+        /// </summary>
+        /// <param name="description">Description of exception.</param>
+        /// <param name="isFatal">Is exception fatal.</param>
         public void TrackException (string description, bool isFatal) {
-            EnqueueRequest (string.Format ("t=exception&exd={0}&exf={1}",
-                WWW.EscapeURL (description),
-                isFatal ? 1 : 0
-            ));
+            EnqueueRequest (string.Format ("t=exception&exd={0}&exf={1}", WWW.EscapeURL (description), isFatal ? 1 : 0));
         }
     }
 }

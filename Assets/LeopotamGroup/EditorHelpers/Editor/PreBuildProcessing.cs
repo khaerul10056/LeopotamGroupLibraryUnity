@@ -10,8 +10,14 @@ using UnityEditor.Callbacks;
 using UnityEngine;
 
 namespace LeopotamGroup.EditorHelpers.UnityEditors {
+    /// <summary>
+    /// Pre build attribute. Methods with PreBuild attribute will be executed during Playing / Building.
+    /// </summary>
     [AttributeUsage (AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
     public sealed class PreBuildAttribute : Attribute {
+        /// <summary>
+        /// Call method on editor play.
+        /// </summary>
         public bool UseInEditorPlay = false;
 
         static string _lastBuiltVersion;
@@ -29,8 +35,8 @@ namespace LeopotamGroup.EditorHelpers.UnityEditors {
                 _lastBuiltVersion = PlayerSettings.bundleVersion;
                 var inEditor = Application.isPlaying;
 
-                foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies()) {
-                    foreach (var type in assembly.GetTypes()) {
+                foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies ()) {
+                    foreach (var type in assembly.GetTypes ()) {
                         foreach (var method in type.GetMethods (BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic)) {
                             var attrs = method.GetCustomAttributes (typeof (PreBuildAttribute), false);
                             if (attrs.Length > 0) {

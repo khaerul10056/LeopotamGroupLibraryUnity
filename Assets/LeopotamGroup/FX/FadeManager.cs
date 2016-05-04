@@ -9,6 +9,9 @@ using LeopotamGroup.Common;
 using UnityEngine;
 
 namespace LeopotamGroup.FX {
+    /// <summary>
+    /// Fade manager.
+    /// </summary>
     sealed class FadeManager : UnitySingleton<FadeManager> {
         public bool _fadeAudio = false;
 
@@ -29,7 +32,7 @@ namespace LeopotamGroup.FX {
 
             gameObject.layer = LayerMask.NameToLayer ("UI");
 
-            _mtrl = new Material (Shader.Find ("LeopotamGroup/FX/ScreenFade"));
+            _mtrl = new Material (Shader.Find ("Hidden/LeopotamGroup/FX/ScreenFade"));
 
             // Graphics.DrawTexture requires any texture.
             _dummyTex = new Texture2D (1, 1, TextureFormat.RGB24, false);
@@ -38,12 +41,24 @@ namespace LeopotamGroup.FX {
             SetFade (0f);
         }
 
+        /// <summary>
+        /// Set current fade status.
+        /// </summary>
+        /// <param name="opaque">Opaque value [0, 1], 0 - full transparent, 1 - full opaque.</param>
+        /// <param name="fadeAudio">Fade audio sources too.</param>
         public void SetFade (float opaque, bool fadeAudio = false) {
             StopFade ();
             _opaque = opaque;
             AudioListener.volume = 1f - (fadeAudio ? _opaque : 0f);
         }
 
+        /// <summary>
+        /// Start fading to target fade status.
+        /// </summary>
+        /// <param name="toOpaque">Target opaque status.</param>
+        /// <param name="time">Time of fading.</param>
+        /// <param name="callback">Optional callback on end of fading.</param>
+        /// <param name="fadeAudio">Fade audio too.</param>
         public void StartFadeTo (float toOpaque, float time, Action callback = null, bool fadeAudio = false) {
             StopFade ();
 
@@ -53,6 +68,10 @@ namespace LeopotamGroup.FX {
             _cb = StartCoroutine (OnFadeStarted (toOpaque, time, callback));
         }
 
+        /// <summary>
+        /// Stop fading process.
+        /// </summary>
+        /// <returns>The fade.</returns>
         public void StopFade () {
             if (_cb != null) {
                 StopCoroutine (_cb);

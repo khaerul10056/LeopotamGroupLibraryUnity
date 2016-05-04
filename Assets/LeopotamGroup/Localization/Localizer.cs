@@ -10,7 +10,14 @@ using LeopotamGroup.Serialization;
 using UnityEngine;
 
 namespace LeopotamGroup.Localization {
+    /// <summary>
+    /// Localizer - helper for localization. Supports dynamic overriding of localization tokens with rollback.
+    /// </summary>
     public static class Localizer {
+        /// <summary>
+        /// Current language.
+        /// </summary>
+        /// <value>The language.</value>
         public static string Language {
             get { return _language; }
             set {
@@ -75,9 +82,9 @@ namespace LeopotamGroup.Localization {
             if (!string.IsNullOrEmpty (_language)) {
                 var langID = Array.IndexOf (_header, _language);
                 if (_langID != -1 && langID != _langID) {
-                    #if UNITY_EDITOR
+#if UNITY_EDITOR
                     Debug.LogWarning ("Invalid languages order in source, skipping.");
-                    #endif
+#endif
                     return;
                 }
                 if (_langID == -1) {
@@ -86,6 +93,10 @@ namespace LeopotamGroup.Localization {
             }
         }
 
+        /// <summary>
+        /// Get localization for token.
+        /// </summary>
+        /// <param name="token">Token.</param>
         public static string Get (string token) {
             if (_langID == -1) {
                 return token;
@@ -94,6 +105,11 @@ namespace LeopotamGroup.Localization {
                 _dynamics[token][_langID] : (_statics.ContainsKey (token) ? _statics[token][_langID] : token);
         }
 
+        /// <summary>
+        /// Add non-unloadable localization source.
+        /// </summary>
+        /// <returns>The static source.</returns>
+        /// <param name="sourcePath">Source path.</param>
         public static void AddStaticSource (string sourcePath) {
             var data = LoadAsset (sourcePath);
             if (!string.IsNullOrEmpty (data)) {
@@ -101,6 +117,11 @@ namespace LeopotamGroup.Localization {
             }
         }
 
+        /// <summary>
+        /// Add non-unloadable localization source. Can overrides loaded tokens and be removed by UnloadDynamics call.
+        /// </summary>
+        /// <returns>The dynamic source.</returns>
+        /// <param name="sourcePath">Source path.</param>
         public static void AddDynamicSource (string sourcePath) {
             var data = LoadAsset (sourcePath);
             if (!string.IsNullOrEmpty (data)) {
@@ -108,10 +129,18 @@ namespace LeopotamGroup.Localization {
             }
         }
 
+        /// <summary>
+        /// Unload all dynamics localization sources.
+        /// </summary>
+        /// <returns>The dynamics.</returns>
         public static void UnloadDynamics () {
             _dynamics.Clear ();
         }
 
+        /// <summary>
+        /// Raise "OnLocalize" message on all active GameObjects.
+        /// </summary>
+        /// <returns>The user interface.</returns>
         public static void RelocalizeUI () {
             Extensions.BroadcastToAll (OnLocalizeMethodName);
         }

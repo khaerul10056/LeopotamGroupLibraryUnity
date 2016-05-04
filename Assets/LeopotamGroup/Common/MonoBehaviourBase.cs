@@ -6,6 +6,9 @@
 using UnityEngine;
 
 namespace LeopotamGroup.Common {
+    /// <summary>
+    /// Replacement for MonoBehaviour class with transform caching.
+    /// </summary>
     public abstract class MonoBehaviourBase : MonoBehaviour {
         /// <summary>
         /// Patched transform, gains 2x performance boost compare to standard.

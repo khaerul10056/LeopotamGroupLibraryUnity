@@ -4,6 +4,9 @@
 //-------------------------------------------------------
 
 namespace LeopotamGroup.Common {
+    /// <summary>
+    /// Storage for global properties, can be extended as partial class.
+    /// </summary>
     public static partial class Globals {
         /// <summary>
         /// Is user interface locked. Can be used from any external code as global flag.
