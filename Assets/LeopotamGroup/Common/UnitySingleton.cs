@@ -8,23 +8,29 @@ using UnityEngine;
 namespace LeopotamGroup.Common {
     public abstract class UnitySingleton<T> : MonoBehaviour where T : MonoBehaviour {
         static T _instance;
+        static bool _instanceCreated;
 
+        /// <summary>
+        /// Get singleton instance.
+        /// </summary>
+        /// <value>Instance.</value>
         public static T Instance {
             get {
-                if (_instance == null) {
-                    #if UNITY_EDITOR
+                if (!_instanceCreated) {
+#if UNITY_EDITOR
                     if (!Application.isPlaying) {
                         throw new UnityException (typeof (T).Name + " singleton can be used only at PLAY mode");
                     }
-                    #endif
-                    _instance = Object.FindObjectOfType <T> ();
+#endif
+                    _instance = Object.FindObjectOfType<T> ();
                     if (_instance == null) {
                         _instance = new GameObject (
-                            #if UNITY_EDITOR
+#if UNITY_EDITOR
                             "_SINGLETON_" + typeof (T).Name
-                            #endif
+#endif
                         ).AddComponent<T> ();
                     }
+                    _instanceCreated = true;
                 }
 
                 return _instance;
@@ -49,12 +55,26 @@ namespace LeopotamGroup.Common {
             }
         }
 
+        /// <summary>
+        /// Replacement of Awake method, will be raised only once for singleton.
+        /// Dont use Awake method in inherited classes!
+        /// </summary>
+        /// <returns>The construct.</returns>
         protected virtual void OnConstruct () {
         }
 
+        /// <summary>
+        /// Replacement of OnDestroy method, will be raised only once for singleton.
+        /// Dont use OnDestroy method in inherited classes!
+        /// </summary>
+        /// <returns>The destruct.</returns>
         protected virtual void OnDestruct () {
         }
 
+        /// <summary>
+        /// Save checking for singleton instance availability.
+        /// </summary>
+        /// <returns>Instance exists.</returns>
         public static bool IsInstanceCreated () {
             return _instance != null;
         }
