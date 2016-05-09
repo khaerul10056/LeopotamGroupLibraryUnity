@@ -51,12 +51,6 @@ Helpers for mobiles only.
 
 ----------------------------------------------------------------------------
 
-* Notifications
-
-'Waiting' indicator, popup-message indicator.
-
-----------------------------------------------------------------------------
-
 * Protection
 
 Protection for Int, Long, Float types from in-memory searching.
