@@ -6,8 +6,15 @@
 using System.Runtime.InteropServices;
 
 namespace LeopotamGroup.Protection {
+    /// <summary>
+    /// Wrapper for int64 value protection.
+    /// </summary>
     [StructLayout (LayoutKind.Explicit)]
     public struct ProtLong {
+        /// <summary>
+        /// Get encrypted value (for serialization or something else).
+        /// </summary>
+        /// <value>The encrypted value.</value>
         public long EncryptedValue {
             get {
                 // Workaround for default struct constructor init.

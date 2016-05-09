@@ -10,7 +10,13 @@ using LeopotamGroup.Serialization;
 using UnityEngine;
 
 namespace LeopotamGroup.Tutorials {
+    /// <summary>
+    /// Tutorial stages processing. Progress will be autosaved to PlayerPrefs.
+    /// </summary>
     sealed class TutorialManager : LeopotamGroup.Common.UnitySingleton<TutorialManager> {
+        /// <summary>
+        /// Will be raised on stage changes.
+        /// </summary>
         public event Action OnTutorialUpdated = delegate {};
 
         Dictionary<string, int> _sceneMasks;
@@ -52,6 +58,10 @@ namespace LeopotamGroup.Tutorials {
             }
         }
 
+        /// <summary>
+        /// Clears full tutorial data (for all screens).
+        /// </summary>
+        /// <param name="sendEvent">If set to <c>true</c> send event.</param>
         public void ClearAllScreensData (bool sendEvent = false) {
             _sceneMasks = new Dictionary<string, int> ();
             SaveData ();
@@ -61,7 +71,7 @@ namespace LeopotamGroup.Tutorials {
         }
 
         /// <summary>
-        /// Are masked bits enabled.
+        /// Are masked bits enabled for current screen.
         /// </summary>
         /// <param name="mask">Mask.</param>
         public bool ValidateMask (TutorialMask mask) {
@@ -74,7 +84,7 @@ namespace LeopotamGroup.Tutorials {
         }
 
         /// <summary>
-        /// Get current mask.
+        /// Get mask for current screen.
         /// </summary>
         public TutorialMask GetMask () {
             var scene = ScreenManager.Instance.Current;
@@ -83,7 +93,7 @@ namespace LeopotamGroup.Tutorials {
         }
 
         /// <summary>
-        /// Set masked bits additive to new state.
+        /// Set masked bits additive to new state for current screen.
         /// </summary>
         /// <param name="mask">Masked bits.</param>
         /// <param name="state">New state.</param>
@@ -105,7 +115,7 @@ namespace LeopotamGroup.Tutorials {
         }
 
         /// <summary>
-        /// Sets all bits to new state.
+        /// Sets all bits to new state for current screen.
         /// </summary>
         /// <param name="state">New state.</param>
         public void SetAll (bool state) {
@@ -120,6 +130,9 @@ namespace LeopotamGroup.Tutorials {
             SaveData ();
         }
 
+        /// <summary>
+        /// Raises next bit in sequence of stages for current screen.
+        /// </summary>
         public void RaiseNextBit () {
             var mask = (int) GetMask ();
             for (int i = 0; i < MaxKeyAmount; i++) {

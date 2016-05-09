@@ -11,22 +11,43 @@ using LeopotamGroup.Common;
 using LeopotamGroup.Serialization.JsonInternal;
 
 namespace LeopotamGroup.Serialization {
+    /// <summary>
+    /// Helper for custom naming of fields on json serialization / deserialization.
+    /// Useful for decreasing json-data length.
+    /// </summary>
     [AttributeUsage (AttributeTargets.Property | AttributeTargets.Field, Inherited = false, AllowMultiple = false)]
     public sealed class JsonNameAttribute : Attribute {
+        /// <summary>
+        /// Default initialization.
+        /// </summary>
         public JsonNameAttribute () {
         }
 
+        /// <summary>
+        /// Initialization with specified name.
+        /// </summary>
+        /// <param name="name">Field name at json-data.</param>
         public JsonNameAttribute (string name) {
             Name = name;
         }
 
-        public string Name { get; set; }
+        /// <summary>
+        /// Get json-data based name for field.
+        /// </summary>
+        /// <value>The name.</value>
+        public string Name { get; private set; }
     }
 
+    /// <summary>
+    /// Helper for fields that should be ignored during json serialization / deserialization.
+    /// </summary>
     [AttributeUsage (AttributeTargets.Property | AttributeTargets.Field, Inherited = false, AllowMultiple = false)]
     public sealed class JsonIgnoreAttribute : Attribute {
     }
 
+    /// <summary>
+    /// Json serialization.
+    /// </summary>
     public sealed class JsonSerialization {
         static readonly JsonSerialization _instance = new JsonSerialization ();
 
@@ -42,6 +63,9 @@ namespace LeopotamGroup.Serialization {
             typeof (long), typeof (ulong), typeof (float), typeof (double)
         };
 
+        /// <summary>
+        /// Default initialization.
+        /// </summary>
         public JsonSerialization () {
             _scanner = new Scanner ();
             _parser = new Parser (_scanner);
@@ -159,6 +183,11 @@ namespace LeopotamGroup.Serialization {
             }
         }
 
+        /// <summary>
+        /// Serialize specified object to json-data.
+        /// </summary>
+        /// <returns>Json data string.</returns>
+        /// <param name="obj">Object to serialize.</param>
         public string Serialize (object obj) {
             if (obj == null) {
                 throw new Exception ("instance is null");
@@ -170,6 +199,12 @@ namespace LeopotamGroup.Serialization {
             return _sb.ToString ();
         }
 
+        /// <summary>
+        /// Deserialize json to instance of strong-typed class.
+        /// </summary>
+        /// <returns>Deserialized instance.</returns>
+        /// <param name="json">Json data.</param>
+        /// <typeparam name="T">Type of instance for deserialization.</typeparam>
         public T Deserialize<T> (string json) {
             if (json == null) {
                 throw new Exception ("empty json data");
@@ -183,10 +218,21 @@ namespace LeopotamGroup.Serialization {
             return (T) _parser.Result;
         }
 
+        /// <summary>
+        /// Serialize specified object to json-data with singleton json serializator.
+        /// </summary>
+        /// <returns>Json data string.</returns>
+        /// <param name="obj">Object to serialize.</param>
         public static string SerializeStatic (object obj) {
             return _instance.Serialize (obj);
         }
 
+        /// <summary>
+        /// Deserialize json to instance of strong-typed class with singleton json serializator.
+        /// </summary>
+        /// <returns>Deserialized instance.</returns>
+        /// <param name="json">Json data.</param>
+        /// <typeparam name="T">Type of instance for deserialization.</typeparam>
         public static T DeserializeStatic<T> (string json) {
             return _instance.Deserialize<T> (json);
         }

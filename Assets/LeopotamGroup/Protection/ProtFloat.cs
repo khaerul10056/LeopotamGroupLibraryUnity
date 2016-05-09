@@ -6,8 +6,14 @@
 using System.Runtime.InteropServices;
 
 namespace LeopotamGroup.Protection {
+    /// <summary>
+    /// Wrapper for float value protection.
+    /// </summary>
     [StructLayout (LayoutKind.Explicit)]
     public struct ProtFloat {
+        /// <summary>
+        /// Get encrypted value (for serialization or something else).
+        /// </summary>
         public float EncryptedValue {
             get {
                 // Workaround for default struct constructor init.

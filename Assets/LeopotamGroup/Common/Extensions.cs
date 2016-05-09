@@ -230,7 +230,7 @@ namespace LeopotamGroup.Common {
         }
 
         /// <summary>
-        /// Ensure that GammeObject have component.
+        /// Ensure that GameObject have component.
         /// </summary>
         /// <returns>Wanted component.</returns>
         /// <param name="go">Target GameObject.</param>

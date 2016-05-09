@@ -30,7 +30,6 @@ namespace LeopotamGroup.Examples.MathTest {
             Debug.LogFormat ("{0} - {1} = {2}", v2i_0, v2i_1, v2i_0 - v2i_1);
             Debug.LogFormat ("{0} * {1} = {2}", v2i_0, v2i_1, v2i_0 * v2i_1);
             Debug.LogFormat ("{0} / {1} = {2}", v2i_0, v2i_1, v2i_0 / v2i_1);
-            Debug.LogFormat ("{0}.lossyMagnitude = {2}, {1}.lossyMagnitude = {3}", v2i_0, v2i_1, v2i_0.LossyMagnituded, v2i_1.LossyMagnituded);
         }
 
         void Vector3iTest () {
@@ -40,7 +39,6 @@ namespace LeopotamGroup.Examples.MathTest {
             Debug.LogFormat ("{0} - {1} = {2}", v3i_0, v3i_1, v3i_0 - v3i_1);
             Debug.LogFormat ("{0} * {1} = {2}", v3i_0, v3i_1, v3i_0 * v3i_1);
             Debug.LogFormat ("{0} / {1} = {2}", v3i_0, v3i_1, v3i_0 / v3i_1);
-            Debug.LogFormat ("{0}.lossyMagnitude = {2}, {1}.lossyMagnitude = {3}", v3i_0, v3i_1, v3i_0.LossyMagnituded, v3i_1.LossyMagnituded);
         }
 
         void SinTest () {
@@ -127,7 +125,9 @@ namespace LeopotamGroup.Examples.MathTest {
             Debug.Log (">>>>> atan2 tests >>>>>");
             const int T = 10000;
             var sw = new System.Diagnostics.Stopwatch ();
+            #pragma warning disable 0219
             float f;
+            #pragma warning restore 0219
             var sy = 1.234f;
             var sx = 2.345f;
 

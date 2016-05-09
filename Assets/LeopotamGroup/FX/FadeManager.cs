@@ -13,7 +13,12 @@ namespace LeopotamGroup.FX {
     /// Fade manager.
     /// </summary>
     sealed class FadeManager : UnitySingleton<FadeManager> {
-        public bool _fadeAudio = false;
+        /// <summary>
+        /// Callback for extensions.
+        /// </summary>
+        public event Action OnRender = delegate {};
+
+        bool _fadeAudio;
 
         float _opaque;
 
@@ -115,6 +120,8 @@ namespace LeopotamGroup.FX {
 
             var color = Color.Lerp (Color.clear, Color.black, _opaque);
             Graphics.DrawTexture (_screenRect, _dummyTex, _dummyTexRect, 0, 0, 0, 0, color, _mtrl);
+
+            OnRender ();
         }
     }
 }

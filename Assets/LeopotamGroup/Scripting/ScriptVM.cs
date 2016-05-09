@@ -7,19 +7,34 @@ using System;
 using LeopotamGroup.Scripting.Internal;
 
 namespace LeopotamGroup.Scripting {
+    /// <summary>
+    /// Script engine VM. Internal class.
+    /// </summary>
     sealed class ScriptVM {
         readonly Scanner _scanner;
 
         readonly Parser _parser;
 
+        /// <summary>
+        /// Is current execution of code stopped at script function calling.
+        /// This flag uses for checking / protecting from endless recursive calls.
+        /// </summary>
+        /// <value><c>true</c> if in function call; otherwise, <c>false</c>.</value>
         public bool InFunctionCall { get; private set; }
 
+        /// <summary>
+        /// Default initialization.
+        /// </summary>
         public ScriptVM () {
             InFunctionCall = false;
             _scanner = new Scanner ();
             _parser = new Parser (this, _scanner);
         }
 
+        /// <summary>
+        /// Load script source code. Old Vm state will be reset.
+        /// </summary>
+        /// <param name="source">Source.</param>
         public string Load (string source) {
             InFunctionCall = false;
             if (string.IsNullOrEmpty (source)) {
@@ -36,10 +51,24 @@ namespace LeopotamGroup.Scripting {
             return null;
         }
 
+        /// <summary>
+        /// Raise runtime error at VM.
+        /// </summary>
+        /// <param name="msg">Message.</param>
         public void SetRuntimeError (string msg) {
             _parser.SemErr (msg);
         }
 
+        /// <summary>
+        /// Call script function.
+        /// </summary>
+        /// <returns>Execution error.</returns>
+        /// <param name="funcName">Function name.</param>
+        /// <param name="result">Result of function execution.</param>
+        /// <param name="param1">Optional parameter to function.</param>
+        /// <param name="param2">Optional parameter to function.</param>
+        /// <param name="param3">Optional parameter to function.</param>
+        /// <param name="param4">Optional parameter to function.</param>
         public string CallFunction (string funcName, out ScriptVar result,
             ScriptVar? param1 = null, ScriptVar? param2 = null,
             ScriptVar? param3 = null, ScriptVar? param4 = null) {
@@ -79,22 +108,43 @@ namespace LeopotamGroup.Scripting {
             return err;
         }
 
+        /// <summary>
+        /// Register host function to VM (publish to calling from script side).
+        /// </summary>
+        /// <param name="funcName">Func name.</param>
+        /// <param name="cb">Cb.</param>
         public void RegisterHostFunction (string funcName, HostFunction cb) {
             _parser.Vars.RegisterHostFunction (funcName, cb);
         }
 
+        /// <summary>
+        /// Unregister all host functions from VM (unpublish from script side).
+        /// </summary>
         public void UnregisterAllHostFunctions () {
             _parser.Vars.UnregisterHostFunctions ();
         }
 
+        /// <summary>
+        /// Get parameters count passed from script to current host function.
+        /// </summary>
+        /// <returns>The parameters count.</returns>
         public int GetParamsCount () {
             return _parser.CallParams.Count - _parser.CallParamsOffset;
         }
 
+        /// <summary>
+        /// Get specified parameter that was passed from script to current host function.
+        /// </summary>
+        /// <returns>Requested parameter or ScriptVar.Undefined.</returns>
+        /// <param name="id">Number of parameter.</param>
         public ScriptVar GetParamByID (int id) {
             return id >= 0 && id < GetParamsCount () ? _parser.CallParams[_parser.CallParamsOffset + id] : new ScriptVar ();
         }
 
+        /// <summary>
+        /// Is script function exists.
+        /// </summary>
+        /// <param name="funcName">Function name.</param>
         public bool IsFunctionExists (string funcName) {
             return funcName != null && _parser.Vars.IsFunctionExists (funcName);
         }

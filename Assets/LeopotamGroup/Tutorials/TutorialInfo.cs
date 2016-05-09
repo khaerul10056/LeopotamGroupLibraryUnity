@@ -8,6 +8,9 @@ using LeopotamGroup.EditorHelpers;
 using UnityEngine;
 
 namespace LeopotamGroup.Tutorials {
+    /// <summary>
+    /// Mask of bits (flags).
+    /// </summary>
     [Flags]
     public enum TutorialMask : int {
         Bit00 = (1 << 0),
@@ -43,10 +46,19 @@ namespace LeopotamGroup.Tutorials {
         Bit30 = (1 << 30)
     }
 
+    /// <summary>
+    /// Helper for tutorial stage processing. All children will be set active / non-active based on mask state.
+    /// </summary>
     public sealed class TutorialInfo : MonoBehaviour {
+        /// <summary>
+        /// Children will be hidden if this bits mask equals to current state of tutorial bits processing.
+        /// </summary>
         [EnumFlags]
         public TutorialMask HideChildrenOnMask = 0;
 
+        /// <summary>
+        /// Children will be shown if this bits mask equals to current state of tutorial bits processing.
+        /// </summary>
         [EnumFlags]
         public TutorialMask ShowChildrenOnMask = 0;
 
@@ -82,4 +94,3 @@ namespace LeopotamGroup.Tutorials {
         }
     }
 }
-

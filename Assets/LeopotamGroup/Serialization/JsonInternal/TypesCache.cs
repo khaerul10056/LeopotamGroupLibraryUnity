@@ -9,6 +9,9 @@ using System.Reflection;
 using System.Text;
 
 namespace LeopotamGroup.Serialization.JsonInternal {
+    /// <summary>
+    /// Json serialization internal class, dont touch it!
+    /// </summary>
     sealed class TypesCache {
         public class TypeDesc {
             public readonly Dictionary<string, FieldInfo> Fields = new Dictionary<string, FieldInfo> (8);

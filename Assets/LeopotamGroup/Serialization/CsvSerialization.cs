@@ -9,6 +9,9 @@ using System.Text.RegularExpressions;
 using UnityEngine;
 
 namespace LeopotamGroup.Serialization {
+    /// <summary>
+    /// Csv serialization. Supports deserialization only.
+    /// </summary>
     public sealed class CsvSerialization {
         static readonly Regex _csvRegex = new Regex ("(?<=^|,)(\"(?:[^\"]|\"\")*\"|[^,]*)");
 
@@ -31,6 +34,12 @@ namespace LeopotamGroup.Serialization {
             }
         }
 
+        /// <summary>
+        /// Deserialize csv data from raw string source.
+        /// </summary>
+        /// <returns>Deserialized KeyValue-dictionary as Key from first column and lists of other columns as Value.</returns>
+        /// <param name="data">Raw text data.</param>
+        /// <param name="list">Target list if specified (useful for decrease GC allocations).</param>
         public Dictionary<string, string[]> Deserialize (string data, Dictionary<string, string[]> list = null) {
             if (list == null) {
                 list = new Dictionary<string, string[]> ();
@@ -65,6 +74,12 @@ namespace LeopotamGroup.Serialization {
             return list;
         }
 
+        /// <summary>
+        /// Deserialize csv data from raw string source with singleton csv deserializator.
+        /// </summary>
+        /// <returns>Deserialized KeyValue-dictionary as Key from first column and lists of other columns as Value.</returns>
+        /// <param name="data">Raw text data.</param>
+        /// <param name="list">Target list if specified (useful for decrease GC allocations).</param>
         public static Dictionary<string, string[]> DeserializeStatic (string data, Dictionary<string, string[]> list = null) {
             return _instance.Deserialize (data, list);
         }

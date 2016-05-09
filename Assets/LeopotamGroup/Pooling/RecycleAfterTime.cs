@@ -6,13 +6,18 @@
 using UnityEngine;
 
 namespace LeopotamGroup.Pooling {
+    /// <summary>
+    /// Recycle instance after time (if it was spawned from pool).
+    /// Dont use it on swarm spawns of prefab (use custom recycling instead).
+    /// </summary>
     public sealed class RecycleAfterTime : MonoBehaviour {
-        public float Timeout = 1f;
+        [SerializeField]
+        float _timeout = 1f;
 
         float _endTime;
 
         void OnEnable () {
-            _endTime = Time.time + Timeout;
+            _endTime = Time.time + _timeout;
         }
 
         void LateUpdate () {

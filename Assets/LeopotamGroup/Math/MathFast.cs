@@ -7,15 +7,33 @@ using System.Runtime.InteropServices;
 using UnityEngine;
 
 namespace LeopotamGroup.Math {
+    /// <summary>
+    /// Holder of extensions / helpers.
+    /// </summary>
     public static class MathFast {
+        /// <summary>
+        /// PI approximation.
+        /// </summary>
         public const float PI = 3.141592654f;
 
+        /// <summary>
+        /// PI/2 approximation.
+        /// </summary>
         public const float PI_DIV_2 = 3.141592654f * 0.5f;
 
+        /// <summary>
+        /// PI*2 approximation.
+        /// </summary>
         public const float PI_2 = PI * 2f;
 
+        /// <summary>
+        /// Radians to Degrees conversion multiplier.
+        /// </summary>
         public const float Rad2Deg = 180f / PI;
 
+        /// <summary>
+        /// Degrees to Radians conversion multiplier.
+        /// </summary>
         public const float Deg2Rad = PI / 180f;
 
         const int _sinCosIndexMask = ~(-1 << 12);
@@ -88,6 +106,10 @@ namespace LeopotamGroup.Math {
             }
         }
 
+        /// <summary>
+        /// Fast Vector2 normalization with 0.001 threshold error.
+        /// </summary>
+        /// <returns>Normalized Vector2.</returns>
         public static Vector2 NormalizedFast (this Vector2 v) {
             var wrapper = new FloatInt ();
             wrapper.Float = v.x * v.x + v.y * v.y;
@@ -97,6 +119,10 @@ namespace LeopotamGroup.Math {
             return v;
         }
 
+        /// <summary>
+        /// Fast Vector3 normalization with 0.001 threshold error.
+        /// </summary>
+        /// <returns>Normalized Vector3.</returns>
         public static Vector3 NormalizedFast (this Vector3 v) {
             var wrapper = new FloatInt ();
             wrapper.Float = v.x * v.x + v.y * v.y + v.z * v.z;
@@ -107,14 +133,25 @@ namespace LeopotamGroup.Math {
             return v;
         }
 
+        /// <summary>
+        /// Fast Sin with 0.0003 threshold error.
+        /// </summary>
+        /// <param name="v">Angle in radians.</param>
         public static float Sin (float v) {
             return _sinCache[(int) (v * _sinCosIndexFactor) & _sinCosIndexMask];
         }
 
+        /// <summary>
+        /// Fast Cos with 0.0003 threshold error.
+        /// </summary>
+        /// <param name="v">Angle in radians.</param>
         public static float Cos (float v) {
             return _cosCache[(int) (v * _sinCosIndexFactor) & _sinCosIndexMask];
         }
 
+        /// <summary>
+        /// Fast Atan2 with 0.02 threshold error.
+        /// </summary>
         public static float Atan2 (float y, float x) {
             if (x >= 0) {
                 if (y >= 0) {

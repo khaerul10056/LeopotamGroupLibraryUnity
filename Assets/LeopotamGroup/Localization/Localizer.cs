@@ -96,7 +96,7 @@ namespace LeopotamGroup.Localization {
         /// <summary>
         /// Get localization for token.
         /// </summary>
-        /// <param name="token">Token.</param>
+        /// <param name="token">Localization token.</param>
         public static string Get (string token) {
             if (_langID == -1) {
                 return token;

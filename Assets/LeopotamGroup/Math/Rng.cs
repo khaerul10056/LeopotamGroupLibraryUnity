@@ -6,6 +6,9 @@
 using UnityEngine;
 
 namespace LeopotamGroup.Math {
+    /// <summary>
+    /// Rng generator, mersenne twister based.
+    /// </summary>
     public sealed class Rng {
         const int N = 624;
 
@@ -17,66 +20,34 @@ namespace LeopotamGroup.Math {
 
         const ulong LowerMask = 0x7fffffffUL;
 
+        static readonly Rng _instance = new Rng ();
+
         readonly ulong[] _mt = new ulong[N];
 
         readonly ulong[] _mag01 = { 0x0UL, MatrixA };
 
         int _mti = N + 1;
 
-        public Rng () : this ((ulong) (Time.realtimeSinceStartup * 100000)) {
+        /// <summary>
+        /// Default initialization.
+        /// </summary>
+        public Rng () : this ((long)(Time.realtimeSinceStartup * 100000)) {
         }
 
-        public Rng (ulong seed) {
+        /// <summary>
+        /// Initialization with custom seed.
+        /// </summary>
+        /// <param name="seed">Seed.</param>
+        public Rng (long seed) {
             SetSeed (seed);
-        }
-
-        static readonly Rng _instance = new Rng ();
-
-        public static void SetSeedStatic (ulong seed) {
-            _instance.SetSeed (seed);
-        }
-
-        /// <summary>
-        /// Get int32 random number from range [0, n).
-        /// </summary>
-        public static int GetInt32Static (int n) {
-            return _instance.GetInt32 (n);
-        }
-
-        /// <summary>
-        /// Get float random number from range [0, 1) or [0, 1] for includeOne=true.
-        /// </summary>
-        public static float GetFloatStatic (bool includeOne = true) {
-            return _instance.GetFloat (includeOne);
-        }
-
-        public void SetSeed (ulong seed) {
-            _mt[0] = seed & 0xffffffffUL;
-            for (_mti = 1; _mti < N; _mti++) {
-                _mt[_mti] = (1812433253UL * (_mt[_mti - 1] ^ (_mt[_mti - 1] >> 30)) + (ulong) _mti) & 0xffffffffUL; 
-            }
-        }
-
-        /// <summary>
-        /// Get int32 random number from range [0, n).
-        /// </summary>
-        public int GetInt32 (int n) {
-            return (int) (GetRandomUInt32 () * (n / 4294967296.0));
-        }
-
-        /// <summary>
-        /// Get float random number from range [0, 1) or [0, 1] for includeOne=true.
-        /// </summary>
-        public float GetFloat (bool includeOne = true) {
-            return (float) (GetRandomUInt32 () * (1.0 / (includeOne ? 4294967295.0 : 4294967296.0)));
         }
 
         ulong GetRandomUInt32 () {
             ulong y;
             if (_mti >= N) {
                 int kk;
-                if (_mti == N + 1) {         
-                    SetSeed (5489UL);   
+                if (_mti == N + 1) {
+                    SetSeed (5489L);
                 }
                 for (kk = 0; kk < N - M; kk++) {
                     y = (_mt[kk] & UpperMask) | (_mt[kk + 1] & LowerMask);
@@ -96,6 +67,112 @@ namespace LeopotamGroup.Math {
             y ^= (y << 15) & 0xefc60000UL;
             y ^= (y >> 18);
             return y;
+        }
+
+        /// <summary>
+        /// Set new seed.
+        /// </summary>
+        /// <param name="seed">Seed.</param>
+        public void SetSeed (long seed) {
+            _mt[0] = (ulong)seed & 0xffffffffUL;
+            for (_mti = 1; _mti < N; _mti++) {
+                _mt[_mti] = (1812433253UL * (_mt[_mti - 1] ^ (_mt[_mti - 1] >> 30)) + (ulong)_mti) & 0xffffffffUL;
+            }
+        }
+
+        /// <summary>
+        /// Get int32 random number from range [0, max).
+        /// </summary>
+        /// <returns>Random int32 value.</returns>
+        /// <param name="max">Max value (excluded).</param>
+        public int GetInt32 (int max) {
+            return (int)(GetRandomUInt32 () * (max / 4294967296.0));
+        }
+
+        /// <summary>
+        /// Get int32 random number from range [min, max).
+        /// </summary>
+        /// <returns>Random int32 value.</returns>
+        /// <param name="min">Min value.</param>
+        /// <param name="max">Max value (excluded).</param>
+        public int GetInt32 (int min, int max) {
+            if (min > max) {
+                var t = min;
+                min = max;
+                max = t;
+            }
+            return min + GetInt32 (max - min);
+        }
+
+        /// <summary>
+        /// Get float random number from range [0, 1) or [0, 1] for includeOne=true.
+        /// </summary>
+        /// <param name="includeOne">Include 1 value for searching.</param>
+        public float GetFloat (bool includeOne = true) {
+            return (float)(GetRandomUInt32 () * (1.0 / (includeOne ? 4294967295.0 : 4294967296.0)));
+        }
+
+        /// <summary>
+        /// Get float random number from range [min, max) or [min, max] for includeMax=true.
+        /// </summary>
+        /// <returns>The float.</returns>
+        /// <param name="min">Min value.</param>
+        /// <param name="max">Max value.</param>
+        /// <param name="includeMax">Include max value for searching.</param>
+        public float GetFloat (float min, float max, bool includeMax = true) {
+            if (min > max) {
+                var t = min;
+                min = max;
+                max = t;
+            }
+            return min + GetFloat (includeMax) * (max - min);
+        }
+
+        /// <summary>
+        /// Set new seed for singleton rng.
+        /// </summary>
+        /// <returns>The seed static.</returns>
+        /// <param name="seed">Seed.</param>
+        public static void SetSeedStatic (long seed) {
+            _instance.SetSeed (seed);
+        }
+
+        /// <summary>
+        /// Get int32 random number from range [0, n) from singleton rng.
+        /// </summary>
+        /// <returns>Random int32.</returns>
+        /// <param name="n">.</param>
+        public static int GetInt32Static (int n) {
+            return _instance.GetInt32 (n);
+        }
+
+        /// <summary>
+        /// Get int32 random number from range [min, max) from singleton rng.
+        /// </summary>
+        /// <returns>Random int32 value.</returns>
+        /// <param name="min">Min value.</param>
+        /// <param name="max">Max value (excluded).</param>
+        public static int GetInt32Static (int min, int max) {
+            return _instance.GetInt32 (min, max);
+        }
+
+        /// <summary>
+        /// Get float random number from range [0, 1) or [0, 1] for includeOne=true from singleton rng.
+        /// </summary>
+        /// <param name="includeOne">Include 1 value for searching.</param>
+        public static float GetFloatStatic (bool includeOne = true) {
+            return _instance.GetFloat (includeOne);
+        }
+
+        /// <summary>
+        /// Get float random number from range [min, max) or [min, max] for includeMax=true from singleton rng.
+        /// </summary>
+        /// <returns>The float.</returns>
+        /// <param name="min">Min value.</param>
+        /// <param name="max">Max value.</param>
+        /// <param name="includeMax">Include max value for searching.</param>
+        public static float GetFloatStatic (float min, float max, bool includeMax = true) {
+            return _instance.GetFloat (min, max, includeMax);
         }
     }
 }
