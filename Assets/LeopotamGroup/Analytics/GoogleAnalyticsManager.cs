@@ -43,8 +43,8 @@ namespace LeopotamGroup.Analytics {
                     _trackerID,
                     SystemInfo.deviceUniqueIdentifier,
                     Screen.width, Screen.height,
-                    BuildInfo.Instance.AppName,
-                    BuildInfo.Instance.AppVersion
+                    Application.bundleIdentifier,
+                    Application.version
                 );
             }
 

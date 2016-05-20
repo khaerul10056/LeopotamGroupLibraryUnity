@@ -1,9 +1,12 @@
-# LeopotamGroupUnity
-LeopotamGroup library for unity3d engine
+# LeopotamGroupLibraryUnity
+LeopotamGroup library for unity3d engine.
 
 ## CODE STRUCTURE
 
 ### 'LeopotamGroup' - main library.
+
+***Unity tested version: 5.3.5.***
+
 All code separated to independent subsystems (folders),
 you can remove unnecessary code for current project:
 
@@ -23,7 +26,7 @@ Common helpers, uses by other subsystems.
 
 * EditorHelpers
 
-Special helpers: extract info from editor to use in runtime, show fps, etc.
+Special helpers: show fps, debug-log output with automatic removing on build, etc.
 
 ----------------------------------------------------------------------------
 
