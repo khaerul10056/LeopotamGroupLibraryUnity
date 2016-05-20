@@ -27,7 +27,11 @@ namespace LeopotamGroup.EditorHelpers {
         /// <param name="args">Arguments.</param>
         [Conditional ("UNITY_EDITOR")]
         public static void LogInfo (string format, params object[] args) {
-            LogInternal (LogType.Log, format, args);
+            if (args != null && args.Length > 0) {
+                LogInternal (LogType.Log, format, args);
+            } else {
+                LogInternal (LogType.Log, "{0}", format);
+            }
         }
 
         /// <summary>
@@ -46,7 +50,11 @@ namespace LeopotamGroup.EditorHelpers {
         /// <param name="args">Arguments.</param>
         [Conditional ("UNITY_EDITOR")]
         public static void LogWarning (string format, params object[] args) {
-            LogInternal (LogType.Warning, format, args);
+            if (args != null && args.Length > 0) {
+                LogInternal (LogType.Warning, format, args);
+            } else {
+                LogInternal (LogType.Warning, "{0}", format);
+            }
         }
 
         /// <summary>
@@ -65,7 +73,11 @@ namespace LeopotamGroup.EditorHelpers {
         /// <param name="args">Arguments.</param>
         [Conditional ("UNITY_EDITOR")]
         public static void LogError (string format, params object[] args) {
-            LogInternal (LogType.Error, format, args);
+            if (args != null && args.Length > 0) {
+                LogInternal (LogType.Error, format, args);
+            } else {
+                LogInternal (LogType.Error, "{0}", format);
+            }
         }
 
         [Conditional ("UNITY_EDITOR")]
