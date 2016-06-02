@@ -4,10 +4,13 @@ using UnityEngine;
 namespace LeopotamGroup.Examples.Analytics.GoogleAnalyticsTest {
     public class GoogleAnalyticsTest : MonoBehaviour {
         void OnGUI () {
-            if (string.IsNullOrEmpty (GoogleAnalyticsManager.Instance._trackerID)) {
+            if (!GoogleAnalyticsManager.Instance.IsInited) {
                 GUILayout.Label ("Fill TrackerID field for GoogleAnalytics object first!");
                 return;
             }
+
+            GUILayout.Label ("Device identifier: " + GoogleAnalyticsManager.Instance.DeviceHash);
+
             if (GUILayout.Button ("Track 'Screen Test opened'")) {
                 GoogleAnalyticsManager.Instance.TrackScreen ("Test");
             }
