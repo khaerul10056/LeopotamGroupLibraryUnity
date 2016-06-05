@@ -146,7 +146,7 @@ public void SetType(Type type) {
 				asStr = asStr.Replace("\\\"", "\"");
 			}
 			v = asStr;
-			Console.WriteLine("STR: " + t.val + " / " + asStr);
+			//Console.WriteLine("STR: " + t.val + " / " + asStr);
 			}
 			
 			break;
