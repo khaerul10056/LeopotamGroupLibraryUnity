@@ -78,6 +78,13 @@ namespace LeopotamGroup.Localization {
                 storage.Clear ();
                 return;
             }
+
+            foreach (var item in storage) {
+                for (int i = 0, iMax = item.Value.Length; i < iMax; i++) {
+                    item.Value[i] = item.Value[i].Replace ("\\n", "\n");
+                }
+            }
+
             _header = storage[HeaderToken];
             if (!string.IsNullOrEmpty (_language)) {
                 var langID = Array.IndexOf (_header, _language);
