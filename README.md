@@ -36,6 +36,12 @@ Visual / audial effect helpers: sound / music manipulations, screen fading.
 
 ----------------------------------------------------------------------------
 
+* Gui
+
+Mobile gui. Oriented to be fat free, fast, no or low gc allocation.
+
+----------------------------------------------------------------------------
+
 * Localization
 
 Localization support with csv support.
