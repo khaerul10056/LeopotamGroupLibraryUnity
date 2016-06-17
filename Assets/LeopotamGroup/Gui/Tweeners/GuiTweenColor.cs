@@ -3,45 +3,54 @@
 // Copyright (c) 2012-2016 Leopotam <leopotam@gmail.com>
 //-------------------------------------------------------
 
+using LeopotamGroup.Gui.Widgets;
+using LeopotamGroup.Tweening;
 using UnityEngine;
 
-namespace LeopotamGroup.Tweening {
+namespace LeopotamGroup.Gui.Tweeners {
     /// <summary>
-    /// Tweening position.
+    /// Tweening GuiWidget color.
     /// </summary>
-    public class TweeningPosition : TweeningBase {
+    [RequireComponent (typeof (GuiWidget))]
+    public class GuiTweenColor : TweeningBase {
         /// <summary>
-        /// Target transform. If null on start - current transform will be used.
+        /// Target GuiWidget. If null on start - GuiWidget on current gameobject will be used.
         /// </summary>
-        public Transform Target = null;
+        public GuiWidget Target = null;
 
         /// <summary>
-        /// Start value of position.
+        /// Start color.
         /// </summary>
-        public Vector3 StartValue = Vector3.zero;
+        public Color StartValue = Color.white;
 
         /// <summary>
-        /// End value of position.
+        /// End color.
         /// </summary>
-        public Vector3 EndValue = Vector3.zero;
+        public Color EndValue = Color.clear;
 
         protected override void OnInit () {
             if (Target == null) {
-                Target = transform;
+                Target = GetComponent <GuiWidget> ();
+                enabled = false;
+            }
+            if (Target == null) {
+                Destroy (this);
             }
         }
 
         protected override void OnUpdateValue () {
-            Target.localPosition = Vector3.Lerp (StartValue, EndValue, Value);
+            if (Target != null) {
+                Target.Color = Color.Lerp (StartValue, EndValue, Value);
+            }
         }
 
         /// <summary>
         /// Begin tweening.
         /// </summary>
-        /// <param name="start">Start position.</param>
-        /// <param name="end">End position.</param>
+        /// <param name="start">Start color.</param>
+        /// <param name="end">End color.</param>
         /// <param name="time">Time for tweening.</param>
-        public TweeningPosition Begin (Vector3 start, Vector3 end, float time) {
+        public GuiTweenColor Begin (Color start, Color end, float time) {
             enabled = false;
             StartValue = start;
             EndValue = end;
@@ -54,11 +63,11 @@ namespace LeopotamGroup.Tweening {
         /// Begin tweening at specified GameObject.
         /// </summary>
         /// <param name="go">Holder of tweener.</param>
-        /// <param name="start">Start position.</param>
-        /// <param name="end">End position.</param>
+        /// <param name="start">Start color.</param>
+        /// <param name="end">End color.</param>
         /// <param name="time">Time for tweening.</param>
-        public static TweeningPosition Begin (GameObject go, Vector3 start, Vector3 end, float time) {
-            var tweener = Get<TweeningPosition> (go);
+        public static GuiTweenColor Begin (GameObject go, Color start, Color end, float time) {
+            var tweener = Get<GuiTweenColor> (go);
             if (tweener != null) {
                 tweener.Begin (start, end, time);
             }

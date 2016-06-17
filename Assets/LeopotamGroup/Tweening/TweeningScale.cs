@@ -31,6 +31,10 @@ namespace LeopotamGroup.Tweening {
             }
         }
 
+        protected override void OnUpdateValue () {
+            Target.localScale = Vector3.Lerp (StartValue, EndValue, Value);
+        }
+
         /// <summary>
         /// Begin tweening.
         /// </summary>
@@ -59,10 +63,6 @@ namespace LeopotamGroup.Tweening {
                 tweener.Begin (start, end, time);
             }
             return tweener;
-        }
-
-        protected override void OnUpdateValue () {
-            Target.localScale = Vector3.Lerp (StartValue, EndValue, Value);
         }
     }
 }
