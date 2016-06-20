@@ -27,10 +27,10 @@ namespace LeopotamGroup.Gui.Common.UnityEditors {
 
         [DrawGizmo (GizmoType.NonSelected | GizmoType.InSelectionHierarchy)]
         static void OnDrawRootGizmo (GuiEventReceiver receiver, GizmoType gizmoType) {
-            if (receiver.enabled && (gizmoType & GizmoType.InSelectionHierarchy) != 0) {
+            if (receiver.enabled) {
                 var tr = receiver.transform;
                 var oldColor = Gizmos.color;
-                Gizmos.color = Color.green;
+                Gizmos.color = (gizmoType & GizmoType.InSelectionHierarchy) != 0 ? Color.green : new Color (0f, 0.5f, 0f);
                 var oldMat = Gizmos.matrix;
                 Gizmos.matrix = Matrix4x4.TRS (tr.position, tr.rotation, tr.localScale);
                 Gizmos.DrawWireCube (Vector3.zero, new Vector3 (receiver.Width, receiver.Height));

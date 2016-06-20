@@ -46,6 +46,7 @@ namespace LeopotamGroup.Gui.Widgets {
         protected override void Awake () {
             base.Awake ();
             OnPress.AddListener (OnBtnPressed);
+            UpdateAttachedWidgets (enabled ? EnableColor : DisableColor, 0f);
         }
 
         protected override void OnEnable () {

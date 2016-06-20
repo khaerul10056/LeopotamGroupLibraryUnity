@@ -51,6 +51,11 @@ namespace LeopotamGroup.Gui.Widgets.UnityEditors {
                 SceneView.RepaintAll ();
             }
 
+            EditorGUILayout.HelpBox ("Only strings with length <= 75 (except spaces) can be batched.\n\n" +
+            "Only strings with length <= 37 and shadow effect (except spaces) can be batched.\n\n" +
+            "Only strings with length <= 15 and outline effect (except spaces) can be batched.\n\n" +
+            "Copy&paste labels for creating custom shading/glowing and keep batching.", MessageType.Warning);
+
             if (serializedObject.ApplyModifiedProperties () || EditorIntegration.IsUndo ()) {
                 EditorIntegration.UpdateVisuals (target);
             }
@@ -59,7 +64,7 @@ namespace LeopotamGroup.Gui.Widgets.UnityEditors {
         [DrawGizmo (GizmoType.NonSelected | GizmoType.InSelectionHierarchy)]
         static void OnDrawRootGizmo (GuiLabel lbl, GizmoType gizmoType) {
             if (lbl.IsVisible) {
-                Gizmos.color = Color.white;
+                Gizmos.color = (gizmoType & GizmoType.InSelectionHierarchy) != 0 ? Color.yellow : new Color (0.5f, 0.5f, 0f);
                 Gizmos.DrawWireCube (lbl.transform.position, new Vector3 (lbl.Width, lbl.Height, 0f));
             }
         }

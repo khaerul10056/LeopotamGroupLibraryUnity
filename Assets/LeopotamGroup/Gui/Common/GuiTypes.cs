@@ -121,7 +121,7 @@ namespace LeopotamGroup.Gui.Common {
 
         public static readonly int DefaultGuiLayer = LayerMask.NameToLayer ("UI");
 
-        public static readonly LayerMask DefaultCameraMask = 1 << DefaultGuiLayer;
+        public static readonly LayerMask DefaultGuiLayerMask = 1 << DefaultGuiLayer;
 
         public static bool IsTiled (this GuiSpriteType spriteType) {
             return spriteType == GuiSpriteType.TiledBoth || spriteType == GuiSpriteType.TiledHorizontal || spriteType == GuiSpriteType.TiledVertical;

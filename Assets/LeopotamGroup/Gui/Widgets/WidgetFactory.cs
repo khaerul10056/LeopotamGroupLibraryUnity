@@ -55,8 +55,19 @@ namespace LeopotamGroup.Gui.Widgets {
         /// <returns>The widget button.</returns>
         public static GuiButton CreateWidgetButton () {
             var button = CreateWidget<GuiButton> ();
-            var spr = CreateWidget<GuiSprite> (button.transform);
-            button.Visuals = new [] { spr };
+            button.Visuals = new [] { button.gameObject.AddComponent<GuiSprite> () };
+            return button;
+        }
+
+        /// <summary>
+        /// Create GuiButton with label.
+        /// </summary>
+        /// <returns>The widget button.</returns>
+        public static GuiButton CreateWidgetButtonWithLabel () {
+            var button = CreateWidget<GuiButton> ();
+            var label = CreateWidget<GuiLabel> (button.transform);
+            label.Depth = 1;
+            button.Visuals = new GuiWidget[] { button.gameObject.AddComponent<GuiSprite> (), label };
             return button;
         }
 

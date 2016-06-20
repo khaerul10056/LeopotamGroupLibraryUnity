@@ -38,13 +38,13 @@ namespace LeopotamGroup.Gui.Common {
             fontStyle = FontStyle.Normal,
             pivot = new Vector2 (0.5f, 0.5f),
             richText = true,
-            resizeTextMinSize = 4,
             scaleFactor = 1f,
-            horizontalOverflow = HorizontalWrapMode.Wrap,
             verticalOverflow = VerticalWrapMode.Truncate,
+            horizontalOverflow = HorizontalWrapMode.Wrap,
             generateOutOfBounds = false,
             updateBounds = false,
-            resizeTextForBestFit = true,
+            resizeTextMinSize = 0,
+            resizeTextForBestFit = false,
             alignByGeometry = false
         };
 
@@ -74,10 +74,6 @@ namespace LeopotamGroup.Gui.Common {
                 return;
             }
 
-            if (text[text.Length - 1] != '\n') {
-                text += "\n";
-            }
-
             _settings.textAnchor = align;
             _settings.font = font;
             _settings.fontSize = fontSize;
@@ -94,7 +90,11 @@ namespace LeopotamGroup.Gui.Common {
 
             GuiMeshTools.PrepareBuffer (effect, effectValue, effectColor);
 
-            for (int i = 0, iMax = _verts.Count - 4; i < iMax;) {
+            for (int i = 0, iMax = _verts.Count - 4, charID = 0; i < iMax; charID++) {
+                if (text[charID] == ' ') {
+                    i += 4;
+                    continue;
+                }
                 _uiV = _verts[i++];
                 _c = _uiV.color;
                 _v0 = _uiV.position;

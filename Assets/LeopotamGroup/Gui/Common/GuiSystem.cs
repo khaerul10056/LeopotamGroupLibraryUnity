@@ -113,7 +113,7 @@ namespace LeopotamGroup.Gui.Common {
                     if (_instance == null) {
                         var go = new GameObject ("GuiSystem");
                         go.layer = GuiConsts.DefaultGuiLayer;
-                        go.AddComponent <GuiSystem> ().CullingMask = GuiConsts.DefaultCameraMask;
+                        go.AddComponent <GuiSystem> ().CullingMask = GuiConsts.DefaultGuiLayerMask;
                     }
                 }
                 return _instance;

@@ -52,25 +52,24 @@ namespace LeopotamGroup.Gui.UnityEditors {
 
                 obj = EditorUtility.InstanceIDToObject (instanceID) as GameObject;
                 if (obj != null) {
+                    var indent = 0;
                     var panel = obj.GetComponent <GuiPanel> ();
                     if (panel != null) {
-                        DrawHierarchyLabel (selectionRect, "PNL: " + panel.Depth, Color.black, _panelColor);
-                    } else {
-                        var receiver = obj.GetComponent <GuiEventReceiver> ();
-                        if (receiver != null) {
-                            DrawHierarchyLabel (selectionRect, "RCV: " + receiver.Depth, Color.black, _receiverColor);
-                        } else {
-                            w = obj.GetComponent <GuiWidget> ();
-                            if (w != null) {
-                                if (w as GuiSprite) {
-                                    DrawHierarchyLabel (selectionRect, "SPR: " + w.Depth, Color.black, _spriteColor);
-                                }
-                                if (w is GuiLabel) {
-                                    DrawHierarchyLabel (selectionRect, "LBL: " + w.Depth, Color.black, _labelColor);
-                                }
-
-                            }
+                        DrawHierarchyLabel (selectionRect, indent++, "PNL: " + panel.Depth, Color.black, _panelColor);
+                    }
+                    var receiver = obj.GetComponent <GuiEventReceiver> ();
+                    if (receiver != null) {
+                        DrawHierarchyLabel (selectionRect, indent++, "RCV: " + receiver.Depth, Color.black, _receiverColor);
+                    }
+                    w = obj.GetComponent <GuiWidget> ();
+                    if (w != null) {
+                        if (w as GuiSprite) {
+                            DrawHierarchyLabel (selectionRect, indent++, "SPR: " + w.Depth, Color.black, _spriteColor);
                         }
+                        if (w is GuiLabel) {
+                            DrawHierarchyLabel (selectionRect, indent++, "LBL: " + w.Depth, Color.black, _labelColor);
+                        }
+
                     }
                 }
             } catch (Exception ex) {
@@ -78,14 +77,16 @@ namespace LeopotamGroup.Gui.UnityEditors {
             }
         }
 
-        static void DrawHierarchyLabel (Rect rect, string text, Color textColor, Color backColor) {
+        static void DrawHierarchyLabel (Rect rect, int indent, string text, Color textColor, Color backColor) {
             if (_whiteTexture == null) {
                 _whiteTexture = new Texture2D (1, 1, TextureFormat.RGB24, false);
                 _whiteTexture.hideFlags = HideFlags.HideAndDontSave;
                 _whiteTexture.SetPixel (0, 0, Color.white);
                 _whiteTexture.Apply (false);
             }
-            rect.x += rect.width - 50;
+            rect.xMax -= 50 * indent;
+            rect.xMin = rect.xMax - 50;
+//            rect.width -= indent * 50;
             var oldColor = GUI.color;
             GUI.color = backColor;
             GUI.DrawTexture (rect, _whiteTexture, ScaleMode.StretchToFill);
@@ -122,6 +123,7 @@ namespace LeopotamGroup.Gui.UnityEditors {
                 Undo.RegisterCreatedObjectUndo (label.gameObject, "leopotamgroup.gui.create-label");
                 label.Font = string.IsNullOrEmpty (assetPath) ?
                     Resources.GetBuiltinResource<Font> ("Arial.ttf") : AssetDatabase.LoadAssetAtPath<Font> (assetPath);
+                label.Text = "Label";
                 FixWidgetParent (label);
                 UpdateVisuals (label);
             });
@@ -143,6 +145,35 @@ namespace LeopotamGroup.Gui.UnityEditors {
                     button.Height = spr.Height;
                     UpdateVisuals (spr);
                 }
+                UpdateVisuals (button);
+            });
+        }
+
+        [MenuItem ("GameObject/LeopotamGroup.Gui/Widgets/Button with label", false, 1)]
+        static void CreateWidgetButtonWithLabel () {
+            SearchWindow.Open<GuiAtlas> ("Select atlas", "t:prefab", null, sprAssetPath => {
+                var button = WidgetFactory.CreateWidgetButtonWithLabel ();
+                Undo.RegisterCreatedObjectUndo (button.gameObject, "leopotamgroup.gui.create-btn");
+                FixWidgetParent (button);
+                if (!string.IsNullOrEmpty (sprAssetPath)) {
+                    var spr = button.GetComponentInChildren<GuiSprite> ();
+                    spr.SpriteAtlas = AssetDatabase.LoadAssetAtPath<GuiAtlas> (sprAssetPath);
+                    var sprNames = spr.SpriteAtlas.GetSpriteNames ();
+                    spr.SpriteName = sprNames != null && sprNames.Length > 0 ? sprNames[0] : null;
+                    spr.ResetSize ();
+                    button.Width = spr.Width;
+                    button.Height = spr.Height;
+                    UpdateVisuals (spr);
+                }
+
+                SearchWindow.Open<Font> ("Select font", "t:font", null, fontAssetPath => {
+                    var label = button.GetComponentInChildren<GuiLabel> ();
+                    label.Font = string.IsNullOrEmpty (fontAssetPath) ?
+                        Resources.GetBuiltinResource<Font> ("Arial.ttf") : AssetDatabase.LoadAssetAtPath<Font> (fontAssetPath);
+                    label.Text = "Button";
+                    UpdateVisuals (label);
+                });
+
                 UpdateVisuals (button);
             });
         }
@@ -225,7 +256,6 @@ namespace LeopotamGroup.Gui.UnityEditors {
             var widget = obj as GuiWidget;
             if (widget != null) {
                 widget.UpdateVisuals (GuiDirtyType.All);
-//                widget.SendMessage (GuiConsts.MethodOnLguiVisualSizeChanged, SendMessageOptions.DontRequireReceiver);
             } else {
                 var panel = obj as GuiPanel;
                 if (panel != null) {
@@ -262,6 +292,7 @@ namespace LeopotamGroup.Gui.UnityEditors {
             win.position = pos; 
             win.titleContent = new GUIContent (title);
             win._cb = cb;
+            win._needToClose = false;
             win.Search<T> (filter, active);
             win.ShowUtility ();
         }
@@ -287,11 +318,14 @@ namespace LeopotamGroup.Gui.UnityEditors {
         }
 
         void Finish (string path) {
-            if (_cb != null) {
-                _cb (path);
-                _cb = null;
-            }
             _needToClose = true;
+
+            if (_cb != null) {
+                var cb = _cb;
+                _cb = null;
+                cb (path);
+            }
+
             Repaint ();
         }
 
