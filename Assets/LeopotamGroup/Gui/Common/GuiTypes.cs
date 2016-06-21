@@ -32,12 +32,12 @@ namespace LeopotamGroup.Gui.Common {
     /// Alignment of widget.
     /// </summary>
     public enum GuiAlignment {
-        Center = 0,
-        TopLeft,
+        TopLeft = 0,
         TopCenter,
         TopRight,
-        LeftCenter,
-        RightCenter,
+        CenterLeft,
+        Center,
+        CenterRight,
         BottomLeft,
         BottomCenter,
         BottomRight
